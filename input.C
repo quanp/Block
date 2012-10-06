@@ -650,7 +650,7 @@ SpinAdapted::Input::Input(const string& config_name)
   mpi::broadcast(world,m_gaopt,0);
 #endif
   if (m_gaopt) {
-    ifstream gaconffile;
+    ifstream gaconfFile;
     if(gaconffile != "default") gaconfFile.open(gaconffile.c_str(), ios::in);
     getgaorder(gaconfFile, orbitalFile);
   }

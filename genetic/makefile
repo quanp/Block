@@ -2,13 +2,13 @@ CXX=mpic++
 CXXFLAGS=-g -O3 -fPIC
 
 BOOSTDIR=/usr
-BOOSTINCLUDE=$(BOOSTDIR)/include/boost
+BOOSTINCLUDE=$(BOOSTDIR)/include
 BOOSTLIB=-L$(BOOSTDIR)/lib
 
 NEWMATLIB=../newmat10
 
 INCLUDES= -I. -I$(BOOSTINCLUDE) -I$(NEWMATLIB) -I.. -I../include
-LIBS=$(BOOSTLIB) -lboost_mpi
+LIBS=$(BOOSTLIB) -lboost_serialization -lboost_mpi
 
 FLAGS=$(CXXFLAGS)
 
