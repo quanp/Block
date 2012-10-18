@@ -894,7 +894,7 @@ void SpinAdapted::Input::getgaorder(ifstream& gaconfFile, ifstream& dumpFile)
 #endif
   pout << "---------- Kij-based ordering by GA opt. ----------" << endl;
   m_gaorder = genetic::gaordering(gaconfFile, dumpFile).Gen().Sequence();
-  pout << "------ pick the best ordering up to reorder -------" << endl;
+  pout << "chose the best ordering by mean square distance" << endl;
   pout << "sites are reordered by: ";
 #ifndef SERIAL
   if(mpigetrank() == 0) {

@@ -6,7 +6,7 @@
 
 
 #specify boost root dir
-BOOSTDIR = /usr
+BOOSTDIR = /home/naokin/boost/1.49.0
 
 #specify boost include file
 BOOSTINCLUDE = $(BOOSTDIR)/include
