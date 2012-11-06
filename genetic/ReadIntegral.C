@@ -33,7 +33,7 @@ void genetic::ReadIntegral(ifstream& fdump, Matrix& K)
 
   K.ReSize(nOrbs, nOrbs); K = 0.0;
 
-  while(fdump >> entry) if(entry == "&END") break;
+  while(fdump >> entry) if(entry == "&END" || entry == "/") break;
 
   int i, j, k, l;
   double v;

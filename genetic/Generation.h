@@ -48,6 +48,8 @@ namespace genetic
 
     friend ostream& operator<< (ostream& ost, const Generation& g);
   };
+
+  ostream& operator<< (ostream& ost, const Generation& g);
 };
 
 #endif

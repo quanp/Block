@@ -1,7 +1,7 @@
 CXX=mpic++
 CXXFLAGS=-g -O3 -fPIC
 
-BOOSTDIR=/usr
+BOOSTDIR=/home/naokin/boost/1.49.0
 BOOSTINCLUDE=$(BOOSTDIR)/include
 BOOSTLIB=-L$(BOOSTDIR)/lib
 
