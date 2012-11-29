@@ -33,6 +33,11 @@ std::vector<std::string> gettoken(std::ifstream& fin)
 
 SymmetricMatrix read_integral(std::ifstream& fdump)
 {
+  // save file pointer
+  std::ifstream::pos_type fp = fdump.tellg();
+  // rewind
+  fdump.seekg(0, std::ios::beg);
+
   SymmetricMatrix moint;
   std::vector<std::string> tok;
 
@@ -60,6 +65,11 @@ SymmetricMatrix read_integral(std::ifstream& fdump)
       moint(i, j) = value;
     }
   }
+
+  // clear bad status and rewind fdump
+  fdump.clear();
+  fdump.seekg(0, std::ios::beg);
+
   return moint;
 }
 

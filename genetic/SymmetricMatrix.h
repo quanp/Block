@@ -79,6 +79,7 @@ public:
       for(int i = ndiv * ncols; i <= j; ++i) ost << setw(12) << data(i, j);
       ost << endl;
     }
+    return ost;
   }
 protected:
   size_t
