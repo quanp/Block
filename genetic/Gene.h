@@ -1,75 +1,88 @@
-#ifndef GENE_H
-#define GENE_H
+#ifndef GENETIC_GENE_H
+#define GENETIC_GENE_H
 
-#include <ostream>
+#include <iostream>
 #include <iomanip>
 #include <vector>
 #include <boost/serialization/serialization.hpp>
 #include <boost/serialization/vector.hpp>
-#include "genetic_utils.h"
-using namespace std;
+#include "RandomGenerator.h"
 
 namespace genetic
 {
-  class Gene
+
+class Gene;
+Gene CrossOver(const Gene&, const Gene&);
+Gene PointMutate(const Gene&);
+Gene GlobalMutate(const Gene&);
+
+//
+// gene expression class
+//
+class Gene
+{
+private:
+  friend class boost::serialization::access;
+  template <class Archive>
+  void serialize(Archive& ar, const unsigned int version)
   {
-  private:
-    friend class boost::serialization::access;
-    template <class Archive>
-    void serialize(Archive& ar, const unsigned int version)
-    {
-      ar & m_sequence;
-    }
-
-  private:
-    vector<int> m_sequence;
-    static int m_length;
-
-  public:
-    static int& Length(void) { return m_length; }
-    const static Gene Random(void)
-    {
-      Gene gen(RandomSequence(m_length));
-      return gen;
-    }
-
-    const vector<int>& Sequence(void) const { return m_sequence; }
-    Gene(void) { }
-   ~Gene(void) { }
-    Gene(const vector<int>& sequence)
-    {
-      if(m_length == 0) m_length = sequence.size();
-      m_sequence = sequence;
-    }
-    Gene(const Gene& other)
-    {
-      m_sequence = other.m_sequence;
-    }
-    Gene& operator= (const Gene& other)
-    {
-      m_sequence = other.m_sequence;
-      return *this;
-    }
-    Gene  operator* (const Gene& other) const
-    {
-      return Gene(CrossOver(m_sequence, other.m_sequence));
-    }
-    void pMutate(void) // point mutation
-    {
-      m_sequence = PointMutation(m_sequence);
-    }
-    void gMutate(void) // global mutation
-    {
-      m_sequence = GlobalMutation(m_sequence);
-    }
-    friend ostream& operator<< (ostream& ost, const Gene& gene)
-    {
-      ost << "Gene::Sequence = ";
-      for(int i = 0; i < m_length; ++i) ost << setw(3) << gene.m_sequence[i] + 1 << ","; ost << flush;
-      return ost;
-    }
-  };
-
+    ar & m_sequence;
+  }
+private:
+  static int
+    m_length;
+  std::vector<int>
+    m_sequence;
+public:
+  static int& Length()
+  {
+    return m_length;
+  }
+  const static Gene Random()
+  {
+    return Gene(RandomSequence(m_length));
+  }
+  // constructor
+  Gene()
+  {
+  }
+  Gene(const std::vector<int>& sequence)
+  {
+    if(m_length == 0) m_length = sequence.size();
+    m_sequence = sequence;
+  }
+  const std::vector<int>& sequence() const
+  {
+    return m_sequence;
+  }
+  Gene  operator* (const Gene& other) const
+  {
+    return Gene(CrossOver(*this, other));
+  }
+  void p_mutate() // point mutation
+  {
+    *this = PointMutate(*this);
+  }
+  void g_mutate() // global mutation
+  {
+    *this = GlobalMutate(*this);
+  }
+  friend std::ostream& operator<< (std::ostream& ost, const Gene& g)
+  {
+    int n = m_length - 1;
+    ost << "sequence = {";
+    for(int i = 0; i < n; ++i)
+    ost << std::setw(3) << g.m_sequence[i] + 1 << ",";
+    ost << std::setw(3) << g.m_sequence[n] + 1 << "}";
+    return ost;
+  }
 };
 
-#endif
+int Gene::m_length = 0;
+
+}; // namespace genetic
+
+#include "CrossOver.h"
+#include "Mutation.h"
+
+#endif // GENETIC_GENE_H

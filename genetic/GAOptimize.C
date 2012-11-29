@@ -1,104 +1,134 @@
 #include <iostream>
+#include <iomanip>
 #include <vector>
 #include <algorithm>
 #include "Evaluate.h"
-#include "GAOptimize.h"
 #include "Generation.h"
 #include "GAInput.h"
-#include "ReadIntegral.h"
+#include "SymmetricMatrix.h"
+#include "DistanceMatrix.h"
 using namespace std;
 
 #include <boost/function.hpp>
 #include <boost/bind.hpp>
+using boost::function;
+using boost::bind;
 
 #ifndef SERIAL
 #include <boost/mpi.hpp>
 namespace mpi = boost::mpi;
 #endif
 
-#include <newmat.h>
-#include <newmatutils.h>
+genetic::GAInput gainput;
 
-namespace genetic
+genetic::Cell comm_optimize(const int& seed)
 {
-  GAInput gainput;
-  int Gene::m_length = 0;
-  boost::function<double(const Gene&)> Cell::Evaluate;
-};
+  using namespace genetic;
+  srand(seed);
+  Generation ancestor;
+//fout << "--------------------------- STARTING GA OPTIMIZATION ----------------------------" << endl;
+  for(int g = 0; g < gainput.max_generation; ++g) {
+    Generation nextgen;
+    nextgen.generate(ancestor);
+    ancestor = nextgen;
+//  if(g % 1000 == 0) fout << "Generation [ " << setw(8) << g << " ]: " << ancestor.min() << endl;
+  }
+//fout << "-------------------- RESULTS: POPULATION OF FINAL GENERATION --------------------" << endl;
+//fout << ancestor << endl;
+  return ancestor.min();
+}
 
-genetic::Cell genetic::gaordering(ifstream& confFile, ifstream& dumpFile)
+genetic::Cell GAOptimize(std::ifstream& confFile, std::ifstream& dumpFile)
 {
+  using namespace genetic;
 #ifndef SERIAL
   mpi::communicator world;
 #endif
-
-  Matrix K;
-  double ksum = 0.0;
-
+  DistanceMatrix Dist;
+  SymmetricMatrix Kint;
+  double Ksum = 0.0;
 #ifndef SERIAL
   if(world.rank() == 0)
   {
 #endif
-    if(confFile.is_open()) gainput.Configure(confFile);
-    ReadIntegral(dumpFile, K);
-    Gene::Length() = K.Nrows();
+    if(confFile.is_open()) gainput.configure(confFile);
+
+    Kint = read_integral(dumpFile);
+    Gene::Length() = Kint.size();
+
+    if(gainput.graph.size() > 0) {
+      if(gainput.graph.size() != Gene::Length()) {
+        cout << "number of sites in config file mismatched to that in integral file" << endl;
+        abort();
+      }
+      Dist.reset(gainput.scale, gainput.graph);
+    }
+    else {
+      std::vector<int> mps_graph(Gene::Length(),-1);
+      for(int i = 0; i < Gene::Length(); ++i) mps_graph[i] = i - 1;
+      Dist.reset(gainput.scale, mps_graph);
+    }
+
     if(gainput.max_cells == 0) gainput.max_cells = 2 * Gene::Length();
-    for(int i = 0; i < K.Nrows(); ++i)
-      for(int j = i + 1; j < K.Ncols(); ++j) ksum += K.element(i, j);
+    for(int i = 0; i < Kint.size(); ++i)
+      for(int j = 0; j < i; ++j) Ksum += Kint(i, j);
+
 #ifndef SERIAL
   }
   mpi::broadcast(world, gainput, 0);
   mpi::broadcast(world, Gene::Length(), 0);
-  mpi::broadcast(world, K, 0);
-  mpi::broadcast(world, ksum, 0);
+  mpi::broadcast(world, Dist, 0);
+  mpi::broadcast(world, Kint, 0);
+  mpi::broadcast(world, Ksum, 0);
 #endif
+  Cell::cost_functor = bind(Evaluate, 1.0/Ksum, _1, Dist, Kint);
 
-  Cell::Evaluate = boost::bind(genetic::Evaluate, 1.0/ksum, gainput.exponent, _1, K);
   Cell best;
 #ifndef SERIAL
-  int ntask = 1 + gainput.max_community / world.size();
+  int nproc = world.size();
+  int nrank = world.rank();
+  int ntask = 1 + gainput.max_community / nproc;
 
-  Cell comm_best = gaoptimize(time(NULL) + world.rank());
-  cout << "Order #" << world.rank() << ": " << comm_best << endl;
-  for(int i = 1; i < ntask; ++i)
-  {
-    Cell comm_cell = gaoptimize(time(NULL) + world.rank());
-    cout << "Order #" << i * world.size() + world.rank() << ": " << comm_cell << endl;
+  Cell comm_best = comm_optimize(time(NULL) + nrank);
+  cout << "Order #" << setw(3) << nrank << ": " << comm_best << endl;
+  for(int i = 1; i < ntask; ++i) {
+    Cell comm_cell = comm_optimize(time(NULL) + nrank);
+    cout << "Order #" << setw(3) << i * nproc + nrank << ": " << comm_cell << endl;
     if(comm_cell < comm_best) comm_best = comm_cell;
   }
-
-  if(world.rank() == 0)
+  if(nrank == 0)
     mpi::reduce(world, comm_best, best, mpi::minimum<Cell>(), 0);
   else
     mpi::reduce(world, comm_best,       mpi::minimum<Cell>(), 0);
-
 #else
   int ntask = gainput.max_community;
-  best = gaoptimize(time(NULL));;
-  cout << "Order #" << 0 << ": " << best << endl;
-  for(int i = 1; i < ntask; ++i)
-  {
-    Cell comm_cell = gaoptimize(time(NULL));
-    cout << "Order #" << i << ": " << comm_cell << endl;
+
+  best = comm_optimize(time(NULL));
+  cout << "Order #" << setw(3) << 0 << ": " << best << endl;
+  for(int i = 1; i < ntask; ++i) {
+    Cell comm_cell = comm_optimize(time(NULL));
+    cout << "Order #" << setw(3) << i << ": " << comm_cell << endl;
     if(comm_cell < best) best = comm_cell;
   }
-
 #endif
 
   return best;
 }
 
-genetic::Cell genetic::gaoptimize(const int& seed)
+std::vector<int> gaorder(std::ifstream& confFile, std::ifstream& dumpFile)
 {
-  srand(seed);
-  Generation ancestor;
-
-  for(int g = 0; g < gainput.max_generation; ++g)
+#ifndef SERIAL
+  mpi::communicator world;
+#endif
+  genetic::Cell final = GAOptimize(confFile, dumpFile);
+#ifndef SERIAL
+  if(world.rank() == 0)
+#endif
   {
-    Generation nextgen;
-    nextgen.Generate(ancestor);
-    ancestor = nextgen;
+    cout << "##################### MINIMUM GENE REP. #####################" << endl;
+    cout << "Gene with MinValue = " << final << endl;
+    cout << "Effective Distance = " << sqrt(final.fit()) << endl;
   }
 
-  return ancestor.Min();
+  return final.gene().sequence();
 }

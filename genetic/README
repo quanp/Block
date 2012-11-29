@@ -6,17 +6,18 @@ Simple Genetic Algorithm (GA) code to get site-ordering / written by Naoki Nakat
 
 (2) To make with genetic/makefile, gives stand-alone GA program "gaopt" and run with
 
-         gaopt -config [filename] -integral [dumpfile]
+         gaopt -i [filename] -f [dumpfile]
 
     where [filename] is GA config file and [dumpfile] is MOLPRO FCIDUMP file. 
 
 GA config file contains ( see also "ga.conf" in this directory ),
 
 maxcomm  : # of trajectories
-maxgen   : # of steps of 1 trajectory
-maxcell  : # of individuals in a generation, normally be "2 x (# of active orbitals)"
+maxgen   : # of steps per 1 trajectory
+maxcell  : # of individuals per generation, normally "2 x (# of active orbitals)"
 cloning  : probability for crossover ( cloning if random # is larger than this threshould, otherwise taking crossover )
 mutation : probability for mutation
 elite    : # of elites kept for generation
-scale    : scaling factor of a selection probability
-method   : type of distribution function on selection ( gauss, boltzman, uniform )
+scale    : scaling factor of site-distance related to exact M
+weight   : weight of a selection probability
+select   : type of distribution function upon selection ( gauss, boltzman, uniform )

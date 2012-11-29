@@ -188,7 +188,7 @@ class Input {
   void performSanityTest();
   void readorbitalsfile(ifstream& dumpFile, OneElectronArray& v1, TwoElectronArray& v2);
   void readreorderfile(ifstream& dumpFile, std::vector<int>& reorder, std::vector<int>&);
-  void getgaorder(ifstream& gaconfFile, ifstream& dumpFile);
+  void get_gaorder(ifstream& gaconfFile, ifstream& dumpFile);
   void usedkey_error(string& key, string& line);
 
   static void ReadMeaningfulLine(ifstream&, string&, int);

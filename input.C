@@ -15,7 +15,6 @@ Sandeep Sharma and Garnet K.-L. Chan
 #include "MatrixBLAS.h"
 #include "spinblock.h"
 #include "couplingCoeffs.h"
-#include "genetic/GAOptimize.h"
 #include <boost/tokenizer.hpp>
 #include <string.h>
 #include <ctype.h>
@@ -31,6 +30,8 @@ namespace SpinAdapted {
 string sym;
 }
 void CheckFileExistance(string filename, string filetype);
+
+vector<int> gaorder(ifstream& gaconfFile, ifstream& dumpFile);
 
 void SpinAdapted::Input::ReadMeaningfulLine(ifstream& input, string& msg, int msgsize)
 {
@@ -648,7 +649,7 @@ SpinAdapted::Input::Input(const string& config_name)
   if (m_gaopt) {
     ifstream gaconfFile;
     if(gaconffile != "default") gaconfFile.open(gaconffile.c_str(), ios::in);
-    getgaorder(gaconfFile, orbitalFile);
+    get_gaorder(gaconfFile, orbitalFile);
   }
 
   if (mpigetrank() == 0) {
@@ -751,7 +752,7 @@ void SpinAdapted::Input::readorbitalsfile(ifstream& dumpFile, OneElectronArray& 
     m_reorder = true;
     oldtonew = m_gaorder;
     if (oldtonew.size() != m_norbs/2) {
-      pout << "Size of gaorder "<<oldtonew.size()<<" is different from number of orbitals "<<m_norbs/2<<endl;
+      pout << "size of gaorder "<<oldtonew.size()<<" is different from number of orbitals "<<m_norbs/2<<endl;
       abort();
     }
     reorder.resize(m_norbs/2);
@@ -883,20 +884,20 @@ void SpinAdapted::Input::readorbitalsfile(ifstream& dumpFile, OneElectronArray& 
   
 }
 
-void SpinAdapted::Input::getgaorder(ifstream& gaconfFile, ifstream& dumpFile)
+void SpinAdapted::Input::get_gaorder(ifstream& gaconfFile, ifstream& dumpFile)
 {
 #ifndef SERIAL
   mpi::communicator world;
 #endif
-  pout << "---------- Kij-based ordering by GA opt. ----------" << endl;
-  m_gaorder = genetic::gaordering(gaconfFile, dumpFile).Gen().Sequence();
-  pout << "chose the best ordering by mean square distance" << endl;
-  pout << "sites are reordered by: ";
+  pout << "-------------------- Kij-based ordering by GA opt. --------------------" << endl;
+  m_gaorder = gaorder(gaconfFile, dumpFile);
 #ifndef SERIAL
   if(mpigetrank() == 0) {
 #endif
+    pout << "chose the best ordering by mean square distance" << endl;
+    pout << "sites are reordered by: ";
     int n = m_gaorder.size() - 1;
-    for(int i = 0; i < n; ++i) pout << m_gaorder[i]+1 << ","; pout << m_gaorder[n]+1 << endl;
+    for(int i = 0; i < n; ++i) pout << m_gaorder[i] + 1 << ","; pout << m_gaorder[n] + 1 << endl;
 #ifndef SERIAL
   }
   mpi::broadcast(world,m_gaorder,0);
