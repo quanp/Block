@@ -21,10 +21,9 @@ namespace mpi = boost::mpi;
 
 genetic::GAInput gainput;
 
-genetic::Cell comm_optimize(const int& seed)
+genetic::Cell comm_optimize(void)
 {
   using namespace genetic;
-  srand(seed);
   Generation ancestor;
 //fout << "--------------------------- STARTING GA OPTIMIZATION ----------------------------" << endl;
   for(int g = 0; g < gainput.max_generation; ++g) {
@@ -88,11 +87,12 @@ genetic::Cell GAOptimize(std::ifstream& confFile, std::ifstream& dumpFile)
   int nproc = world.size();
   int nrank = world.rank();
   int ntask = 1 + gainput.max_community / nproc;
+  srand(gainput.random_seed + nrank);
 
-  Cell comm_best = comm_optimize(time(NULL) + nrank);
+  Cell comm_best = comm_optimize();
   cout << "Order #" << setw(3) << nrank << ": " << comm_best << endl;
   for(int i = 1; i < ntask; ++i) {
-    Cell comm_cell = comm_optimize(time(NULL) + nrank);
+    Cell comm_cell = comm_optimize();
     cout << "Order #" << setw(3) << i * nproc + nrank << ": " << comm_cell << endl;
     if(comm_cell < comm_best) comm_best = comm_cell;
   }
@@ -102,11 +102,12 @@ genetic::Cell GAOptimize(std::ifstream& confFile, std::ifstream& dumpFile)
     mpi::reduce(world, comm_best,       mpi::minimum<Cell>(), 0);
 #else
   int ntask = gainput.max_community;
+  srand(gainput.random_seed);
 
-  best = comm_optimize(time(NULL));
+  best = comm_optimize();
   cout << "Order #" << setw(3) << 0 << ": " << best << endl;
   for(int i = 1; i < ntask; ++i) {
-    Cell comm_cell = comm_optimize(time(NULL));
+    Cell comm_cell = comm_optimize();
     cout << "Order #" << setw(3) << i << ": " << comm_cell << endl;
     if(comm_cell < best) best = comm_cell;
   }
