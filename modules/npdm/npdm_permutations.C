@@ -121,8 +121,9 @@ void Twopdm_permutations::get_spatial_batch( const std::vector< std::pair< std::
           spatial_batch.insert(tmp);
         }
       }
-      for(auto x: spatial_batch)
-        spatial_perms.push_back(std::make_pair(x,value));
+//    for(auto x: spatial_batch)
+      for(auto it = spatial_batch.begin(); it != spatial_batch.end(); ++it)
+        spatial_perms.push_back(std::make_pair(*it,value));
     }
   }
 }
@@ -215,8 +216,8 @@ void Threepdm_permutations::get_spatial_batch( const std::vector< std::pair< std
    //     tmp={n,q,p,l,k,m}; spatial_batch.insert(tmp);
    //     tmp={n,p,q,k,l,m}; spatial_batch.insert(tmp);
    //   }
-      for(auto x: spatial_batch)
-        spatial_perms.push_back(std::make_pair(x,value));
+      for(auto it = spatial_batch.begin(); it != spatial_batch.end(); ++it)
+        spatial_perms.push_back(std::make_pair(*it,value));
     }
   }
 }
@@ -293,8 +294,8 @@ void Fourpdm_permutations::get_spatial_batch( const std::vector< std::pair< std:
           spatial_batch.insert(tmp);
         }
       }
-      for(auto x: spatial_batch)
-        spatial_perms.push_back(std::make_pair(x,value));
+      for(auto it = spatial_batch.begin(); it != spatial_batch.end(); ++it)
+        spatial_perms.push_back(std::make_pair(*it,value));
     }
   }
 }

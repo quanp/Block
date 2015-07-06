@@ -36,9 +36,9 @@ class Twopdm_container : public Npdm_container {
     array_4d<double> twopdm;
     array_4d<double> spatial_twopdm;
 
-    bool store_full_spin_array_ = true;
-    bool store_full_spatial_array_ = true;
-    bool store_nonredundant_spin_elements_ = false;
+    bool store_full_spin_array_;
+    bool store_full_spatial_array_;
+    bool store_nonredundant_spin_elements_;
 
     void save_npdm_text(const int &i, const int &j);
     void save_npdm_binary(const int &i, const int &j);

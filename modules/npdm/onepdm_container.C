@@ -20,6 +20,9 @@ namespace Npdm{
 Onepdm_container::Onepdm_container( int sites )
 {
 
+  store_full_spin_array_ = true;
+  store_nonredundant_spin_elements_ = false;
+
   if(dmrginp.spinAdapted()){
     onepdm.resize(2*sites,2*sites);
     spatial_onepdm.resize(sites,sites);

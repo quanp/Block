@@ -27,6 +27,7 @@ Npdm_expectations::Npdm_expectations( Npdm_spin_adaptation& spin_adaptation, Npd
   npdm_order_(order),
   wavefunction_0(wavefunction0),
   wavefunction_1(wavefunction1),
+  diskread_time(0.0),
   big_(big)
 { }
 
@@ -852,7 +853,7 @@ void Npdm_expectations::store( NpdmSpinOps_base & lhsOps, NpdmSpinOps_base & dot
           std::vector<int> spin;
           //spin.push_back(lhsOp->get_deltaQuantum(0).get_s().getirrep()); spin.push_back(dotOp->get_deltaQuantum(0).get_s().getirrep());spin.push_back(total_spin);
           spin.push_back(ilhs); spin.push_back(idot);spin.push_back(total_spin);
-          waves_.emplace(spin,opw2);
+          waves_.insert(std::make_pair(spin,opw2));
         }
       }
     }
@@ -896,7 +897,7 @@ void Npdm_expectations::store( NpdmSpinOps_base & rhsOps )
       operatorfunctions::TensorMultiply(big_.get_rightBlock(), *rhsOp, &big_, wavefunction_0, opw2, rhsOp->get_deltaQuantum(0), rhsOps.factor_);
       std::vector<int> spin;
       spin.push_back(irhs);
-      waves_.emplace(spin,opw2);
+      waves_.insert(std::make_pair(spin,opw2));
     }
 
   }

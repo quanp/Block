@@ -83,6 +83,7 @@ void SpinAdapted::Input::initialize_defaults()
   m_targetState = -1;
   m_guessState = 1;
   m_permSymm = 2;
+  m_transition_diff_spatial_irrep=false;
 
   m_openorbs.resize(0);
   m_closedorbs.resize(0);
@@ -118,6 +119,7 @@ void SpinAdapted::Input::initialize_defaults()
   m_add_noninteracting_orbs = true;
   m_no_transform = false;
   m_do_fci = false;
+	m_npdm_generate = false;
   m_do_npdm_ops = false;
   m_do_npdm_in_core = false;
   m_new_npdm_code = false;

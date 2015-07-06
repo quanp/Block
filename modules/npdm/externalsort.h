@@ -26,7 +26,8 @@ class has_index{
   template<class >
   static std::false_type __test(...);
 public:
-  static constexpr const bool value = std::is_same<std::true_type, decltype(__test<T>(0))>::value;
+//static constexpr const bool value = std::is_same<std::true_type, decltype(__test<T>(0))>::value;
+  static const bool value = std::is_same<std::true_type, decltype(__test<T>(0))>::value;
 };
 
   class index_element{

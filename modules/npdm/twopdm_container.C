@@ -19,6 +19,10 @@ namespace Npdm{
 Twopdm_container::Twopdm_container( int sites )
 {
 
+  store_full_spin_array_ = true;
+  store_full_spatial_array_ = true;
+  store_nonredundant_spin_elements_ = false;
+
   if ( store_full_spin_array_ ) {
     if(dmrginp.spinAdapted())
       twopdm.resize(2*sites,2*sites,2*sites,2*sites);

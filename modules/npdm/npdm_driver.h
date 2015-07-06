@@ -30,9 +30,11 @@ class Npdm_driver_base {
 class Npdm_driver {
 
   public:
-		double diskread_time =0;
-    double write_intermediate_time =0;
-    explicit Npdm_driver(NpdmOrder order, Npdm_container& container) : npdm_order_(order), container_(container) {}
+		double diskread_time;
+    double write_intermediate_time;
+    explicit Npdm_driver(NpdmOrder order, Npdm_container& container)
+    : diskread_time(0.0), write_intermediate_time(0.0),
+      npdm_order_(order), container_(container) {}
     ~Npdm_driver() {}
    void clear() { container_.clear(); }
    void save_data( const int i, const int j ) { container_.save_npdms(i,j); }

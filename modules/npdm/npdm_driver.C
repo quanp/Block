@@ -610,16 +610,16 @@ bool Npdm_driver::screen(const std::vector<CD> &lhs_cd_type,const std::vector<CD
 {
   int cre_num=0;
   int des_num=0;
-  for(auto i:lhs_cd_type)
+  for(auto i = lhs_cd_type.begin(); i != lhs_cd_type.end(); ++i)
   {
-    if(i== CREATION) cre_num++;
-    else if (i== DESTRUCTION) des_num++;
+    if(*i== CREATION) cre_num++;
+    else if (*i== DESTRUCTION) des_num++;
   }
 
-  for(auto i:dot_cd_type)
+  for(auto i = dot_cd_type.begin(); i != dot_cd_type.end(); ++i)
   {
-    if(i== CREATION) cre_num++;
-    else if (i== DESTRUCTION) des_num++;
+    if(*i== CREATION) cre_num++;
+    else if (*i== DESTRUCTION) des_num++;
   }
   if(cre_num> npdm_order_) return true;
   if(des_num> npdm_order_) return true;
@@ -679,8 +679,8 @@ void Npdm_driver::loop_over_operator_patterns_store( Npdm::Npdm_patterns& patter
 //-----------------------------------------------------------------------------------------------------------------------------------------------------------
 void Npdm_driver::clear_npdm_intermediate(Npdm::Npdm_expectations& expectations)
 {
-  for(std::string filename: expectations.intermediate_filenames)
-    remove(filename.c_str());
+  for(auto filename = expectations.intermediate_filenames.begin(); filename != expectations.intermediate_filenames.end(); ++filename)
+    remove(filename->c_str());
   expectations.intermediate_filenames.clear();
 
 }

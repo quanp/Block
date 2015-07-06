@@ -37,7 +37,7 @@ class Npdm_expectations {
     void restore( NpdmSpinOps_base & rhsOps, std::map<std::vector<int>, Wavefunction>& halfwaves);
     void get_op_string( NpdmSpinOps_base & rhsOps, std::string& op_string);
     void get_op_string( NpdmSpinOps_base & lhsOps, NpdmSpinOps_base & dotOps, std::string& op_string );
-		double diskread_time = 0;
+		double diskread_time;
     std::vector<std::string> intermediate_filenames;
 
   private:
