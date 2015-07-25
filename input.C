@@ -37,6 +37,8 @@ bool NonabelianSym;
 void CheckFileExistence(string filename, string filetype);
 void CheckFileInexistence(string filename, string filetype);
 
+vector<int> gaorder(ifstream& gaconfFile, ifstream& dumpFile);
+
 void SpinAdapted::Input::ReadMeaningfulLine(ifstream& input, string& msg, int msgsize)
 {
   bool readmore = true;
