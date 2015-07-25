@@ -54,10 +54,10 @@ void block_calldmrg (
       const double& E_core,
       const double* h0,
       const double* tuvx,
-      const FORTINT& M_state,
-      const FORTINT& N_pdm,
-      const double& T_sweep,
-      const double& T_noise,
+            FORTINT  M_state,
+            FORTINT  N_pdm,
+            double  T_sweep,
+            double  T_noise,
             double* E_sweep)
 {
   using std::endl;
@@ -87,6 +87,9 @@ void block_calldmrg (
     std::ostringstream oss; oss << "dmrg.out." << mpigetrank();
     strcpy(output, oss.str().c_str());
   }
+
+  // temporary fix for convergence problem found in Molcas's SS-excited state calc.
+  if(T_sweep > 1.0e-5) T_sweep = 1.0e-5;
 
 // if(mpigetrank() == 0) // branch by mpi rank == 0
   if(1) // create config file for every procs/nodes

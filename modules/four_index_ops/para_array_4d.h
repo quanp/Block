@@ -27,7 +27,7 @@ public:
   para_array_4d() : stored_local_(false) {}
 
   // This is designed for 4-index operators
-  const int num_indices() { return 4; }
+  int num_indices() { return 4; }
 
 //-----------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -195,7 +195,11 @@ public:
     length_ = len;
 
     for (auto it = occupied.begin(); it != occupied.end(); ++it) {
-      std::vector<int> tuple = { std::get<0>(it->first), std::get<1>(it->first), std::get<2>(it->first), std::get<3>(it->first) };
+      std::vector<int> tuple(4);
+      tuple[0] = std::get<0>(it->first);
+      tuple[1] = std::get<1>(it->first);
+      tuple[2] = std::get<2>(it->first);
+      tuple[3] = std::get<3>(it->first);
       int rank = it->second; 
       // Global indices
       int idx = trimap_4d( tuple[0], tuple[1], tuple[2], tuple[3] );

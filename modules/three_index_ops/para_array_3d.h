@@ -36,7 +36,7 @@ public:
   para_array_3d() : stored_local_(false) {}
 
   // This is designed for 3-index operators
-  const int num_indices() { return 3; }
+  int num_indices() { return 3; }
 
 //-----------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -199,7 +199,10 @@ public:
     length_ = len;
 
     for (auto it = occupied.begin(); it != occupied.end(); ++it) {
-      std::vector<int> tuple = { std::get<0>(it->first), std::get<1>(it->first), std::get<2>(it->first) };
+      std::vector<int> tuple(3); 
+      tuple[0] = std::get<0>(it->first);
+      tuple[1] = std::get<1>(it->first);
+      tuple[2] = std::get<2>(it->first);
       int rank = it->second; 
       // Global indices
       int idx = trimap_3d( tuple[0], tuple[1], tuple[2] );

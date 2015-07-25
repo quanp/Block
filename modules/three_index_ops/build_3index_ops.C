@@ -203,7 +203,7 @@ void do_3index_1_2_tensor_products( bool forwards, const opTypes& optype, const 
           for (int sx=0; sx < vec.size(); sx++) {
             boost::shared_ptr<SparseMatrix>& op = vec[sx];
             // Select relevant spin component
-            std::vector<SpinQuantum> s = { op->get_quantum_ladder().at(build_pattern).at(0) };
+            std::vector<SpinQuantum> s(1); s[0] = op->get_quantum_ladder().at(build_pattern).at(0);
             if ( s == spin_23 ) {
               finish_tensor_product( big, rhsBlock, *rhs_op, *lhs_op, *op, forwards, build_pattern );
               // Renormalise operator
@@ -276,7 +276,7 @@ void do_3index_2_1_tensor_products( bool forwards, const opTypes& optype, const 
           for (int sx=0; sx < vec.size(); sx++) {
             boost::shared_ptr<SparseMatrix>& op = vec[sx];
             // Select relevant spin component
-            std::vector<SpinQuantum> s = { op->get_quantum_ladder().at(build_pattern).at(0) };
+            std::vector<SpinQuantum> s(1); s[0] = op->get_quantum_ladder().at(build_pattern).at(0);
 //            if ( s == spin_12 ) finish_tensor_product( big, rhsBlock, *rhs_op, Transposeview(lhs_op), *op, forwards, build_pattern );
             if ( s == spin_12 ) {
               finish_tensor_product( big, rhsBlock, *rhs_op, *lhs_op, *op, forwards, build_pattern );

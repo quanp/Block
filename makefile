@@ -5,10 +5,10 @@
 
 ##BOOSTINCLUDE = /home/sandeep/Work/Programs/boost_1_54_0/
 #specify boost include file
-BOOSTINCLUDE = /home/juny/MyLibs/boost_1_55_0_install/include
+BOOSTINCLUDE = /homec/naokin/boost/1.54.0-ic1401/include
 
 #specify boost and lapack-blas library locations
-BOOSTLIB = -L/home/juny/MyLibs/boost_1_55_0_install/lib/ -lboost_serialization -lboost_system -lboost_filesystem
+BOOSTLIB = -L/homec/naokin/boost/1.54.0-ic1401/lib -lboost_serialization -lboost_system -lboost_filesystem
 #BOOSTLIB = -lboost_serialization -lboost_system -lboost_filesystem
 LAPACKBLAS = -lblas -llapack
 
@@ -23,7 +23,7 @@ USE_MKL = yes
 
 # use this variable to set if we will use integer size of 8 or not.
 # molpro compilation requires I8, since their integers are long
-I8_OPT = no
+I8_OPT = yes
 MOLPRO = no
 OPENMP = no
 
@@ -31,12 +31,12 @@ DOPROF = no
 
 # add Molcas interface to libqcdmrg.so
 # molcas compilation w/ -64 option requires I8 as well
-MOLCAS = no
+MOLCAS = yes
 
 ifeq ($(USE_MKL), yes)
-MKLLIB = /opt/intel/composer_xe_2013_sp1.0.080/mkl/lib/intel64/
-LAPACKBLAS = -L${MKLLIB} -lmkl_gf_lp64 -lmkl_sequential -lmkl_core
-MKLFLAGS = /opt/intel/composer_xe_2013_sp1.0.080/mkl/include
+MKLLIB =
+LAPACKBLAS = -lmkl_intel_lp64 -lmkl_sequential -lmkl_core
+MKLFLAGS = .
 MKLOPT = -D_HAS_INTEL_MKL
 else
 MKLFLAGS = .
@@ -58,8 +58,8 @@ endif
 EXECUTABLE = block.spin_adapted
 
 # change to icpc for Intel
-CXX =  g++
-MPICXX = /usr/lib64/openmpi/bin/mpicxx
+CXX = icpc
+MPICXX = mpic++
 BLOCKHOME = .
 HOME = .
 NEWMATINCLUDE = $(BLOCKHOME)/newmat10/
@@ -81,7 +81,7 @@ FLAGS =  -I${MKLFLAGS} -I$(INCLUDE1) -I$(INCLUDE2) -I$(NEWMATINCLUDE) -I$(BOOSTI
          -I$(HOME)/modules/npdm -I$(HOME)/modules/two_index_ops -I$(HOME)/modules/three_index_ops -I$(HOME)/modules/four_index_ops -std=c++0x \
 	 -I$(HOME)/modules/ResponseTheory -I$(HOME)/modules/nevpt2 -I$(HOME)/molcas
 
-LIBS +=  -L$(NEWMATLIB) -lnewmat $(BOOSTLIB) $(LAPACKBLAS) -lgomp 
+LIBS +=  -L$(NEWMATLIB) -lnewmat $(BOOSTLIB) $(LAPACKBLAS) -liomp5 
 MPI_OPT = -DSERIAL
 
 
@@ -197,7 +197,7 @@ $(NEWMATLIB)/libnewmat.a :
 	cd $(NEWMATLIB) && $(MAKE) -f makefile libnewmat.a
 
 clean:
-	rm *.o include/*.o modules/generate_blocks/*.o modules/onepdm/*.o modules/twopdm/*.o modules/npdm/*.o $(NEWMATLIB)*.o libqcdmrg.a libqcdmrg.so $(EXECUTABLE) $(NEWMATLIB)/libnewmat.a genetic/gaopt genetic/*.o btas/lib/*.o btas/lib/libbtas.a modules/two_index_ops/*.o modules/three_index_ops/*.o modules/four_index_ops/*.o modules/ResponseTheory/*.o modules/nevpt2/*.o molcas/*.o
+	rm *.o include/*.o modules/generate_blocks/*.o modules/onepdm/*.o modules/twopdm/*.o modules/npdm/*.o $(NEWMATLIB)*.o libqcdmrg.a libqcdmrg.so $(EXECUTABLE) $(NEWMATLIB)/libnewmat.a genetic/gaopt genetic/*.o btas/lib/*.o btas/lib/libbtas.a modules/two_index_ops/*.o modules/three_index_ops/*.o modules/four_index_ops/*.o modules/ResponseTheory/*.o modules/nevpt2/*.o molcas/*.o OH CSFOH COEF
 
 # DO NOT DELETE
 

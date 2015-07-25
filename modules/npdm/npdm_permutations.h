@@ -11,6 +11,7 @@ Sandeep Sharma and Garnet K.-L. Chan
 
 #include <vector>
 #include <utility>
+#include <numeric>
 
 namespace SpinAdapted{
 
@@ -40,7 +41,7 @@ class Onepdm_permutations : public Npdm_permutations {
   public:
     Onepdm_permutations(){
       if(reorders.size()>0) return;
-      std::vector<int> origin = {0};
+      std::vector<int> origin(1); std::iota(origin.begin(),origin.end(),0);
       reorders.push_back(std::make_pair(origin,0));
     }
     void get_spatial_batch( const std::vector< std::pair< std::vector<int>, double > >& in, 
@@ -55,7 +56,7 @@ class Twopdm_permutations : public Npdm_permutations {
   public:
     Twopdm_permutations(){
       if(reorders.size()>0) return;
-      std::vector<int> origin_order = {0,1};
+      std::vector<int> origin_order(2); std::iota(origin_order.begin(),origin_order.end(),0);
       std::pair<std::vector<int>,int> origin = std::make_pair(origin_order,1);
       get_permute(origin,0,2,reorders);
     }
@@ -71,7 +72,7 @@ class Threepdm_permutations : public Npdm_permutations {
   public:
     Threepdm_permutations(){
       if(reorders.size()>0) return;
-      std::vector<int> origin_order = {0,1,2};
+      std::vector<int> origin_order(3); std::iota(origin_order.begin(),origin_order.end(),0);
       std::pair<std::vector<int>,int> origin = std::make_pair(origin_order,1);
       get_permute(origin,0,3,reorders);
     }
@@ -87,7 +88,7 @@ class Fourpdm_permutations : public Npdm_permutations {
   public:
     Fourpdm_permutations(){
       if(reorders.size()>0) return;
-      std::vector<int> origin_order = {0,1,2,3};
+      std::vector<int> origin_order(4); std::iota(origin_order.begin(),origin_order.end(),0);
       std::pair<std::vector<int>,int> origin = std::make_pair(origin_order,1);
       get_permute(origin,0,4,reorders);
     }

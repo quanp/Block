@@ -33,16 +33,18 @@ bool Npdm_patterns::screen_2pdm_strings( const std::vector<int>& indices, const 
 {
   if(dmrginp.doimplicitTranspose()){
     if ( indices[0] == indices[1] ) {
-      std::string foo = { 'C', 'D', 'D', 'C' };
+//    std::string foo = { 'C', 'D', 'D', 'C' };
+      std::string foo = "CDDC";
       if ( CD == foo ) return true;
     }
     return false;
   }
   else{
     if(indices[0] == indices[1]){
-      std::string foo= {'D','C','D','C'};
+//    std::string foo= {'D','C','D','C'};
+      std::string foo= "DCDC";
       if( CD==foo) return true;
-      foo= {'D','C','C','D'};
+      foo= "DCCD";
       if( CD==foo) return true;
       }
     return false;
@@ -54,19 +56,19 @@ bool Npdm_patterns::screen_2pdm_strings( const std::vector<int>& indices, const 
 bool Npdm_patterns::screen_3pdm_strings( const std::vector<int>& indices, const std::string& CD )
 {
   if ( (indices[0] == indices[2]) && (indices[1] == indices[3]) ) {
-    std::string foo = { 'C', 'C', 'D', 'D', 'D', 'C' }; if ( CD == foo ) return true;
+    std::string foo = "CCDDDC"; if ( CD == foo ) return true;
   }
   if ( (indices[0] == indices[1]) && (indices[2] == indices[3]) ) {
-    std::string foo = { 'C', 'D', 'C', 'D', 'D', 'C' }; if ( CD == foo ) return true;
+    std::string foo = "CDCDDC"; if ( CD == foo ) return true;
   }
   if ( indices[0] == indices[1] ) {
-    std::string foo = { 'C', 'D', 'D', 'C', 'D', 'C' }; if ( CD == foo ) return true;
+    std::string foo = "CDDCDC"; if ( CD == foo ) return true;
   }
   if ( indices[0] == indices[1] ) {
-    std::string foo = { 'C', 'D', 'D', 'C', 'C', 'D' }; if ( CD == foo ) return true;
+    std::string foo = "CDDCCD"; if ( CD == foo ) return true;
   }
   if ( indices[0] == indices[1] ) {
-    std::string foo = { 'C', 'D', 'D', 'D', 'C', 'C' }; if ( CD == foo ) return true;
+    std::string foo = "CDDDCC"; if ( CD == foo ) return true;
   }
   return false;
 }
@@ -78,74 +80,74 @@ bool Npdm_patterns::screen_4pdm_strings( const std::vector<int>& indices, const 
   if ( (indices[0] == indices[1]) 
     && (indices[2] == indices[4])
     && (indices[3] == indices[5]) ) {
-    std::string foo = { 'C', 'D', 'C', 'C', 'D', 'D', 'D', 'C' }; if ( CD == foo ) return true;
+    std::string foo = "CDCCDDDC"; if ( CD == foo ) return true;
   }
   if ( (indices[0] == indices[2]) 
     && (indices[1] == indices[3])
     && (indices[4] == indices[5]) ) {
-    std::string foo = { 'C', 'C', 'D', 'D', 'C', 'D', 'D', 'C' }; if ( CD == foo ) return true;
+    std::string foo = "CCDDCDDC"; if ( CD == foo ) return true;
   }
   if ( (indices[0] == indices[1]) 
     && (indices[2] == indices[3])
     && (indices[4] == indices[5]) ) {
-    std::string foo = { 'C', 'D', 'C', 'D', 'C', 'D', 'D', 'C' }; if ( CD == foo ) return true;
+    std::string foo = "CDCDCDDC"; if ( CD == foo ) return true;
   }
   // New type
   if ( (indices[0] == indices[1]) 
     && (indices[2] == indices[3]) ) {
-    std::string foo = { 'C', 'D', 'C', 'D', 'D', 'C', 'C', 'D' }; if ( CD == foo ) return true;
+    std::string foo = "CDCDDCCD"; if ( CD == foo ) return true;
   }
   if ( (indices[0] == indices[1]) 
     && (indices[2] == indices[3]) ) {
-    std::string foo = { 'C', 'D', 'C', 'D', 'D', 'C', 'D', 'C' }; if ( CD == foo ) return true;
+    std::string foo = "CDCDDCDC"; if ( CD == foo ) return true;
   }
   if ( (indices[0] == indices[1]) 
     && (indices[2] == indices[3]) ) {
-    std::string foo = { 'C', 'D', 'C', 'D', 'D', 'D', 'C', 'C' }; if ( CD == foo ) return true;
+    std::string foo = "CDCDDDCC"; if ( CD == foo ) return true;
   }
   // Full 3 starting with CCDDD
   if ( (indices[0] == indices[2]) 
     && (indices[1] == indices[3]) ) {
-    std::string foo = { 'C', 'C', 'D', 'D', 'D', 'C', 'C', 'D' }; if ( CD == foo ) return true;
+    std::string foo = "CCDDDCCD"; if ( CD == foo ) return true;
   }
   if ( (indices[0] == indices[2]) 
     && (indices[1] == indices[3]) ) {
-    std::string foo = { 'C', 'C', 'D', 'D', 'D', 'C', 'D', 'C' }; if ( CD == foo ) return true;
+    std::string foo = "CCDDDCDC"; if ( CD == foo ) return true;
   }
   if ( (indices[0] == indices[2]) 
     && (indices[1] == indices[3]) ) {
-    std::string foo = { 'C', 'C', 'D', 'D', 'D', 'D', 'C', 'C' }; if ( CD == foo ) return true;
+    std::string foo = "CCDDDDCC"; if ( CD == foo ) return true;
   }
   // Full 10 starting with CDD
   if ( indices[0] == indices[1] ) {
-    std::string foo = { 'C', 'D', 'D', 'C', 'C', 'D', 'D', 'C' }; if ( CD == foo ) return true;
+    std::string foo = "CDDCCDDC"; if ( CD == foo ) return true;
   }
   if ( indices[0] == indices[1] ) {
-    std::string foo = { 'C', 'D', 'D', 'C', 'D', 'C', 'D', 'C' }; if ( CD == foo ) return true;
+    std::string foo = "CDDCDCDC"; if ( CD == foo ) return true;
   }
   if ( indices[0] == indices[1] ) {
-    std::string foo = { 'C', 'D', 'D', 'C', 'D', 'C', 'C', 'D' }; if ( CD == foo ) return true;
+    std::string foo = "CDDCDCCD"; if ( CD == foo ) return true;
   }
   if ( indices[0] == indices[1] ) {
-    std::string foo = { 'C', 'D', 'D', 'C', 'C', 'D', 'C', 'D' }; if ( CD == foo ) return true;
+    std::string foo = "CDDCCDCD"; if ( CD == foo ) return true;
   }
   if ( indices[0] == indices[1] ) {
-    std::string foo = { 'C', 'D', 'D', 'C', 'D', 'D', 'C', 'C' }; if ( CD == foo ) return true;
+    std::string foo = "CDDCDDCC"; if ( CD == foo ) return true;
   }
   if ( indices[0] == indices[1] ) {
-    std::string foo = { 'C', 'D', 'D', 'C', 'C', 'C', 'D', 'D' }; if ( CD == foo ) return true;
+    std::string foo = "CDDCCCDD"; if ( CD == foo ) return true;
   }
   if ( indices[0] == indices[1] ) {
-    std::string foo = { 'C', 'D', 'D', 'D', 'D', 'C', 'C', 'C' }; if ( CD == foo ) return true;
+    std::string foo = "CDDDDCCC"; if ( CD == foo ) return true;
   }
   if ( indices[0] == indices[1] ) {
-    std::string foo = { 'C', 'D', 'D', 'D', 'C', 'D', 'C', 'C' }; if ( CD == foo ) return true;
+    std::string foo = "CDDDCDCC"; if ( CD == foo ) return true;
   }
   if ( indices[0] == indices[1] ) {
-    std::string foo = { 'C', 'D', 'D', 'D', 'C', 'C', 'D', 'C' }; if ( CD == foo ) return true;
+    std::string foo = "CDDDCCDC"; if ( CD == foo ) return true;
   }
   if ( indices[0] == indices[1] ) {
-    std::string foo = { 'C', 'D', 'D', 'D', 'C', 'C', 'C', 'D' }; if ( CD == foo ) return true;
+    std::string foo = "CDDDCCCD"; if ( CD == foo ) return true;
   }
   return false;
 }
@@ -368,19 +370,31 @@ bool Npdm_patterns::is_valid_dot_type( std::vector<CD> ops )
     for( int i=0;i<ops.size();i++)
       ops_int.push_back(int(ops[i]));
 
-    std::vector<int> order={0,1,0,1};
+    std::vector<int> order(4);
+    order[0]=0;
+    order[1]=1;
+    order[2]=0;
+    order[3]=1;
     if(ops_int.size()==4){
       if(ops_int==order) return true;
       return false;
     }
     if(ops_int.size()==3){
-      order={0,0,1};
+      order[0]=0;
+      order[1]=0;
+      order[2]=1;
       if(ops_int==order) return true;
-      order={0,1,0};
+      order[0]=0;
+      order[1]=1;
+      order[2]=0;
       if(ops_int==order) return true;
-      order={0,1,1};
+      order[0]=0;
+      order[1]=1;
+      order[2]=1;
       if(ops_int==order) return true;
-      order={1,0,1};
+      order[0]=1;
+      order[1]=0;
+      order[2]=1;
       if(ops_int==order) return true;
       return false;
     }

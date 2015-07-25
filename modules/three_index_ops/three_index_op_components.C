@@ -316,7 +316,7 @@ void Op_component<DesDesDes>::build_iterators(SpinBlock& b)
       // (DD)D
       std::vector<SpinQuantum> spinvec123 = spinvec12[p] - spin3;
       for (int q=0; q < spinvec123.size(); q++) {
-        std::vector<SpinQuantum> tmp = { spinvec12[p], spinvec123[q] };
+        std::vector<SpinQuantum> tmp(2); tmp[0] = spinvec12[p]; tmp[1] = spinvec123[q];
         dd_d_quantum_ladder.push_back( tmp );
         assert( spinvec123[q].particleNumber == -3 );
       }
@@ -331,7 +331,7 @@ void Op_component<DesDesDes>::build_iterators(SpinBlock& b)
       // D(DD)
       std::vector<SpinQuantum> spinvec123 = -spin1 + spinvec23[p];
       for (int q=0; q < spinvec123.size(); q++) {
-        std::vector<SpinQuantum> tmp = { spinvec23[p], spinvec123[q] };
+        std::vector<SpinQuantum> tmp(2); tmp[0] = spinvec23[p]; tmp[1] = spinvec123[q];
         d_dd_quantum_ladder.push_back( tmp );
         assert( spinvec123[q].particleNumber == -3 );
       }
@@ -426,7 +426,7 @@ void Op_component<CreCreCre>::build_iterators(SpinBlock& b)
       // (C1C2)C3
       std::vector<SpinQuantum> spinvec123 = spinvec12[p] + spin3;
       for (int q=0; q < spinvec123.size(); q++) {
-        std::vector<SpinQuantum> tmp = { spinvec12[p], spinvec123[q] };
+        std::vector<SpinQuantum> tmp(2); tmp[0] = spinvec12[p]; tmp[1] = spinvec123[q];
         cc_c_quantum_ladder.push_back( tmp );
         assert( spinvec123[q].particleNumber == 3 );
       }
@@ -441,7 +441,7 @@ void Op_component<CreCreCre>::build_iterators(SpinBlock& b)
       // C1(C2C3)
       std::vector<SpinQuantum> spinvec123 = spin1 + spinvec23[p];
       for (int q=0; q < spinvec123.size(); q++) {
-        std::vector<SpinQuantum> tmp = { spinvec23[p], spinvec123[q] };
+        std::vector<SpinQuantum> tmp(2); tmp[0] = spinvec23[p]; tmp[1] = spinvec123[q];
         c_cc_quantum_ladder.push_back( tmp );
         assert( spinvec123[q].particleNumber == 3 );
       }
@@ -526,7 +526,7 @@ void Op_component<CreCreDes>::build_iterators(SpinBlock& b)
       // (CC)D
       std::vector<SpinQuantum> spinvec123 = spinvec12[p] - spin3;
       for (int q=0; q < spinvec123.size(); q++) {
-        std::vector<SpinQuantum> tmp = { spinvec12[p], spinvec123[q] };
+        std::vector<SpinQuantum> tmp(2); tmp[0] = spinvec12[p]; tmp[1] = spinvec123[q];
         cc_d_quantum_ladder.push_back( tmp );
         assert( spinvec123[q].particleNumber == 1 );
       }
@@ -541,7 +541,7 @@ void Op_component<CreCreDes>::build_iterators(SpinBlock& b)
       // C(CD)
       std::vector<SpinQuantum> spinvec123 = spin1 + spinvec23[p];
       for (int q=0; q < spinvec123.size(); q++) {
-        std::vector<SpinQuantum> tmp = { spinvec23[p], spinvec123[q] };
+        std::vector<SpinQuantum> tmp(2); tmp[0] = spinvec23[p]; tmp[1] = spinvec123[q];
         c_cd_quantum_ladder.push_back( tmp );
         assert( spinvec123[q].particleNumber == 1 );
       }
@@ -625,7 +625,7 @@ void Op_component<CreDesDes>::build_iterators(SpinBlock& b)
       // (CD)D
       std::vector<SpinQuantum> spinvec123 = spinvec12[p] - spin3;
       for (int q=0; q < spinvec123.size(); q++) {
-        std::vector<SpinQuantum> tmp = { spinvec12[p], spinvec123[q] };
+        std::vector<SpinQuantum> tmp(2); tmp[0] = spinvec12[p]; tmp[1] = spinvec123[q];
         cd_d_quantum_ladder.push_back( tmp );
         assert( spinvec123[q].particleNumber == -1 );
       }
@@ -640,7 +640,7 @@ void Op_component<CreDesDes>::build_iterators(SpinBlock& b)
       // C(DD)
       std::vector<SpinQuantum> spinvec123 = spin1 + spinvec23[p];
       for (int q=0; q < spinvec123.size(); q++) {
-        std::vector<SpinQuantum> tmp = { spinvec23[p], spinvec123[q] };
+        std::vector<SpinQuantum> tmp(2); tmp[0] = spinvec23[p]; tmp[1] = spinvec123[q];
         c_dd_quantum_ladder.push_back( tmp );
         assert( spinvec123[q].particleNumber == -1 );
       }
@@ -724,7 +724,7 @@ void Op_component<CreDesCre>::build_iterators(SpinBlock& b)
       // (CD)C
       std::vector<SpinQuantum> spinvec123 = spinvec12[p] + spin3;
       for (int q=0; q < spinvec123.size(); q++) {
-        std::vector<SpinQuantum> tmp = { spinvec12[p], spinvec123[q] };
+        std::vector<SpinQuantum> tmp(2); tmp[0] = spinvec12[p]; tmp[1] = spinvec123[q];
         cd_c_quantum_ladder.push_back( tmp );
         assert( spinvec123[q].particleNumber == 1 );
       }
@@ -739,7 +739,7 @@ void Op_component<CreDesCre>::build_iterators(SpinBlock& b)
       // C(DC)
       std::vector<SpinQuantum> spinvec123 = spin1 + spinvec23[p];
       for (int q=0; q < spinvec123.size(); q++) {
-        std::vector<SpinQuantum> tmp = { spinvec23[p], spinvec123[q] };
+        std::vector<SpinQuantum> tmp(2); tmp[0] = spinvec23[p]; tmp[1] = spinvec123[q];
         c_dc_quantum_ladder.push_back( tmp );
         assert( spinvec123[q].particleNumber == 1 );
       }
@@ -825,7 +825,7 @@ void Op_component<DesCreDes>::build_iterators(SpinBlock& b)
       // (DC)D
       std::vector<SpinQuantum> spinvec123 = spinvec12[p] - spin3;
       for (int q=0; q < spinvec123.size(); q++) {
-        std::vector<SpinQuantum> tmp = { spinvec12[p], spinvec123[q] };
+        std::vector<SpinQuantum> tmp(2); tmp[0] = spinvec12[p]; tmp[1] = spinvec123[q];
         dc_d_quantum_ladder.push_back( tmp );
         assert( spinvec123[q].particleNumber == -1 );
       }
@@ -840,7 +840,7 @@ void Op_component<DesCreDes>::build_iterators(SpinBlock& b)
       // D(CD)
       std::vector<SpinQuantum> spinvec123 = - spin1 + spinvec23[p];
       for (int q=0; q < spinvec123.size(); q++) {
-        std::vector<SpinQuantum> tmp = { spinvec23[p], spinvec123[q] };
+        std::vector<SpinQuantum> tmp(2); tmp[0] = spinvec23[p]; tmp[1] = spinvec123[q];
         d_cd_quantum_ladder.push_back( tmp );
         assert( spinvec123[q].particleNumber == -1 );
       }
@@ -922,7 +922,7 @@ void Op_component<DesDesCre>::build_iterators(SpinBlock& b)
       // (DD)C
       std::vector<SpinQuantum> spinvec123 = spinvec12[p] + spin3;
       for (int q=0; q < spinvec123.size(); q++) {
-        std::vector<SpinQuantum> tmp = { spinvec12[p], spinvec123[q] };
+        std::vector<SpinQuantum> tmp(2); tmp[0] = spinvec12[p]; tmp[1] = spinvec123[q];
         dd_c_quantum_ladder.push_back( tmp );
         assert( spinvec123[q].particleNumber == -1 );
       }
@@ -937,7 +937,7 @@ void Op_component<DesDesCre>::build_iterators(SpinBlock& b)
       // D(DC)
       std::vector<SpinQuantum> spinvec123 = -spin1 + spinvec23[p];
       for (int q=0; q < spinvec123.size(); q++) {
-        std::vector<SpinQuantum> tmp = { spinvec23[p], spinvec123[q] };
+        std::vector<SpinQuantum> tmp(2); tmp[0] = spinvec23[p]; tmp[1] = spinvec123[q];
         d_dc_quantum_ladder.push_back( tmp );
         assert( spinvec123[q].particleNumber == -1 );
       }
@@ -1019,7 +1019,7 @@ void Op_component<DesCreCre>::build_iterators(SpinBlock& b)
       // (DC)C
       std::vector<SpinQuantum> spinvec123 = spinvec12[p] + spin3;
       for (int q=0; q < spinvec123.size(); q++) {
-        std::vector<SpinQuantum> tmp = { spinvec12[p], spinvec123[q] };
+        std::vector<SpinQuantum> tmp(2); tmp[0] = spinvec12[p]; tmp[1] = spinvec123[q];
         dc_c_quantum_ladder.push_back( tmp );
         assert( spinvec123[q].particleNumber == 1 );
       }
@@ -1034,7 +1034,7 @@ void Op_component<DesCreCre>::build_iterators(SpinBlock& b)
       // D(CC)
       std::vector<SpinQuantum> spinvec123 = -spin1 + spinvec23[p];
       for (int q=0; q < spinvec123.size(); q++) {
-        std::vector<SpinQuantum> tmp = { spinvec23[p], spinvec123[q] };
+        std::vector<SpinQuantum> tmp(2); tmp[0] = spinvec23[p]; tmp[1] = spinvec123[q];
         d_cc_quantum_ladder.push_back( tmp );
         assert( spinvec123[q].particleNumber == 1 );
       }

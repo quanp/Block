@@ -186,8 +186,8 @@ void do_4index_2_2_tensor_products( bool forwards, const opTypes& optype, const 
           // Allocate and build new operator
           for (int sx=0; sx < vec.size(); sx++) {
             boost::shared_ptr<SparseMatrix>& op = vec[sx];
-            std::vector<SpinQuantum> s1 = { op->get_quantum_ladder().at(build_pattern).at(0), op->get_quantum_ladder().at(build_pattern).at(1) };
-            std::vector<SpinQuantum> s2 = { spin_12, spin_34 };
+            std::vector<SpinQuantum> s1(2); s1[0] = op->get_quantum_ladder().at(build_pattern).at(0); s1[1] = op->get_quantum_ladder().at(build_pattern).at(1);
+            std::vector<SpinQuantum> s2(2); s2[0] = spin_12; s2[1] = spin_34;
             // Select relevant spin components
             if ( s1 == s2 ) {
               finish_tensor_product( big, rhsBlock, *rhs_op, *lhs_op, *op, forwards, build_pattern );
@@ -256,7 +256,7 @@ void do_4index_1_3_tensor_products( bool forwards, const opTypes& optype, const 
           for (int sx=0; sx < vec.size(); sx++) {
             boost::shared_ptr<SparseMatrix>& op = vec[sx];
             // Select relevant spin components
-            std::vector<SpinQuantum> s = { op->get_quantum_ladder().at(build_pattern).at(0), op->get_quantum_ladder().at(build_pattern).at(1) };
+            std::vector<SpinQuantum> s(2); s[0] = op->get_quantum_ladder().at(build_pattern).at(0); s[1] = op->get_quantum_ladder().at(build_pattern).at(1);
             if ( s == spin_234 ) {
               finish_tensor_product( big, rhsBlock, *rhs_op, *lhs_op, *op, forwards, build_pattern );
               // Renormalise operator
@@ -324,7 +324,7 @@ void do_4index_3_1_tensor_products( bool forwards, const opTypes& optype, const 
           for (int sx=0; sx < vec.size(); sx++) {
             boost::shared_ptr<SparseMatrix>& op = vec[sx];
             // Select relevant spin components
-            std::vector<SpinQuantum> s = { op->get_quantum_ladder().at(build_pattern).at(0), op->get_quantum_ladder().at(build_pattern).at(1) };
+            std::vector<SpinQuantum> s(2); s[0] = op->get_quantum_ladder().at(build_pattern).at(0); s[1] = op->get_quantum_ladder().at(build_pattern).at(1);
 //            if ( s == spin_123 ) finish_tensor_product( big, rhsBlock, *rhs_op, Transposeview(lhs_op), *op, forwards, build_pattern );
             if ( s == spin_123 ) {
               finish_tensor_product( big, rhsBlock, *rhs_op, *lhs_op, *op, forwards, build_pattern );

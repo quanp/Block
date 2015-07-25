@@ -37,10 +37,10 @@ void block_calldmrg (
       const double& E_core,
       const double* h0,
       const double* tuvx,
-      const FORTINT& M_state,
-      const FORTINT& N_pdm,
-      const double& T_sweep,
-      const double& T_noise,
+            FORTINT  M_state,
+            FORTINT  N_pdm,
+            double  T_sweep,
+            double  T_noise,
             double* E_sweep);
 
 #endif // __BLOCK_CALL_DMRG_H

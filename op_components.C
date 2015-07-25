@@ -39,7 +39,7 @@ namespace SpinAdapted {
 	  op.set_fermion() = true;
 	  op.set_deltaQuantum(1, getSpinQuantum(orbs[0]));//SpinQuantum(1, 1, SymmetryOfSpatialOrb(orbs[0]));      
 	  //op.set_deltaQuantum() = SpinQuantum(1, SpinOf(orbs[0]), SymmetryOf(orbs[0]));      
-     op.set_quantum_ladder()["(C)"] = { op.get_deltaQuantum(0) };
+     op.set_quantum_ladder()["(C)"] = std::vector<SpinQuantum>(1,op.get_deltaQuantum(0));
 	}
       
     }
@@ -97,7 +97,7 @@ namespace SpinAdapted {
 	  op.set_initialised() = true;
 	  op.set_fermion() = true;
 	  op.set_deltaQuantum(1, -getSpinQuantum(orbs[0]));//SpinQuantum(1, 1, SymmetryOfSpatialOrb(orbs[0]));      
-     op.set_quantum_ladder()["(D)"] = { op.get_deltaQuantum(0) };
+     op.set_quantum_ladder()["(D)"] = std::vector<SpinQuantum>(1,op.get_deltaQuantum(0));
 	}
       
     }
@@ -157,7 +157,7 @@ namespace SpinAdapted {
 	    op.set_initialised() = true;
 	    op.set_fermion() = false;
 	    op.set_deltaQuantum(1, spinvec[j]);      
-       op.set_quantum_ladder()["(CD)"] = { op.get_deltaQuantum(0) };
+       op.set_quantum_ladder()["(CD)"] = std::vector<SpinQuantum>(1,op.get_deltaQuantum(0));
 	  }
 	}
     }
@@ -192,7 +192,7 @@ namespace SpinAdapted {
 	    op.set_initialised() = true;
 	    op.set_fermion() = false;
 	    op.set_deltaQuantum(1, spinvec[j]);      
-       op.set_quantum_ladder()["(DC)"] = { op.get_deltaQuantum(0) };
+       op.set_quantum_ladder()["(DC)"] = std::vector<SpinQuantum>(1,op.get_deltaQuantum(0));
 	  }
 	}
     }
@@ -228,7 +228,7 @@ namespace SpinAdapted {
 	    op.set_initialised() = true;
 	    op.set_fermion() = false;
 	    op.set_deltaQuantum(1, spinvec[j]);      
-       op.set_quantum_ladder()["(CC)"] = { op.get_deltaQuantum(0) };
+       op.set_quantum_ladder()["(CC)"] = std::vector<SpinQuantum>(1,op.get_deltaQuantum(0));
 	  }
 	}
     }
@@ -263,7 +263,7 @@ namespace SpinAdapted {
 	    op.set_initialised() = true;
 	    op.set_fermion() = false;
 	    op.set_deltaQuantum(1, spinvec[j]);      
-       op.set_quantum_ladder()["(DD)"] = { op.get_deltaQuantum(0) };
+       op.set_quantum_ladder()["(DD)"] = std::vector<SpinQuantum>(1,op.get_deltaQuantum(0));
 	  }
 	}
     }
