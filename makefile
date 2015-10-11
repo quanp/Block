@@ -5,11 +5,12 @@
 
 ##BOOSTINCLUDE = /home/sandeep/Work/Programs/boost_1_54_0/
 #specify boost include file
-BOOSTINCLUDE = /homec/naokin/boost/1.54.0-ic1401/include
+#BOOSTINCLUDE = /homec/naokin/boost/1.54.0-ic1401/include
+BOOSTINCLUDE = /homec/naokin/boost/1.54.0/include
 
 #specify boost and lapack-blas library locations
-BOOSTLIB = -L/homec/naokin/boost/1.54.0-ic1401/lib -lboost_serialization -lboost_system -lboost_filesystem
-#BOOSTLIB = -lboost_serialization -lboost_system -lboost_filesystem
+#BOOSTLIB = -L/homec/naokin/boost/1.54.0-ic1401/lib -lboost_serialization -lboost_system -lboost_filesystem
+BOOSTLIB = -L/homec/naokin/boost/1.54.0/lib -lboost_serialization -lboost_system -lboost_filesystem
 LAPACKBLAS = -lblas -llapack
 
 USE_BOOST56 = no
@@ -58,8 +59,8 @@ endif
 EXECUTABLE = block.spin_adapted
 
 # change to icpc for Intel
-CXX = icpc
-MPICXX = mpic++
+CXX = g++
+MPICXX = /homec/naokin/openmpi/1.6.5/bin/mpic++
 BLOCKHOME = .
 HOME = .
 NEWMATINCLUDE = $(BLOCKHOME)/newmat10/
@@ -81,7 +82,7 @@ FLAGS =  -I${MKLFLAGS} -I$(INCLUDE1) -I$(INCLUDE2) -I$(NEWMATINCLUDE) -I$(BOOSTI
          -I$(HOME)/modules/npdm -I$(HOME)/modules/two_index_ops -I$(HOME)/modules/three_index_ops -I$(HOME)/modules/four_index_ops \
          -I$(HOME)/modules/ResponseTheory -I$(HOME)/modules/nevpt2 -I$(HOME)/molcas
 
-LIBS +=  -L$(NEWMATLIB) -lnewmat $(BOOSTLIB) $(LAPACKBLAS) -liomp5 
+LIBS +=  -L$(NEWMATLIB) -lnewmat $(BOOSTLIB) $(LAPACKBLAS)
 MPI_OPT = -DSERIAL
 
 

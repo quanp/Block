@@ -75,10 +75,10 @@ struct info_pair
   std::vector<T> first;
   bool second;
 
-  info_pair() = default;
-  info_pair(const info_pair& x) = default;
-  info_pair& operator=(const info_pair& x) = default;
-  ~info_pair() = default;
+//info_pair() = default;
+//info_pair(const info_pair& x) = default;
+//info_pair& operator=(const info_pair& x) = default;
+//~info_pair() = default;
 
   friend class boost::serialization::access;
   template<class Archive>
@@ -258,7 +258,7 @@ class batch_index{
   }
 };
 
-template<class T, bool addzero = true > 
+template<class T, bool addzero> 
 void externalsort(char* inputfilename, char* outputfilename, long number_of_data){
 #ifndef SERIAL
   boost::mpi::communicator world;
@@ -394,15 +394,18 @@ void externalsort(char* inputfilename, char* outputfilename, long number_of_data
 }
 
 #ifndef SERIAL
-template<class T,class= typename boost::enable_if_c<has_index<T>::value>::type>
+//template<class T,class= typename boost::enable_if_c<has_index<T>::value>::type>
+template<class T>
 void partition_data(long number_of_data, char* inputfilename, char* outputfilename)
 {
+  typedef typename boost::enable_if_c<has_index<T>::value,T>::type Tp_;
+
   boost::mpi::communicator world;
   long partition_index=number_of_data/world.size();
   //std::pout << "begin partition\n";
 
-  std::vector< info_pair<T> > recv_buff(world.size());
-  std::vector< std::vector<T> > send_buff(world.size());
+  std::vector< info_pair<Tp_> > recv_buff(world.size());
+  std::vector< std::vector<Tp_> > send_buff(world.size());
   //std::vector<T> output_buff;
   FILE* outputfile = fopen(outputfilename,"wb");
   setvbuf(outputfile,NULL,_IOFBF,Buff_SIZE*3);

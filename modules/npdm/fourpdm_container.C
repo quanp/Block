@@ -282,7 +282,7 @@ void Fourpdm_container::save_spatial_npdm_binary(const int &i, const int &j)
       sprintf (sortedfile, "%s%s%d.%d.%d%s", dmrginp.save_prefix().c_str(),"/spatial_fourpdm.",i,j,mpigetrank(),".bin");
 
       Sortpdm::partition_data<Sortpdm::index_element>((long)pow(dmrginp.last_site(),8),file,tmpfile);
-      Sortpdm::externalsort<Sortpdm::index_element>(tmpfile,sortedfile,(long)pow(dmrginp.last_site(),8));
+      Sortpdm::externalsort<Sortpdm::index_element,true>(tmpfile,sortedfile,(long)pow(dmrginp.last_site(),8));
       world.barrier();
       ecpu = timer1.elapsedcputime(); ewall = timer1.elapsedwalltime();
       p3out << "4PDM parallel external sort time " << ewall << " " << ecpu << endl;
@@ -295,7 +295,7 @@ void Fourpdm_container::save_spatial_npdm_binary(const int &i, const int &j)
       p3out << "4PDM merge sorted file time " << ewall << " " << ecpu << endl;
 #else
       Timer timer2;
-      Sortpdm::externalsort<Sortpdm::index_element> (file,finalfile,(long)pow(dmrginp.last_site(),8));
+      Sortpdm::externalsort<Sortpdm::index_element,true> (file,finalfile,(long)pow(dmrginp.last_site(),8));
       boost::filesystem::remove(file);
       ecpu = timer2.elapsedcputime();ewall=timer2.elapsedwalltime();
       p3out << "4PDM external sort time " << ewall << " " << ecpu << endl;

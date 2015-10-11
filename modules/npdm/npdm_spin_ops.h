@@ -32,7 +32,7 @@ class NpdmSpinOps_base {
 
   public:
 //FIXME
-    NpdmSpinOps_base() = default;
+    NpdmSpinOps_base() { }
 // FIXME Shallow copy constructor
     NpdmSpinOps_base( const NpdmSpinOps_base & obj ) {
 //      opReps_.clear();
@@ -126,7 +126,7 @@ class NpdmSpinOps : public NpdmSpinOps_base {
     // Number of spatial orbital combinations
     int size_;
 
-    NpdmSpinOps() = default;
+    NpdmSpinOps() { }
     NpdmSpinOps( const NpdmSpinOps & obj ) {
 //      opReps_.clear();
 //      for (int i=0; i < obj.opReps_.size(); ++i) {

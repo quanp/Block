@@ -285,7 +285,7 @@ void Threepdm_container::save_spatial_npdm_binary(const int &i, const int &j)
       //TODO
       //tmpfile and sortedfile can be the same file. Because tmpfile is divided into many small files. It can be overwritten by sortedfile.
       //However, when they are different, it is a little faster. Maybe compiler can do some optimizations. 
-      Sortpdm::externalsort<Sortpdm::index_element>(tmpfile,sortedfile,(long)pow(dmrginp.last_site(),6));
+      Sortpdm::externalsort<Sortpdm::index_element,true>(tmpfile,sortedfile,(long)pow(dmrginp.last_site(),6));
       world.barrier();
       ecpu = timer1.elapsedcputime();ewall=timer1.elapsedwalltime();
       p3out << "3PDM parallel external sort time " << ewall << " " << ecpu << endl;
@@ -298,7 +298,7 @@ void Threepdm_container::save_spatial_npdm_binary(const int &i, const int &j)
       p3out << "3PDM merge sorted file time " << ewall << " " << ecpu << endl;
 #else
       Timer timer2;
-      Sortpdm::externalsort<Sortpdm::index_element>(file,finalfile,(long)pow(dmrginp.last_site(),6));
+      Sortpdm::externalsort<Sortpdm::index_element,true>(file,finalfile,(long)pow(dmrginp.last_site(),6));
       boost::filesystem::remove(file);
       ecpu = timer2.elapsedcputime();ewall=timer2.elapsedwalltime();
       p3out << "3PDM external sort time " << ewall << " " << ecpu << endl;

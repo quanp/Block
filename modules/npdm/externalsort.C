@@ -82,7 +82,7 @@ void parallel_external_sort( char* filename){
   sprintf (sortedfilename, "%s%d.%d.%d%s", filename,0,0,world.rank(),".sorted");
   partition_data<index_element>((long)pow(6,6),inputfilename,tmpfilename);
   //pout << "finished partition_data" << world.rank()<<std::endl;
-  externalsort<index_element>(tmpfilename,sortedfilename,(long)pow(6,6));
+  externalsort<index_element,true>(tmpfilename,sortedfilename,(long)pow(6,6));
   mergefile(sortedfilename);
 
 }
