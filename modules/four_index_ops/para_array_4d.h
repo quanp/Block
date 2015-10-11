@@ -9,7 +9,8 @@ Sandeep Sharma and Garnet K.-L. Chan
 #ifndef FOURPDM_PARA_ARRAY_H
 #define FOURPDM_PARA_ARRAY_H
 
-#include <tuple>
+#include <boost/tuple/tuple.hpp>
+#include <boost/tuple/tuple_comparison.hpp>
 #include <vector>
 #include "pario.h"
 
@@ -189,17 +190,17 @@ public:
   *
   * see corresponding set_indices member fn.
   */
-  void set_tuple_indices(const std::map< std::tuple<int,int,int,int>, int >& occupied, int len)
+  void set_tuple_indices(const std::map< boost::tuple<int,int,int,int>, int >& occupied, int len)
   {
     clear();
     length_ = len;
 
-    for (auto it = occupied.begin(); it != occupied.end(); ++it) {
+    for (std::map< boost::tuple<int,int,int,int>, int >::const_iterator it = occupied.begin(); it != occupied.end(); ++it) {
       std::vector<int> tuple(4);
-      tuple[0] = std::get<0>(it->first);
-      tuple[1] = std::get<1>(it->first);
-      tuple[2] = std::get<2>(it->first);
-      tuple[3] = std::get<3>(it->first);
+      tuple[0] = boost::get<0>(it->first);
+      tuple[1] = boost::get<1>(it->first);
+      tuple[2] = boost::get<2>(it->first);
+      tuple[3] = boost::get<3>(it->first);
       int rank = it->second; 
       // Global indices
       int idx = trimap_4d( tuple[0], tuple[1], tuple[2], tuple[3] );
@@ -255,7 +256,7 @@ private:
 //   * having filled out the global indices, assign indices
 //   * to individual processors (i.e. local indices)
 //   */
-//  void setup_local_indices( const std::map< std::tuple<int,int,int>, int >& occupied)
+//  void setup_local_indices( const std::map< boost::tuple<int,int,int>, int >& occupied)
 //  {
 //    int length_1d = tristore_4d(length_);
 //    if (stored_local_) {

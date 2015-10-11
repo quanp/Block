@@ -188,7 +188,7 @@ void Fourpdm_container::external_sort_index(const int &i, const int &j)
     FILE* outputfile = fopen(outfilename,"wb");
     long sorting_buff= 1024*1024*(32/world.size());
     //For batch_index, the sorting buff is about 96M/world.size();
-    std::vector<Sortpdm::cache<Sortpdm::batch_index>> filecache;
+    std::vector< Sortpdm::cache<Sortpdm::batch_index> > filecache;
     for(int p=0; p< world.size();p++){
       char file[5000];
       sprintf (file, "%s%s%d.%d.%d%s", dmrginp.save_prefix().c_str(),"/spatial_fourpdm_index.", i, j,p,".bin");
@@ -382,7 +382,7 @@ void Fourpdm_container::update_full_spin_array( std::vector< std::pair< std::vec
 {
   // Take into account orbital reordering
   const std::vector<int>& ro = dmrginp.reorder_vector();
-  for (auto it = spin_batch.begin(); it != spin_batch.end(); ++it) {
+  for (std::vector< std::pair< std::vector<int>, double > >::iterator it = spin_batch.begin(); it != spin_batch.end(); ++it) {
     double val = it->second;
     if ( abs(val) < NUMERICAL_ZERO ) continue;
 
@@ -424,7 +424,7 @@ void Fourpdm_container::update_full_spatial_array( std::vector< std::pair< std::
   // Take into account orbital reordering
   const std::vector<int>& ro = dmrginp.reorder_vector();
 
-  for (auto it = spin_batch.begin(); it != spin_batch.end(); ++it) {
+  for (std::vector< std::pair< std::vector<int>, double > >::iterator it = spin_batch.begin(); it != spin_batch.end(); ++it) {
     assert( (it->first).size() == 8 );
 
     // Store significant elements only
@@ -508,7 +508,7 @@ void Fourpdm_container::update_full_spatial_array( std::vector< std::pair< std::
 //    Fourpdm_permutations p;
 //    std::map< std::vector<int>, int > spin_indices = p.get_spin_permutations( new_spin_orbital_elements[idx].first );
 //    double val = new_spin_orbital_elements[idx].second;
-//    for (auto it = spin_indices.begin(); it != spin_indices.end(); ++it) {
+//    for (std::vector< std::pair< std::vector<int>, double > >::iterator_indices.begin(); it != spin_indices.end(); ++it) {
 //      // Initialize spatial indices
 //      std::vector<int> vec;
 //      for (int i=0; i < (it->first).size(); ++i)
@@ -545,7 +545,7 @@ void Fourpdm_container::dump_to_disk(std::vector< std::pair< std::vector<int>, d
 {
   long spatpdm_disk_position= ftell(spatpdm_disk);
   std::map < long, double>  index_and_elements;
-  for (auto it = spin_batch.begin(); it != spin_batch.end(); ++it) {
+  for (std::vector< std::pair< std::vector<int>, double > >::iterator it = spin_batch.begin(); it != spin_batch.end(); ++it) {
     assert( (it->first).size() == 8 );
 
     // Store significant elements only
@@ -569,7 +569,7 @@ void Fourpdm_container::dump_to_disk(std::vector< std::pair< std::vector<int>, d
   // number of permutation is (4*3*2)*(4*3*2) , and then transpose(x2) .
   assert(1152>= index_and_elements.size());
   int i=0;
-  for(auto it = index_and_elements.begin(); it!=index_and_elements.end();it++){
+  for(std::map<long,double>::iterator it = index_and_elements.begin(); it!=index_and_elements.end();it++){
     index_elements[i].index=it->first;
     index_elements[i].element=it->second;
     i++;

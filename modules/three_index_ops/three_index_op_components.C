@@ -62,9 +62,9 @@ namespace SpinAdapted {
 //-------------------------------------------------------------------------------------------------------------------------------------------------------------  
 // Choose 3-index tuples on this MPI process such that 2-index are available to build them
 
-std::map< std::tuple<int,int,int>, int > get_local_3index_tuples(SpinBlock& b)
+std::map< boost::tuple<int,int,int>, int > get_local_3index_tuples(SpinBlock& b)
 {
-  std::map< std::tuple<int,int,int>, int > tuples;
+  std::map< boost::tuple<int,int,int>, int > tuples;
 
   SpinBlock* sysBlock = b.get_leftBlock();
   SpinBlock* dotBlock = b.get_rightBlock();
@@ -81,27 +81,27 @@ std::map< std::tuple<int,int,int>, int > get_local_3index_tuples(SpinBlock& b)
 
   // 3 on dot (the -1 means there's no constraint on which MPI process the tuple is assigned to)
   //----------
-  tuples[ std::make_tuple(dot, dot, dot) ] = -1;
+  tuples[ boost::make_tuple(dot, dot, dot) ] = -1;
 
   // 2 on dot
   //----------
 //FIXME assume CRE and DES same (THEY'RE NOT, CRE is duplicated sometimes in save_load_block.C so use DES)
   std::vector< std::vector<int> > op_array = sysBlock->get_op_array(DES).get_array();
-  for (auto op = op_array.begin(); op != op_array.end(); ++op) {
+  for (std::vector< std::vector<int> >::iterator op = op_array.begin(); op != op_array.end(); ++op) {
     int i = (*op)[0];
     if ( forward ) {
       if ( sysBlock->get_op_array(DES).is_local() )
         // When 1-index is duplicated on all ranks we don't want 3-index being duplicated too
-        tuples[ std::make_tuple( dot, dot, i) ] = -1; 
+        tuples[ boost::make_tuple( dot, dot, i) ] = -1; 
       else
-        tuples[ std::make_tuple( dot, dot, i) ] = mpigetrank();
+        tuples[ boost::make_tuple( dot, dot, i) ] = mpigetrank();
     } 
     else {
       if ( sysBlock->get_op_array(DES).is_local() )
         // When 1-index is duplicated on all ranks we don't want 3-index being duplicated too
-        tuples[ std::make_tuple( i, dot, dot) ] = -1;
+        tuples[ boost::make_tuple( i, dot, dot) ] = -1;
       else
-        tuples[ std::make_tuple( i, dot, dot) ] = mpigetrank();
+        tuples[ boost::make_tuple( i, dot, dot) ] = mpigetrank();
     }
   }
 
@@ -109,7 +109,7 @@ std::map< std::tuple<int,int,int>, int > get_local_3index_tuples(SpinBlock& b)
   //----------
 //FIXME we assume CRE_CRE is representative of all 2-index ops (pass opType in general???)
   std::vector< std::vector<int> > ij_array = sysBlock->get_op_array(CRE_CRE).get_array();
-  for (auto ij = ij_array.begin(); ij != ij_array.end(); ++ij) {
+  for (std::vector< std::vector<int> >::iterator ij = ij_array.begin(); ij != ij_array.end(); ++ij) {
     int i = (*ij)[0];
     int j = (*ij)[1];
     assert( i >= j );
@@ -117,23 +117,23 @@ std::map< std::tuple<int,int,int>, int > get_local_3index_tuples(SpinBlock& b)
       if ( sysBlock->get_op_array(CRE_CRE).is_local() )
 //FIXME not convinced this reliably removes duplicate 3-index ops
         // When 2-index is duplicated on all ranks we don't want 3-index being duplicated too
-        tuples[ std::make_tuple( dot, i, j) ] = -1; 
+        tuples[ boost::make_tuple( dot, i, j) ] = -1; 
       else
-        tuples[ std::make_tuple( dot, i, j) ] = mpigetrank();
+        tuples[ boost::make_tuple( dot, i, j) ] = mpigetrank();
     } 
     else {
       if ( sysBlock->get_op_array(CRE_CRE).is_local() )
         // When 2-index is duplicated on all ranks we don't want 3-index being duplicated too
-        tuples[ std::make_tuple( i, j, dot) ] = -1;
+        tuples[ boost::make_tuple( i, j, dot) ] = -1;
       else
-        tuples[ std::make_tuple( i, j, dot) ] = mpigetrank();
+        tuples[ boost::make_tuple( i, j, dot) ] = mpigetrank();
     }
   }
 
   // 0 on dot
   //----------
   std::vector< std::vector<int> > ijk_array = sysBlock->get_op_array(RI_3INDEX).get_array();
-  for (auto ijk = ijk_array.begin(); ijk != ijk_array.end(); ++ijk) {
+  for (std::vector< std::vector<int> >::iterator ijk = ijk_array.begin(); ijk != ijk_array.end(); ++ijk) {
     int i = (*ijk)[0];
     int j = (*ijk)[1];
     int k = (*ijk)[2];
@@ -141,9 +141,9 @@ std::map< std::tuple<int,int,int>, int > get_local_3index_tuples(SpinBlock& b)
     assert( j >= k );
     if ( sysBlock->get_op_array(RI_3INDEX).is_local() )
       // When 1-site 3-index is duplicated on all ranks we don't want multi-site 3-index being duplicated too
-      tuples[ std::make_tuple( i, j, k) ] = -1;
+      tuples[ boost::make_tuple( i, j, k) ] = -1;
     else
-      tuples[ std::make_tuple( i, j, k) ] = mpigetrank();
+      tuples[ boost::make_tuple( i, j, k) ] = mpigetrank();
   }
 
   return tuples;
@@ -157,15 +157,15 @@ std::map< std::tuple<int,int,int>, int > get_local_3index_tuples(SpinBlock& b)
 //   (3) 3-index must not be done on this thread (it has to be done on another and we don't want duplicates)
 
 //FIXME screening?
-std::map< std::tuple<int,int,int>, int > get_3index_tuples(SpinBlock& b)
+std::map< boost::tuple<int,int,int>, int > get_3index_tuples(SpinBlock& b)
 {
-  std::map< std::tuple<int,int,int>, int > tuples;
+  std::map< boost::tuple<int,int,int>, int > tuples;
   std::vector<int> sites = b.get_sites();
 
   //add a special case for when rightblock is a dummyblock
   if (b.get_rightBlock() != NULL) 
     if (b.get_rightBlock()->get_sites().size() == 0) {
-      tuples[ std::make_tuple(sites[0], sites[0], sites[0]) ] = -1;
+      tuples[ boost::make_tuple(sites[0], sites[0], sites[0]) ] = -1;
       return tuples;
     }
 
@@ -180,12 +180,12 @@ std::map< std::tuple<int,int,int>, int > get_3index_tuples(SpinBlock& b)
       for (int k = 0; k <= j; ++k) {
         if ( b.get_leftBlock() != NULL ) {
           // The -2 here means that this should be assigned to global_indices only (i.e. shouldn't be on this MPI thread)
-          if ( tuples.find(std::make_tuple(sites[i], sites[j], sites[k])) == tuples.end() )
-            tuples[ std::make_tuple(sites[i], sites[j], sites[k]) ] = -2;
+          if ( tuples.find(boost::make_tuple(sites[i], sites[j], sites[k])) == tuples.end() )
+            tuples[ boost::make_tuple(sites[i], sites[j], sites[k]) ] = -2;
         }
         else {
           // The -1 here means there's no constraint on which MPI process (i.e. let para_array choose if it should belong to this one)
-          tuples[ std::make_tuple(sites[i], sites[j], sites[k]) ] = -1;
+          tuples[ boost::make_tuple(sites[i], sites[j], sites[k]) ] = -1;
         } 
       }
 
@@ -246,7 +246,7 @@ void Op_component<RI3index>::build_iterators(SpinBlock& b)
   if (b.get_sites().size () == 0) return; 
 
   // Set up 3-index (i,j,k) spatial operator indices for this SpinBlock
-  std::map< std::tuple<int,int,int>, int > tuples = get_3index_tuples(b);
+  std::map< boost::tuple<int,int,int>, int > tuples = get_3index_tuples(b);
   m_op.set_tuple_indices( tuples, dmrginp.last_site() );
 
 //  // Initialize empty vector
@@ -290,7 +290,7 @@ void Op_component<DesDesDes>::build_iterators(SpinBlock& b)
   if (b.get_sites().size () == 0) return; 
 
   // Set up 3-index (i,j,k) spatial operator indices for this SpinBlock
-  std::map< std::tuple<int,int,int>, int > tuples = get_3index_tuples(b);
+  std::map< boost::tuple<int,int,int>, int > tuples = get_3index_tuples(b);
   m_op.set_tuple_indices( tuples, dmrginp.last_site() );
 
   // Allocate new set of operators for each set of spatial orbitals
@@ -392,7 +392,7 @@ void Op_component<CreCreCre>::build_iterators(SpinBlock& b)
 //  const double screen_tol = dmrginp.screen_tol();
 //  assert( dmrginp.screen_tol() == 0 ); //FIXME otherwise some 1 or 2-index ops will be absent when we try to build the 3-index guy
 //  std::vector< std::tuple<int,int,int> > tuples = screened_ccd_indices(b.get_sites(), b.get_complementary_sites(), *b.get_twoInt(), screen_tol);
-  std::map< std::tuple<int,int,int>, int > tuples = get_3index_tuples(b);
+  std::map< boost::tuple<int,int,int>, int > tuples = get_3index_tuples(b);
 //pout << "CCC indices\n";
 //for (auto it = tuples.begin(); it != tuples.end(); ++it) {
 //pout << "p" << mpigetrank() << ": " << std::get<0>(it->first) << "," << std::get<1>(it->first) << "," << std::get<2>(it->first) << " ; mode = " << it->second << endl;
@@ -499,7 +499,7 @@ void Op_component<CreCreDes>::build_iterators(SpinBlock& b)
   if (b.get_sites().size () == 0) return; 
 
   // Set up 3-index (i,j,k) spatial operator indices for this SpinBlock
-  std::map< std::tuple<int,int,int>, int > tuples = get_3index_tuples(b);
+  std::map< boost::tuple<int,int,int>, int > tuples = get_3index_tuples(b);
   m_op.set_tuple_indices( tuples, dmrginp.last_site() );
 
   // Allocate new set of operators for each set of spatial orbitals
@@ -598,7 +598,7 @@ void Op_component<CreDesDes>::build_iterators(SpinBlock& b)
   if (b.get_sites().size () == 0) return; 
 
   // Set up 3-index (i,j,k) spatial operator indices for this SpinBlock
-  std::map< std::tuple<int,int,int>, int > tuples = get_3index_tuples(b);
+  std::map< boost::tuple<int,int,int>, int > tuples = get_3index_tuples(b);
   m_op.set_tuple_indices( tuples, dmrginp.last_site() );
 
   // Allocate new set of operators for each set of spatial orbitals
@@ -697,7 +697,7 @@ void Op_component<CreDesCre>::build_iterators(SpinBlock& b)
   if (b.get_sites().size () == 0) return; 
 
   // Set up 3-index (i,j,k) spatial operator indices for this SpinBlock
-  std::map< std::tuple<int,int,int>, int > tuples = get_3index_tuples(b);
+  std::map< boost::tuple<int,int,int>, int > tuples = get_3index_tuples(b);
   m_op.set_tuple_indices( tuples, dmrginp.last_site() );
 
   // Allocate new set of operators for each set of spatial orbitals
@@ -799,7 +799,7 @@ void Op_component<DesCreDes>::build_iterators(SpinBlock& b)
   if (b.get_sites().size () == 0) return; 
 
   // Set up 3-index (i,j,k) spatial operator indices for this SpinBlock
-  std::map< std::tuple<int,int,int>, int > tuples = get_3index_tuples(b);
+  std::map< boost::tuple<int,int,int>, int > tuples = get_3index_tuples(b);
   m_op.set_tuple_indices( tuples, dmrginp.last_site() );
 
   // Allocate new set of operators for each set of spatial orbitals
@@ -896,7 +896,7 @@ void Op_component<DesDesCre>::build_iterators(SpinBlock& b)
   if (b.get_sites().size () == 0) return; 
 
   // Set up 3-index (i,j,k) spatial operator indices for this SpinBlock
-  std::map< std::tuple<int,int,int>, int > tuples = get_3index_tuples(b);
+  std::map< boost::tuple<int,int,int>, int > tuples = get_3index_tuples(b);
   m_op.set_tuple_indices( tuples, dmrginp.last_site() );
 
   // Allocate new set of operators for each set of spatial orbitals
@@ -993,7 +993,7 @@ void Op_component<DesCreCre>::build_iterators(SpinBlock& b)
   if (b.get_sites().size () == 0) return; 
 
   // Set up 3-index (i,j,k) spatial operator indices for this SpinBlock
-  std::map< std::tuple<int,int,int>, int > tuples = get_3index_tuples(b);
+  std::map< boost::tuple<int,int,int>, int > tuples = get_3index_tuples(b);
   m_op.set_tuple_indices( tuples, dmrginp.last_site() );
 
   // Allocate new set of operators for each set of spatial orbitals

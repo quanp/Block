@@ -67,14 +67,14 @@ std::map< std::vector<int>, int > Npdm_spin_adaptation::get_map_to_int( std::vec
 
   // Make set of unique spin-orbital index tuples
   for ( int i=0; i < matrix_rows.size(); ++i) {
-    for ( auto it = matrix_rows[i].begin(); it != matrix_rows[i].end(); ++it ) {
+    for ( std::map< std::vector<int>, double >::iterator it = matrix_rows[i].begin(); it != matrix_rows[i].end(); ++it ) {
       indices_set.insert(it->first);
     }
   }
 
   // Map group of indices to single integer in arbitrary, but well-defined, order
   int k=0;
-  for ( auto it = indices_set.begin(); it != indices_set.end(); ++it ) {
+  for ( std::set< std::vector<int> >::iterator it = indices_set.begin(); it != indices_set.end(); ++it ) {
     map_to_int[*it] = k;
     k++; 
     //pout << "spin indices = ";
@@ -113,7 +113,7 @@ void Npdm_spin_adaptation::parse_result_into_matrix( const std::vector<TensorOp>
   // Don't forget to initialize!
   matrix=0.0;
   for (int i=0; i<dim; ++i) {
-    for (auto it = matrix_rows[i].begin(); it != matrix_rows[i].end(); ++it) {
+    for (std::map< std::vector<int>, double >::iterator it = matrix_rows[i].begin(); it != matrix_rows[i].end(); ++it) {
        int col = map_to_int.at( it->first );
        matrix(i+1,col+1) = it->second;
     }
@@ -121,7 +121,7 @@ void Npdm_spin_adaptation::parse_result_into_matrix( const std::vector<TensorOp>
 
   // Format indices into an ordered vector consistent with matrix A
   so_indices.resize(dim);
-  for (auto it = map_to_int.begin(); it != map_to_int.end(); ++it) {
+  for (std::map< std::vector<int>, int >::iterator it = map_to_int.begin(); it != map_to_int.end(); ++it) {
     so_indices.at(it->second) = it->first;
   }
 
@@ -164,7 +164,7 @@ int Npdm_spin_adaptation::commute_so_indices_to_pdm_order( const std::string& s,
   // Trim op string to just get ordering of creations and destructions (cre<0, des>0)
   std::vector<int> cd_order;
   int k=0;
-  for ( auto it = s.begin(); it != s.end(); ++it ) {
+  for ( std::string::const_iterator it = s.begin(); it != s.end(); ++it ) {
     if (*it=='C') cd_order.push_back((k++));
     if (*it=='D') cd_order.push_back(1000+(k++));
   }
@@ -174,7 +174,7 @@ int Npdm_spin_adaptation::commute_so_indices_to_pdm_order( const std::string& s,
   // Initialize permutation matrix for spin-orbital indices
   std::vector< std::pair< int, std::vector<int> > >  perm_mat_pair;
   int i = 0;
-  for (auto cd = cd_order.begin(); cd != cd_order.end(); ++cd) {
+  for (std::vector<int>::iterator cd = cd_order.begin(); cd != cd_order.end(); ++cd) {
     std::vector<int> row(dim,0);
     row[i] = 1;
     perm_mat_pair.push_back( std::make_pair(*cd, row) );
@@ -219,7 +219,7 @@ void Npdm_spin_adaptation::store_new_A_mat( const int so_dim, const int order, c
 
   // Combine indices and build_pattern into one string
   std::string op_string;
-  for (auto it = cd_string.begin(); it != cd_string.end(); ++it) {
+  for (std::string::const_iterator it = cd_string.begin(); it != cd_string.end(); ++it) {
     op_string.push_back(*it);
     if ( (*it == 'C') || (*it == 'D') ) {
       std::string index = boost::lexical_cast<std::string>( indices.at(0) );
@@ -276,10 +276,10 @@ void Npdm_spin_adaptation::get_so_indices( std::string& cd_string, const std::ve
   so_indices.resize(0);
   std::vector< std::vector<int> > stored_so_indices = stored_so_indices_.at( cd_string );
   // Loop over stored spin-orbital elements
-  for (auto vec = stored_so_indices.begin(); vec != stored_so_indices.end(); ++vec) {
+  for (std::vector< std::vector<int> >::iterator vec = stored_so_indices.begin(); vec != stored_so_indices.end(); ++vec) {
     std::vector<int> new_element;
     // Loop over stored spin-indices for one element
-    for (auto it = vec->begin(); it != vec->end(); ++it) {
+    for (std::vector<int>::iterator it = vec->begin(); it != vec->end(); ++it) {
       int i = (*it)/2;
       int j = (*it)%2;
       // Generate new spin indices from spatial indices
@@ -298,7 +298,7 @@ void Npdm_spin_adaptation::npdm_set_up_linear_equations( const int dim, const st
 {
   // Separate cre-des pattern and numerical indices
   std::string cd_string;
-  for (auto it = op_string.begin(); it != op_string.end(); ++it) {
+  for (std::string::const_iterator it = op_string.begin(); it != op_string.end(); ++it) {
     if ( (*it == '(') || (*it == ')') || (*it == 'C') || (*it == 'D') ) cd_string.push_back(*it); 
   }
   

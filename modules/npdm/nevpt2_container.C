@@ -245,7 +245,7 @@ void Nevpt2_container::update_4pdm_contribution( std::vector< std::pair< std::ve
   // Take into account orbital reordering
   const std::vector<int>& ro = dmrginp.reorder_vector();
 
-  for (auto it = spin_batch.begin(); it != spin_batch.end(); ++it) {
+  for (std::vector< std::pair< std::vector<int>, double > >::iterator it = spin_batch.begin(); it != spin_batch.end(); ++it) {
     // Store significant elements only
     double value = it->second;
     if ( abs(value) < NUMERICAL_ZERO ) continue;
@@ -293,7 +293,7 @@ void Nevpt2_container::update_3pdm_contribution( std::vector< std::pair< std::ve
   // Take into account orbital reordering
   const std::vector<int>& ro = dmrginp.reorder_vector();
 
-  for (auto it = spin_batch.begin(); it != spin_batch.end(); ++it) {
+  for (std::vector< std::pair< std::vector<int>, double > >::iterator it = spin_batch.begin(); it != spin_batch.end(); ++it) {
     double value = it->second;
     // Store significant elements only
     if ( abs(value) < NUMERICAL_ZERO ) continue;
@@ -391,7 +391,7 @@ void Nevpt2_container::update_2pdm_contribution( std::vector< std::pair< std::ve
   // Take into account orbital reordering
   const std::vector<int>& ro = dmrginp.reorder_vector();
 
-  for (auto it = spin_batch.begin(); it != spin_batch.end(); ++it) {
+  for (std::vector< std::pair< std::vector<int>, double > >::iterator it = spin_batch.begin(); it != spin_batch.end(); ++it) {
     double value = it->second;
     // Store significant elements only
     if ( abs(value) < NUMERICAL_ZERO ) continue;
@@ -498,7 +498,7 @@ void Nevpt2_container::update_1pdm_contribution( std::vector< std::pair< std::ve
   // Take into account orbital reordering
   const std::vector<int>& ro = dmrginp.reorder_vector();
 
-  for (auto it = spin_batch.begin(); it != spin_batch.end(); ++it) {
+  for (std::vector< std::pair< std::vector<int>, double > >::iterator it = spin_batch.begin(); it != spin_batch.end(); ++it) {
     double value = it->second;
     // Store significant elements only
     if ( abs(value) < NUMERICAL_ZERO ) continue;

@@ -8,7 +8,7 @@ using namespace SpinAdapted;
 
 
 void CheckFileExistence(string filename, string filetype);
-vector<vector<bool>> ReadCoefFile() {
+vector< vector<bool> > ReadCoefFile() {
   CheckFileExistence("ComputeCoefficients", " Coefficient File ");
   ifstream file("ComputeCoefficients");
   string msg; int msgsize = 5000;
@@ -17,7 +17,7 @@ vector<vector<bool>> ReadCoefFile() {
   boost::split(schd_tok, msg, is_any_of(" \t"), token_compress_on);
   int norbs = atoi(schd_tok[0].c_str());
   int ncoefs = atoi(schd_tok[1].c_str());
-  vector<vector<bool>> coefs(ncoefs, vector<bool>(norbs, false));
+  vector< vector<bool> > coefs(ncoefs, vector<bool>(norbs, false));
 
   for (int i = 0; i < ncoefs; ++i) {
     msg.clear();    
@@ -45,7 +45,7 @@ int main(int argc, char* argv[]) {
   initializeGlobalMPS(0);  
   if (mpigetrank() == 0) {
     MPS state(0);
-    auto coefs = ReadCoefFile();
+    std::vector< std::vector<bool> > coefs = ReadCoefFile();
     ofstream fout("Coefficients.0.0.txt");
     for (int i = 0; i < coefs.size(); ++i) {
       fout << state.get_coefficient(coefs[i]) << endl;

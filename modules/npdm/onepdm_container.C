@@ -192,7 +192,7 @@ void Onepdm_container::calculate_spatial_npdm()
 void Onepdm_container::update_full_spin_array( std::vector< std::pair< std::vector<int>, double > >& spin_batch )
 {
   const std::vector<int>& ro = dmrginp.reorder_vector();
-  for (auto it = spin_batch.begin(); it != spin_batch.end(); ++it) {
+  for (std::vector< std::pair< std::vector<int>, double > >::iterator it = spin_batch.begin(); it != spin_batch.end(); ++it) {
     int i0 = (it->first)[0];
     int j0 = (it->first)[1];
     int i= ro.at(i0/2)*2 + i0%2;
@@ -216,7 +216,7 @@ void Onepdm_container::update_full_spatial_array( std::vector< std::pair< std::v
   // Take into account orbital reordering
   const std::vector<int>& ro = dmrginp.reorder_vector();
 
-  for (auto it = spin_batch.begin(); it != spin_batch.end(); ++it) {
+  for (std::vector< std::pair< std::vector<int>, double > >::iterator it = spin_batch.begin(); it != spin_batch.end(); ++it) {
     assert( (it->first).size() == 2 );
 
     // Store significant elements only

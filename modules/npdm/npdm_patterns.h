@@ -5,7 +5,8 @@
 #include <map>
 #include <string>
 #include <vector>
-#include <tuple>
+#include <boost/tuple/tuple.hpp>
+#include <boost/tuple/tuple_comparison.hpp>
 #include "npdm.h"
 
 namespace SpinAdapted {
@@ -23,7 +24,7 @@ class Npdm_patterns
     Npdm_patterns() { pdm_order_=NPDM_EMPTY; };
     Npdm_patterns( NpdmOrder pdm_order, int sweep_pos, int end_pos );
 
-    const int size() { return ldr_cd_types_.size(); };
+    int size() { return ldr_cd_types_.size(); };
     std::set< std::map< char, std::vector<CD> > >::const_iterator ldr_cd_begin() { return ldr_cd_types_.begin(); };
     std::set< std::map< char, std::vector<CD> > >::const_iterator ldr_cd_end() { return ldr_cd_types_.end(); };
 
@@ -44,7 +45,7 @@ class Npdm_patterns
 //  private:
     NpdmOrder pdm_order_;
     // Operator dimensions on LHS, RHS and Dot (add up to 2*order of PDM)
-    std::set< std::tuple<int,int,int> > lhs_dot_rhs_types_;
+    std::set< boost::tuple<int,int,int> > lhs_dot_rhs_types_;
     // Creation/destruction patterns for a given operator string to map to all irreducible permutations
     std::set< std::vector<CD> > cre_des_types_;
     // Aggregation of lhs_dot_rhs_types and cre_des_types (char => LHS, RHS or Dot)

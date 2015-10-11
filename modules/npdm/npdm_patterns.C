@@ -3,7 +3,8 @@
 #include <iostream>
 #include <map>
 #include <set>
-#include <tuple>
+#include <boost/tuple/tuple.hpp>
+#include <boost/range/algorithm_ext.hpp>
 #include <vector>
 #include <string>
 #include "global.h"
@@ -178,7 +179,7 @@ void Npdm_patterns::build_lhs_dot_rhs_types( int sweep_pos, int end_pos )
       rhs = 2*order_ - dot - lhs;
       if ( rhs < order_ ) {
         //pout << lhs << " " << dot << " " << rhs << endl;
-        lhs_dot_rhs_types_.insert( std::make_tuple(lhs,dot,rhs) );
+        lhs_dot_rhs_types_.insert( boost::make_tuple(lhs,dot,rhs) );
       }
     }
   }
@@ -189,47 +190,47 @@ void Npdm_patterns::build_lhs_dot_rhs_types( int sweep_pos, int end_pos )
   // 1PDM and pair matrix
   if (pdm_order_ == NPDM_ONEPDM || pdm_order_ == NPDM_PAIRMATRIX) {
     if ( sweep_pos == 0 ) {
-      lhs_dot_rhs_types_.insert( std::make_tuple(2,0,0) );
+      lhs_dot_rhs_types_.insert( boost::make_tuple(2,0,0) );
     }
     else if ( sweep_pos == end_pos ) {
-      lhs_dot_rhs_types_.insert( std::make_tuple(0,0,2) );
-      lhs_dot_rhs_types_.insert( std::make_tuple(0,1,1) );
-      lhs_dot_rhs_types_.insert( std::make_tuple(1,0,1) );
+      lhs_dot_rhs_types_.insert( boost::make_tuple(0,0,2) );
+      lhs_dot_rhs_types_.insert( boost::make_tuple(0,1,1) );
+      lhs_dot_rhs_types_.insert( boost::make_tuple(1,0,1) );
     }
   }
   // 2PDM
   else if (pdm_order_ == NPDM_TWOPDM) {
     if ( sweep_pos == 0 ) {
-      lhs_dot_rhs_types_.insert( std::make_tuple(4,0,0) );
-      lhs_dot_rhs_types_.insert( std::make_tuple(3,1,0) );
-      lhs_dot_rhs_types_.insert( std::make_tuple(3,0,1) );
+      lhs_dot_rhs_types_.insert( boost::make_tuple(4,0,0) );
+      lhs_dot_rhs_types_.insert( boost::make_tuple(3,1,0) );
+      lhs_dot_rhs_types_.insert( boost::make_tuple(3,0,1) );
     }
     else if ( sweep_pos == end_pos ) {
-      lhs_dot_rhs_types_.insert( std::make_tuple(0,2,2) );
-      lhs_dot_rhs_types_.insert( std::make_tuple(2,0,2) );
-      lhs_dot_rhs_types_.insert( std::make_tuple(1,1,2) );
+      lhs_dot_rhs_types_.insert( boost::make_tuple(0,2,2) );
+      lhs_dot_rhs_types_.insert( boost::make_tuple(2,0,2) );
+      lhs_dot_rhs_types_.insert( boost::make_tuple(1,1,2) );
       //
-      lhs_dot_rhs_types_.insert( std::make_tuple(0,1,3) );
-      lhs_dot_rhs_types_.insert( std::make_tuple(1,0,3) );
-      lhs_dot_rhs_types_.insert( std::make_tuple(0,0,4) );
+      lhs_dot_rhs_types_.insert( boost::make_tuple(0,1,3) );
+      lhs_dot_rhs_types_.insert( boost::make_tuple(1,0,3) );
+      lhs_dot_rhs_types_.insert( boost::make_tuple(0,0,4) );
     }
   }
   // 3PDM
   else if (pdm_order_ == NPDM_THREEPDM) {
     if ( sweep_pos == 0 ) {
-      lhs_dot_rhs_types_.insert( std::make_tuple(4,2,0) );
-      lhs_dot_rhs_types_.insert( std::make_tuple(4,0,2) );
-      lhs_dot_rhs_types_.insert( std::make_tuple(4,1,1) );
+      lhs_dot_rhs_types_.insert( boost::make_tuple(4,2,0) );
+      lhs_dot_rhs_types_.insert( boost::make_tuple(4,0,2) );
+      lhs_dot_rhs_types_.insert( boost::make_tuple(4,1,1) );
     }
     else if ( sweep_pos == end_pos ) {
-      lhs_dot_rhs_types_.insert( std::make_tuple(0,3,3) );
-      lhs_dot_rhs_types_.insert( std::make_tuple(3,0,3) );
-      lhs_dot_rhs_types_.insert( std::make_tuple(1,2,3) );
-      lhs_dot_rhs_types_.insert( std::make_tuple(2,1,3) );
+      lhs_dot_rhs_types_.insert( boost::make_tuple(0,3,3) );
+      lhs_dot_rhs_types_.insert( boost::make_tuple(3,0,3) );
+      lhs_dot_rhs_types_.insert( boost::make_tuple(1,2,3) );
+      lhs_dot_rhs_types_.insert( boost::make_tuple(2,1,3) );
       //
-      lhs_dot_rhs_types_.insert( std::make_tuple(0,2,4) );
-      lhs_dot_rhs_types_.insert( std::make_tuple(2,0,4) );
-      lhs_dot_rhs_types_.insert( std::make_tuple(1,1,4) );
+      lhs_dot_rhs_types_.insert( boost::make_tuple(0,2,4) );
+      lhs_dot_rhs_types_.insert( boost::make_tuple(2,0,4) );
+      lhs_dot_rhs_types_.insert( boost::make_tuple(1,1,4) );
     }
   }
   // 4PDM
@@ -238,11 +239,11 @@ void Npdm_patterns::build_lhs_dot_rhs_types( int sweep_pos, int end_pos )
       // Nothing extra needed
     }
     else if ( sweep_pos == end_pos ) {
-      lhs_dot_rhs_types_.insert( std::make_tuple(0,4,4) );
-      lhs_dot_rhs_types_.insert( std::make_tuple(4,0,4) );
-      lhs_dot_rhs_types_.insert( std::make_tuple(1,3,4) );
-      lhs_dot_rhs_types_.insert( std::make_tuple(3,1,4) );
-      lhs_dot_rhs_types_.insert( std::make_tuple(2,2,4) );
+      lhs_dot_rhs_types_.insert( boost::make_tuple(0,4,4) );
+      lhs_dot_rhs_types_.insert( boost::make_tuple(4,0,4) );
+      lhs_dot_rhs_types_.insert( boost::make_tuple(1,3,4) );
+      lhs_dot_rhs_types_.insert( boost::make_tuple(3,1,4) );
+      lhs_dot_rhs_types_.insert( boost::make_tuple(2,2,4) );
     }
   }
   // I don't think higher PDM's have any edge cases since we have 4-index ops max on a 1-site block??
@@ -358,7 +359,7 @@ bool Npdm_patterns::is_valid_dot_type( std::vector<CD> ops )
     if(ops.size()>4) return false;
     int c = 0;
     int d = 0;
-    for (auto op = ops.begin(); op != ops.end(); op++ ) {
+    for (std::vector<CD>::iterator op = ops.begin(); op != ops.end(); op++ ) {
       if ( *op == CREATION ) c++;
       if ( *op == DESTRUCTION ) d++;
     }
@@ -408,7 +409,7 @@ bool Npdm_patterns::is_valid_dot_type( std::vector<CD> ops )
   if (ops.size() > 4) return false;
   int c = 0;
   int d = 0;
-  for (auto op = ops.begin(); op != ops.end(); op++ ) {
+  for (std::vector<CD>::iterator op = ops.begin(); op != ops.end(); op++ ) {
     if ( *op == CREATION ) c++;
     if ( *op == DESTRUCTION ) d++;
     if ( c > 2 ) return false;
@@ -417,7 +418,7 @@ bool Npdm_patterns::is_valid_dot_type( std::vector<CD> ops )
 
   // All creation must be on left
   std::vector<CD> sorted_ops( ops.begin(), ops.end() );
-  bool valid = std::is_sorted( sorted_ops.begin(), sorted_ops.end() );
+  bool valid = boost::is_sorted(sorted_ops);
   if ( not valid ) return false;
 
   return true;
@@ -448,16 +449,16 @@ bool Npdm_patterns::is_valid_ldr_type( std::map< char, std::vector<CD> > & cd_pa
   std::vector< std::pair<CD,int> > opstring;
   int i = 1;
   // Add in LHS
-  for (auto cd = cd_pattern.at('l').begin(); cd != cd_pattern.at('l').end(); cd++ ) {
+  for (std::vector<CD>::iterator cd = cd_pattern.at('l').begin(); cd != cd_pattern.at('l').end(); cd++ ) {
     opstring.push_back( std::make_pair( *cd, i++ ) );
   }
   // Add in Dot
-  for (auto cd = cd_pattern.at('d').begin(); cd != cd_pattern.at('d').end(); cd++ ) {
+  for (std::vector<CD>::iterator cd = cd_pattern.at('d').begin(); cd != cd_pattern.at('d').end(); cd++ ) {
     opstring.push_back( std::make_pair( *cd, i ) );
   }
   // Add in RHS
   i++;
-  for (auto cd = cd_pattern.at('r').begin(); cd != cd_pattern.at('r').end(); cd++ ) {
+  for (std::vector<CD>::iterator cd = cd_pattern.at('r').begin(); cd != cd_pattern.at('r').end(); cd++ ) {
     opstring.push_back( std::make_pair( *cd, i++ ) );
   }
 
@@ -467,14 +468,14 @@ bool Npdm_patterns::is_valid_ldr_type( std::map< char, std::vector<CD> > & cd_pa
   // Split into creation and destruction halves
   std::vector<int> cvec, dvec;
   if (pdm_order_ == NPDM_PAIRMATRIX) {
-    for (auto it = opstring.begin() + 2; it != opstring.end(); it++ ) {
+    for (std::vector< std::pair<CD,int> >::iterator it = opstring.begin() + 2; it != opstring.end(); it++ ) {
       dvec.push_back( it->second );
     }
   } else if (pdm_order_ >= NPDM_ONEPDM || pdm_order_ <= NPDM_FOURPDM) {
-    for (auto it = opstring.begin(); it != opstring.begin() + pdm_order_-NPDM_ONEPDM+1; it++) {
+    for (std::vector< std::pair<CD,int> >::iterator it = opstring.begin(); it != opstring.begin() + pdm_order_-NPDM_ONEPDM+1; it++) {
       cvec.push_back( it->second );
     }
-    for (auto it = opstring.begin() + pdm_order_; it != opstring.end(); it++ ) {
+    for (std::vector< std::pair<CD,int> >::iterator it = opstring.begin() + pdm_order_; it != opstring.end(); it++ ) {
       dvec.push_back( it->second );
     }
   } else {
@@ -502,13 +503,13 @@ void Npdm_patterns::build_ldr_cd_types( int sweep_pos, int end_pos )
   //pout << "Spin-1/2 fermionic operator patterns for DMRG blocks:\n";
 
   // Loop over LHS, Dot, RHS patterns
-  for (auto ldr_iter = lhs_dot_rhs_types_.begin(); ldr_iter != lhs_dot_rhs_types_.end(); ldr_iter++) {
-    int ilhs = std::get<0>(*ldr_iter);
-    int idot = std::get<1>(*ldr_iter);
-    int irhs = std::get<2>(*ldr_iter);
+  for (std::set< boost::tuple<int,int,int> >::iterator ldr_iter = lhs_dot_rhs_types_.begin(); ldr_iter != lhs_dot_rhs_types_.end(); ldr_iter++) {
+    int ilhs = boost::get<0>(*ldr_iter);
+    int idot = boost::get<1>(*ldr_iter);
+    int irhs = boost::get<2>(*ldr_iter);
     //pout << ilhs << "," << idot << "," << irhs << "\n";
     // Loop over creation-destruction patterns
-    for (auto cd_iter = cre_des_types_.begin(); cd_iter != cre_des_types_.end(); cd_iter++) {
+    for (std::set< std::vector<CD> >::iterator cd_iter = cre_des_types_.begin(); cd_iter != cre_des_types_.end(); cd_iter++) {
 
       // Split CD pattern into LHS, Dot and RHS
       std::vector<CD> lhs_cd( cd_iter->begin() , (cd_iter->begin() + ilhs) );
@@ -572,7 +573,7 @@ void Npdm_patterns::build_ldr_cd_types( int sweep_pos, int end_pos )
 void Npdm_patterns::print_int_string( const std::vector<int> & vec )
 {
   pout << "(";
-  for (auto op = vec.begin(); op != vec.end(); op++) {
+  for (std::vector<int>::const_iterator op = vec.begin(); op != vec.end(); op++) {
      pout << *op;
   }
   pout << ")";
@@ -585,7 +586,7 @@ void Npdm_patterns::print_cd_string( const std::vector<CD> & cdvec )
 {
   char cd;
   pout << "(";
-  for (auto op = cdvec.begin(); op != cdvec.end(); op++) {
+  for (std::vector<CD>::const_iterator op = cdvec.begin(); op != cdvec.end(); op++) {
      cd = '.';
      if (*op == CREATION) cd = '+';
      pout << cd;

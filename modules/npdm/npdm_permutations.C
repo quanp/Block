@@ -66,7 +66,7 @@ void Twopdm_permutations::get_spatial_batch( const std::vector< std::pair< std::
 {
   spatial_perms.clear();
   std::vector<int> indices;
-  std::vector<std::vector<int>> newindices;
+  std::vector< std::vector<int> > newindices;
   std::vector<int> tmp;
 
   if (in.size()==0)
@@ -121,7 +121,7 @@ void Twopdm_permutations::get_spatial_batch( const std::vector< std::pair< std::
           spatial_batch.insert(tmp);
         }
       }
-      for(auto x = spatial_batch.begin(); x != spatial_batch.end(); ++x)
+      for(std::set< std::vector<int> >::iterator x = spatial_batch.begin(); x != spatial_batch.end(); ++x)
         spatial_perms.push_back(std::make_pair(*x,value));
     }
   }
@@ -134,7 +134,7 @@ void Threepdm_permutations::get_spatial_batch( const std::vector< std::pair< std
 {
   spatial_perms.clear();
   std::vector<int> indices;
-  std::vector<std::vector<int>> newindices;
+  std::vector< std::vector<int> > newindices;
   std::vector<int> tmp;
 
   if (in.size()==0)
@@ -215,7 +215,7 @@ void Threepdm_permutations::get_spatial_batch( const std::vector< std::pair< std
    //     tmp={n,q,p,l,k,m}; spatial_batch.insert(tmp);
    //     tmp={n,p,q,k,l,m}; spatial_batch.insert(tmp);
    //   }
-      for(auto x = spatial_batch.begin(); x != spatial_batch.end(); ++x)
+      for(std::set< std::vector<int> >::iterator x = spatial_batch.begin(); x != spatial_batch.end(); ++x)
         spatial_perms.push_back(std::make_pair(*x,value));
     }
   }
@@ -228,7 +228,7 @@ void Fourpdm_permutations::get_spatial_batch( const std::vector< std::pair< std:
 {
   spatial_perms.clear();
   std::vector<int> indices;
-  std::vector<std::vector<int>> newindices;
+  std::vector< std::vector<int> > newindices;
   std::vector<int> tmp;
 
   if (in.size()==0)
@@ -293,7 +293,7 @@ void Fourpdm_permutations::get_spatial_batch( const std::vector< std::pair< std:
           spatial_batch.insert(tmp);
         }
       }
-      for(auto x = spatial_batch.begin(); x != spatial_batch.end(); ++x)
+      for(std::set< std::vector<int> >::iterator x = spatial_batch.begin(); x != spatial_batch.end(); ++x)
         spatial_perms.push_back(std::make_pair(*x,value));
     }
   }

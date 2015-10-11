@@ -35,7 +35,7 @@ MOLCAS = yes
 
 ifeq ($(USE_MKL), yes)
 MKLLIB =
-LAPACKBLAS = -lmkl_intel_lp64 -lmkl_sequential -lmkl_core
+LAPACKBLAS = -L/home100/opt/intel/mkl/lib/intel64 -lmkl_intel_lp64 -lmkl_sequential -lmkl_core
 MKLFLAGS = .
 MKLOPT = -D_HAS_INTEL_MKL
 else
@@ -52,7 +52,7 @@ ARFLAGS=-qs
 RANLIB=ranlib
 
 ifeq ($(I8_OPT), yes)
-	I8 = -D_FORTINT_64
+I8 = -D_FORTINT_64
 endif
 
 EXECUTABLE = block.spin_adapted
@@ -78,8 +78,8 @@ endif
 
 FLAGS =  -I${MKLFLAGS} -I$(INCLUDE1) -I$(INCLUDE2) -I$(NEWMATINCLUDE) -I$(BOOSTINCLUDE) -I$(MOLPROINCLUDE) \
          -I$(HOME)/modules/generate_blocks/ -I$(HOME)/modules/onepdm -I$(HOME)/modules/twopdm/ \
-         -I$(HOME)/modules/npdm -I$(HOME)/modules/two_index_ops -I$(HOME)/modules/three_index_ops -I$(HOME)/modules/four_index_ops -std=c++0x \
-	 -I$(HOME)/modules/ResponseTheory -I$(HOME)/modules/nevpt2 -I$(HOME)/molcas
+         -I$(HOME)/modules/npdm -I$(HOME)/modules/two_index_ops -I$(HOME)/modules/three_index_ops -I$(HOME)/modules/four_index_ops \
+         -I$(HOME)/modules/ResponseTheory -I$(HOME)/modules/nevpt2 -I$(HOME)/molcas
 
 LIBS +=  -L$(NEWMATLIB) -lnewmat $(BOOSTLIB) $(LAPACKBLAS) -liomp5 
 MPI_OPT = -DSERIAL

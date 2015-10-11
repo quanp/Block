@@ -7,6 +7,7 @@
 #include <boost/filesystem.hpp>
 #include <boost/archive/binary_oarchive.hpp>
 #include <boost/archive/binary_iarchive.hpp>
+#include <boost/type_traits.hpp>
 #include <vector> 
 #include <fstream>
 #include <iostream>
@@ -21,13 +22,15 @@ namespace Sortpdm{
 
 template<class T>
 class has_index{
+  typedef char true_[1];
+  typedef char false_[2];
   template<class U>
-  static std::true_type __test(typename U::indextype);
+  static true_& __test(typename U::indextype*);
   template<class >
-  static std::false_type __test(...);
+  static false_& __test(...);
 public:
-//static constexpr const bool value = std::is_same<std::true_type, decltype(__test<T>(0))>::value;
-  static const bool value = std::is_same<std::true_type, decltype(__test<T>(0))>::value;
+//static constexpr const bool value = boost::is_same<boost::true_type, decltype(__test<T>(0))>::value;
+  static const bool value = sizeof(true_) == sizeof(__test<T>(0));
 };
 
   class index_element{
@@ -300,7 +303,7 @@ void externalsort(char* inputfilename, char* outputfilename, long number_of_data
   fclose(datafile);
   // Merge these pieces;
   
-  std::vector<cache<T>> filecache;
+  std::vector< cache<T> > filecache;
   char tmpfile[100];
   for(int i =0; i< piecesnumber; i++){
 #ifndef SERIAL
@@ -391,15 +394,15 @@ void externalsort(char* inputfilename, char* outputfilename, long number_of_data
 }
 
 #ifndef SERIAL
-template<class T,class= typename std::enable_if<has_index<T>::value>::type>
+template<class T,class= typename boost::enable_if_c<has_index<T>::value>::type>
 void partition_data(long number_of_data, char* inputfilename, char* outputfilename)
 {
   boost::mpi::communicator world;
   long partition_index=number_of_data/world.size();
   //std::pout << "begin partition\n";
 
-  std::vector<info_pair<T>> recv_buff(world.size());
-  std::vector<std::vector<T>> send_buff(world.size());
+  std::vector< info_pair<T> > recv_buff(world.size());
+  std::vector< std::vector<T> > send_buff(world.size());
   //std::vector<T> output_buff;
   FILE* outputfile = fopen(outputfilename,"wb");
   setvbuf(outputfile,NULL,_IOFBF,Buff_SIZE*3);

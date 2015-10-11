@@ -84,7 +84,7 @@ class MPS{
     }
 
   std::vector< std::vector<Matrix> > SiteTensors; //these are the L matrices
-  std::vector<std::vector<QSTensor>> MPSrep;
+  std::vector< std::vector<QSTensor> > MPSrep;
   Wavefunction w; //the last wavefunction
 
   void Init(std::vector<bool>& occ);

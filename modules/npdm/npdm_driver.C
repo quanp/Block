@@ -165,7 +165,7 @@ void Npdm_driver::do_parallel_intermediate_loop( const char inner, Npdm::Npdm_ex
 
       npdm_expectations.get_op_string(outerOps,dotOps,op_string);
       file = str(boost::format("%s%s%s%s%s%s") % dmrginp.save_prefix() % "/npdm_left."% op_string %"_p" %mpigetrank()% ".tmp" );
-      ifstream ifs(file,std::ios::binary);
+      ifstream ifs(file.c_str(),std::ios::binary);
       boost::archive::binary_iarchive load_waves(ifs);
       load_waves >> local_waves;
 
@@ -179,7 +179,7 @@ void Npdm_driver::do_parallel_intermediate_loop( const char inner, Npdm::Npdm_ex
       npdm_expectations.get_op_string(outerOps,op_string);
 
       file = str(boost::format("%s%s%s%s%s%s") % dmrginp.save_prefix() % "/npdm_right."% op_string %"_p" %mpigetrank()% ".tmp" );
-      ifstream ifs(file,std::ios::binary);
+      ifstream ifs(file.c_str(),std::ios::binary);
       boost::archive::binary_iarchive load_waves(ifs);
       load_waves >> local_waves;
 
@@ -209,7 +209,7 @@ void Npdm_driver::do_parallel_intermediate_loop( const char inner, Npdm::Npdm_ex
   NpdmSpinOps_base local_base(outerOps);
   std::vector< NpdmSpinOps_base > nonlocal_base( world.size() );
   std::vector< boost::mpi::request > reqs;
-  std::vector<std::map<std::vector<int>, Wavefunction>> nonlocal_waves( world.size());
+  std::vector< std::map< std::vector<int>, Wavefunction> > nonlocal_waves( world.size());
   std::vector< int > nonlocal_size( world.size() );
   std::vector< int > nonlocal_skip( world.size() );
 
@@ -507,7 +507,7 @@ void Npdm_driver::loop_over_operator_patterns( Npdm::Npdm_patterns& patterns, Np
   SpinBlock* dotBlock = lhsdotBlock->get_rightBlock();
 
   int count = 0;
-  for (auto pattern = patterns.ldr_cd_begin(); pattern != patterns.ldr_cd_end(); ++pattern) {
+  for (std::set< std::map< char, std::vector<CD> > >::const_iterator pattern = patterns.ldr_cd_begin(); pattern != patterns.ldr_cd_end(); ++pattern) {
     count++;
     DEBUG_CALL_GET_EXPECT= 0;
 
@@ -610,13 +610,13 @@ bool Npdm_driver::screen(const std::vector<CD> &lhs_cd_type,const std::vector<CD
 {
   int cre_num=0;
   int des_num=0;
-  for(auto i = lhs_cd_type.begin(); i != lhs_cd_type.end(); ++i)
+  for(std::vector<CD>::const_iterator i = lhs_cd_type.begin(); i != lhs_cd_type.end(); ++i)
   {
     if(*i== CREATION) cre_num++;
     else if (*i== DESTRUCTION) des_num++;
   }
 
-  for(auto i = dot_cd_type.begin(); i != dot_cd_type.end(); ++i)
+  for(std::vector<CD>::const_iterator i = dot_cd_type.begin(); i != dot_cd_type.end(); ++i)
   {
     if(*i== CREATION) cre_num++;
     else if (*i== DESTRUCTION) des_num++;
@@ -640,7 +640,7 @@ void Npdm_driver::loop_over_operator_patterns_store( Npdm::Npdm_patterns& patter
   SpinBlock* lhsBlock = lhsdotBlock->get_leftBlock();
   SpinBlock* dotBlock = lhsdotBlock->get_rightBlock();
 
-  for (auto dot_cd_type = patterns.dot_cd_begin(); dot_cd_type != patterns.dot_cd_end(); ++dot_cd_type) {
+  for (std::set< std::vector<CD> >::const_iterator dot_cd_type = patterns.dot_cd_begin(); dot_cd_type != patterns.dot_cd_end(); ++dot_cd_type) {
     //Loop lhs
     boost::shared_ptr<NpdmSpinOps> dotOps = select_op_wrapper( dotBlock, *dot_cd_type );
     for ( int idot = 0; idot < dotOps->size(); ++idot ) {
@@ -648,7 +648,7 @@ void Npdm_driver::loop_over_operator_patterns_store( Npdm::Npdm_patterns& patter
       bool skip_op = dotOps->set_local_ops( idot );
 			diskread_time += timer2.elapsedwalltime();
       if ( skip_op ) continue;
-      for (auto lhs_cd_type= patterns.lhs_cd_begin(); lhs_cd_type!= patterns.lhs_cd_end(); ++lhs_cd_type) {
+      for (std::set< std::vector<CD> >::const_iterator lhs_cd_type= patterns.lhs_cd_begin(); lhs_cd_type!= patterns.lhs_cd_end(); ++lhs_cd_type) {
         if(screen(*lhs_cd_type,*dot_cd_type)) continue;
         boost::shared_ptr<NpdmSpinOps> lhsOps = select_op_wrapper( lhsBlock, *lhs_cd_type );
         for ( int ilhs = 0; ilhs < lhsOps->size(); ++ilhs ) {
@@ -663,7 +663,7 @@ void Npdm_driver::loop_over_operator_patterns_store( Npdm::Npdm_patterns& patter
   }
 
   //Loop rhs
-  for (auto rhs_cd_type= patterns.rhs_cd_begin(); rhs_cd_type!= patterns.rhs_cd_end(); ++rhs_cd_type) {
+  for (std::set< std::vector<CD> >::const_iterator rhs_cd_type= patterns.rhs_cd_begin(); rhs_cd_type!= patterns.rhs_cd_end(); ++rhs_cd_type) {
     boost::shared_ptr<NpdmSpinOps> rhsOps = select_op_wrapper( rhsBlock, *rhs_cd_type );
     for ( int irhs = 0; irhs < rhsOps->size(); ++irhs ) {
 			Timer timer2;
@@ -679,7 +679,7 @@ void Npdm_driver::loop_over_operator_patterns_store( Npdm::Npdm_patterns& patter
 //-----------------------------------------------------------------------------------------------------------------------------------------------------------
 void Npdm_driver::clear_npdm_intermediate(Npdm::Npdm_expectations& expectations)
 {
-  for(auto filename = expectations.intermediate_filenames.begin(); filename != expectations.intermediate_filenames.end(); ++filename)
+  for(std::vector<std::string>::iterator filename = expectations.intermediate_filenames.begin(); filename != expectations.intermediate_filenames.end(); ++filename)
     remove(filename->c_str());
   expectations.intermediate_filenames.clear();
 

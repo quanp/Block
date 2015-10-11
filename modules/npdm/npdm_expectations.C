@@ -38,7 +38,7 @@ Npdm_expectations::Npdm_expectations( Npdm_spin_adaptation& spin_adaptation, Npd
 bool Npdm_expectations::screen_op_string_for_duplicates( const std::string& op, const std::vector<int>& indices )
 {
   std::string CD;
-  for (auto it = op.begin(); it != op.end(); ++it) {
+  for (std::string::const_iterator it = op.begin(); it != op.end(); ++it) {
     if ( (*it == 'C') || (*it == 'D') ) CD.push_back(*it);
   }
 
@@ -89,7 +89,7 @@ void Npdm_expectations::get_full_op_string( NpdmSpinOps_base & lhsOps, NpdmSpinO
   // Combine indices and build_pattern into one string
   op_string.clear();
   std::vector<int> idx = indices;
-  for (auto it = build_pattern.begin(); it != build_pattern.end(); ++it) {
+  for (std::string::iterator it = build_pattern.begin(); it != build_pattern.end(); ++it) {
     op_string.push_back(*it);
     if ( (*it == 'C') || (*it == 'D') ) {
       std::string index = boost::lexical_cast<string>( idx.at(0) );
@@ -279,14 +279,14 @@ double Npdm_expectations::build_nonspin_adapted_singlet_expectations( NpdmSpinOp
     std::string op_string;
     get_op_string(lhsOps,dotOps,op_string);
     std::string file = str(boost::format("%s%s%s%s%s%s") % dmrginp.save_prefix() % "/npdm_left."% op_string %"_p" %mpigetrank() %  ".tmp" );
-    ifstream ifs1(file,std::ios::binary);
+    ifstream ifs1(file.c_str(),std::ios::binary);
     boost::archive::binary_iarchive load_waves(ifs1);
     load_waves >> leftwaves;
     ifs1.close();
 
     get_op_string(rhsOps,op_string);
     file = str(boost::format("%s%s%s%s%s%s") % dmrginp.save_prefix() % "/npdm_right."% op_string % ".tmp" );
-    ifstream ifs2(file,std::ios::binary);
+    ifstream ifs2(file.c_str(),std::ios::binary);
     boost::archive::binary_iarchive load_waves2(ifs2);
     load_waves2 >> rightwaves;
     ifs2.close();
@@ -333,7 +333,7 @@ double Npdm_expectations::build_nonspin_adapted_singlet_expectations( const char
       get_op_string(rhsOps,op_string);
       file = str(boost::format("%s%s%s%s%s%s") % dmrginp.save_prefix() % "/npdm_right."% op_string % ".tmp" );
     }
-    ifstream ifs1(file,std::ios::binary);
+    ifstream ifs1(file.c_str(),std::ios::binary);
     boost::archive::binary_iarchive load_waves(ifs1);
     load_waves >> innerwaves;
     ifs1.close();
@@ -376,7 +376,7 @@ void Npdm_expectations::build_spin_adapted_singlet_expectations( NpdmSpinOps_bas
     std::string op_string;
     get_op_string(lhsOps,dotOps,op_string);
     std::string file = str(boost::format("%s%s%s%s%s%s") % dmrginp.save_prefix() % "/npdm_left."% op_string % "_p" %mpigetrank()%".tmp" );
-    ifstream ifs1(file,std::ios::binary);
+    ifstream ifs1(file.c_str(),std::ios::binary);
 
     boost::archive::binary_iarchive load_waves(ifs1);
     load_waves >> leftwaves;
@@ -384,7 +384,7 @@ void Npdm_expectations::build_spin_adapted_singlet_expectations( NpdmSpinOps_bas
 
     get_op_string(rhsOps,op_string);
     file = str(boost::format("%s%s%s%s%s%s") % dmrginp.save_prefix() % "/npdm_right."% op_string% "_p" %mpigetrank() % ".tmp" );
-    ifstream ifs2(file,std::ios::binary);
+    ifstream ifs2(file.c_str(),std::ios::binary);
     boost::archive::binary_iarchive load_waves2(ifs2);
     load_waves2 >> rightwaves;
     ifs2.close();
@@ -497,7 +497,7 @@ void Npdm_expectations::build_spin_adapted_singlet_expectations( const char inne
     get_op_string(rhsOps,op_string);
     file = str(boost::format("%s%s%s%s%s%s") % dmrginp.save_prefix() % "/npdm_right."% op_string % "_p" %mpigetrank()% ".tmp" );
     }
-    ifstream ifs1(file,std::ios::binary);
+    ifstream ifs1(file.c_str(),std::ios::binary);
     boost::archive::binary_iarchive load_waves(ifs1);
     load_waves >> innerwaves;
     ifs1.close();
@@ -581,7 +581,7 @@ Npdm_expectations::get_nonspin_adapted_expectations( NpdmSpinOps_base & lhsOps, 
   if(!dmrginp.spinAdapted()){
     std::vector<int> cd_order;
     int k=0;
-    for ( auto it = op_string.begin(); it != op_string.end(); ++it ) {
+    for (std::string::iterator it = op_string.begin(); it != op_string.end(); ++it ) {
       if (*it=='C') cd_order.push_back((indices[k++]));
       if (*it=='D') cd_order.push_back(1000+indices[k++]);
     }
@@ -862,7 +862,7 @@ void Npdm_expectations::store( NpdmSpinOps_base & lhsOps, NpdmSpinOps_base & dot
   std::string op_string;
   get_op_string(lhsOps,dotOps,op_string);
   file = str(boost::format("%s%s%s%s%s%s") % dmrginp.save_prefix() % "/npdm_left."% op_string % "_p" % mpigetrank()% ".tmp" );
-  ofstream ofs(file,std::ios::binary);
+  ofstream ofs(file.c_str(),std::ios::binary);
   boost::archive::binary_oarchive save_waves(ofs);
   save_waves << waves_;
   ofs.close();
@@ -905,7 +905,7 @@ void Npdm_expectations::store( NpdmSpinOps_base & rhsOps )
   std::string op_string;
   get_op_string(rhsOps,op_string);
   file = str(boost::format("%s%s%s%s%s%s") % dmrginp.save_prefix() % "/npdm_right."% op_string % "_p" %mpigetrank()%".tmp" );
-  ofstream ofs(file,std::ios::binary);
+  ofstream ofs(file.c_str(),std::ios::binary);
   boost::archive::binary_oarchive save_waves(ofs);
   save_waves << waves_;
   ofs.close();
@@ -923,7 +923,7 @@ void Npdm_expectations::restore( NpdmSpinOps_base & lhsOps, NpdmSpinOps_base & d
   std::string op_string;
   get_op_string(lhsOps,dotOps,op_string);
   file = str(boost::format("%s%s%s%s%s%s") % dmrginp.save_prefix() % "/npdm_left."% op_string% "_p" %mpigetrank() % ".tmp" );
-  ifstream ifs1(file,std::ios::binary);
+  ifstream ifs1(file.c_str(),std::ios::binary);
   boost::archive::binary_iarchive load_waves(ifs1);
   load_waves >> halfwaves;
   ifs1.close();
@@ -939,7 +939,7 @@ void Npdm_expectations::restore( NpdmSpinOps_base & rhsOps, std::map<std::vector
   std::string op_string;
   get_op_string(rhsOps,op_string);
   file = str(boost::format("%s%s%s%s%s%s") % dmrginp.save_prefix() % "/npdm_right."% op_string % "_p" %mpigetrank()% ".tmp" );
-  ifstream ifs1(file,std::ios::binary);
+  ifstream ifs1(file.c_str(),std::ios::binary);
   boost::archive::binary_iarchive load_waves(ifs1);
   load_waves >> halfwaves;
   ifs1.close();
@@ -967,7 +967,7 @@ void Npdm_expectations::get_op_string( NpdmSpinOps_base & lhsOps, NpdmSpinOps_ba
   // Combine indices and build_pattern into one string
   op_string.clear();
   std::vector<int> idx = indices;
-  for (auto it = build_pattern.begin(); it != build_pattern.end(); ++it) {
+  for (std::string::iterator it = build_pattern.begin(); it != build_pattern.end(); ++it) {
     op_string.push_back(*it);
     if ( (*it == 'C') || (*it == 'D') ) {
       std::string index = boost::lexical_cast<string>( idx.at(0) );
@@ -991,7 +991,7 @@ void Npdm_expectations::get_op_string( NpdmSpinOps_base & rhsOps,
   // Combine indices and build_pattern into one string
   op_string.clear();
   std::vector<int> idx = indices;
-  for (auto it = rhsOps.build_pattern_.begin(); it != rhsOps.build_pattern_.end(); ++it) {
+  for (std::string::iterator it = rhsOps.build_pattern_.begin(); it != rhsOps.build_pattern_.end(); ++it) {
     op_string.push_back(*it);
     if ( (*it == 'C') || (*it == 'D') ) {
       std::string index = boost::lexical_cast<string>( idx.at(0) );

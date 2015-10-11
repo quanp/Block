@@ -10,7 +10,7 @@
 #include <vector> 
 #include <fstream>
 #include <iostream>
-#include <thread>
+//#include <thread>
 #include "externalsort.h"
 
 namespace SpinAdapted{
@@ -35,7 +35,8 @@ void mergefile(char* filename){
         break;
       }
       sendvector.resize(realsize);
-      std::move(buff,buff+realsize,sendvector.begin());
+//    std::move(buff,buff+realsize,sendvector.begin());
+      memmove(sendvector.data(),buff,realsize);
 
       //sendvector.assign(buff,buff+realsize);
       world.send(0,0,sendvector);

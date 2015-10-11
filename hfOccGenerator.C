@@ -49,7 +49,7 @@ std::vector<int> SpinAdapted::Input::hfOccGenerator_ ()
   }
 
   if(refIrep != irep) {
-    std::vector<std::vector<int>> exOccs;
+    std::vector< std::vector<int> > exOccs;
     // beta el. excitation
     // --- ---     --- ---
     // --- ---     --- ---

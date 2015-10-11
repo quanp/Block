@@ -55,10 +55,10 @@ void QSTensor::remove_empty() {
   int nr_new = count;
 
   if (nl_new < nl || nr_new < nr) {
-    auto allowedQuantaOld = allowedQuanta;
-    auto dataOld = data;
-    auto leftQuantaOld = leftQuanta;
-    auto rightQuantaOld = rightQuanta;
+    ObjectMatrix<char> allowedQuantaOld = allowedQuanta;
+    ObjectMatrix<Matrix> dataOld = data;
+    std::vector<SpinQuantum> leftQuantaOld = leftQuanta;
+    std::vector<SpinQuantum> rightQuantaOld = rightQuanta;
     allowedQuanta.ReSize(nl_new, nr_new);
     data.ReSize(nl_new, nr_new);
     for (int i = 0; i < nl; ++i) {
@@ -177,7 +177,7 @@ void LoadQSTensor(const int& site, QSTensor& m, int state) {
       stater.CollectQuanta();
       vector<QSTensor> A(statep.quanta.size(), QSTensor(statel.quanta, stater.quanta));
       for (int r_idx = 0; r_idx < stater.oldToNewState.size(); ++r_idx) { // index of qr
-        auto OldtoNew = stater.oldToNewState[r_idx];
+        std::vector<int> OldtoNew = stater.oldToNewState[r_idx];
         int temp = 0;
         for (int k = 0; k < OldtoNew.size(); ++k) {
           int l_idx = stater.leftUnMapQuanta[OldtoNew[k]];
@@ -195,7 +195,7 @@ void LoadQSTensor(const int& site, QSTensor& m, int state) {
         A[j].remove_empty();
       }
 
-      auto RotMat = getSiteTensors(i);
+      std::vector<Matrix> RotMat = getSiteTensors(i);
       
       QSTensor QSRotMat(stater.quanta, stater.quanta);
       for (int j = 0; j < stater.quanta.size(); ++j) {
@@ -227,7 +227,7 @@ void LoadQSTensor(const int& site, QSTensor& m, int state) {
     stater.CollectQuanta();
     vector<QSTensor> A(statep.quanta.size(), QSTensor(statel.quanta, stater.quanta));
     for (int r_idx = 0; r_idx < stater.oldToNewState.size(); ++r_idx) { // index of qr
-      auto OldtoNew = stater.oldToNewState[r_idx];
+      std::vector<int> OldtoNew = stater.oldToNewState[r_idx];
       int temp = 0;
       for (int k = 0; k < OldtoNew.size(); ++k) {
         int l_idx = stater.leftUnMapQuanta[OldtoNew[k]];
@@ -245,7 +245,7 @@ void LoadQSTensor(const int& site, QSTensor& m, int state) {
       A[j].remove_empty();
     }
     statep = MPS::siteBlocks[MPS::sweepIters+1].get_stateInfo();
-    auto wfn = getw();
+    Wavefunction wfn = getw();
     QSTensor QSWfn(stater.quanta, statep.quanta);
     for (int i = 0; i < QSWfn.lsize(); ++i) {
       for (int j = 0; j < QSWfn.rsize(); ++j) {

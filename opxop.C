@@ -409,7 +409,7 @@ void SpinAdapted::opxop::cxcdcomp(const SpinBlock* otherBlock, std::vector<boost
       boost::shared_ptr<SparseMatrix> op1 = opvec1.at(opind)->getworkingrepresentation(loopblock);
       if (!otherBlock->get_op_array(CRE_DESCOMP).has_local_index(I, op1->get_orbs(0)))
 	    return;
-      const std::vector<boost::shared_ptr<SparseMatrix>>& opvec2 = otherBlock->has(DES_CRECOMP) ? \
+      const std::vector< boost::shared_ptr<SparseMatrix> >& opvec2 = otherBlock->has(DES_CRECOMP) ? \
           otherBlock->get_op_array(DES_CRECOMP).get_element(I, op1->get_orbs(0)) : \
           otherBlock->get_op_array(CRE_DESCOMP).get_element(I, op1->get_orbs(0));
 

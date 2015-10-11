@@ -204,7 +204,7 @@ void Twopdm_container::update_full_spin_array( std::vector< std::pair< std::vect
 {
   // Take into account orbital reordering
   const std::vector<int>& ro = dmrginp.reorder_vector();
-  for (auto it = spin_batch.begin(); it != spin_batch.end(); ++it) {
+  for (std::vector< std::pair< std::vector<int>, double > >::iterator it = spin_batch.begin(); it != spin_batch.end(); ++it) {
     double val = it->second;
     if ( abs(val) < NUMERICAL_ZERO ) continue;
     int i0 = (it->first)[0];
@@ -251,7 +251,7 @@ void Twopdm_container::update_full_spatial_array( std::vector< std::pair< std::v
 
   // Note we multiply the spatial 2PDM by a factor of 1/2 to be consistent with the old BLOCK code, but this doesn't seem conventional?
   double factor = 0.5;
-  for (auto it = spin_batch.begin(); it != spin_batch.end(); ++it) {
+  for (std::vector< std::pair< std::vector<int>, double > >::iterator it = spin_batch.begin(); it != spin_batch.end(); ++it) {
     assert( (it->first).size() == 4 );
 
     // Store significant elements only
