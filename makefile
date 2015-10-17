@@ -3,17 +3,14 @@
 #This program is integrated in Molpro with the permission of 
 #Sandeep Sharma and Garnet K.-L. Chan
 
-##BOOSTINCLUDE = /home/sandeep/Work/Programs/boost_1_54_0/
 #specify boost include file
-#BOOSTINCLUDE = /homec/naokin/boost/1.54.0-ic1401/include
-BOOSTINCLUDE = /homec/naokin/boost/1.54.0/include
+BOOSTINCLUDE = /home100/naokin/boost/1.59.0-impi/include
 
 #specify boost and lapack-blas library locations
-#BOOSTLIB = -L/homec/naokin/boost/1.54.0-ic1401/lib -lboost_serialization -lboost_system -lboost_filesystem
-BOOSTLIB = -L/homec/naokin/boost/1.54.0/lib -lboost_serialization -lboost_system -lboost_filesystem
+BOOSTLIB = -L/home100/naokin/boost/1.59.0-impi/lib -lboost_serialization -lboost_system -lboost_filesystem
 LAPACKBLAS = -lblas -llapack
 
-USE_BOOST56 = no
+USE_BOOST56 = yes
 ifeq ($(USE_BOOST56), yes)
 	B56 = -DBOOST_1_56_0
 endif
@@ -36,7 +33,7 @@ MOLCAS = yes
 
 ifeq ($(USE_MKL), yes)
 MKLLIB =
-LAPACKBLAS = -L/home100/opt/intel/mkl/lib/intel64 -lmkl_intel_lp64 -lmkl_sequential -lmkl_core
+LAPACKBLAS = -lmkl_intel_lp64 -lmkl_sequential -lmkl_core
 MKLFLAGS = .
 MKLOPT = -D_HAS_INTEL_MKL
 else
@@ -59,8 +56,8 @@ endif
 EXECUTABLE = block.spin_adapted
 
 # change to icpc for Intel
-CXX = g++
-MPICXX = /homec/naokin/openmpi/1.6.5/bin/mpic++
+CXX = icpc
+MPICXX = mpiicpc
 BLOCKHOME = .
 HOME = .
 NEWMATINCLUDE = $(BLOCKHOME)/newmat10/

@@ -1,7 +1,7 @@
-#include "wrapper.h"
 #ifndef SERIAL
 #include "mpi.h"
 #endif
+#include "wrapper.h"
 #include "stdio.h"
 #include "stdlib.h"
 #include <string>

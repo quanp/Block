@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <sstream>
 
 #include <boost/filesystem.hpp>

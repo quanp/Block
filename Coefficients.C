@@ -1,9 +1,9 @@
-#include "global.h"
-#include "wrapper.h"
-#include "fciqmchelper.h"
 #ifndef SERIAL
 #include "mpi.h"
 #endif
+#include "global.h"
+#include "wrapper.h"
+#include "fciqmchelper.h"
 using namespace SpinAdapted;
 
 
