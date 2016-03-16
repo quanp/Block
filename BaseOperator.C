@@ -274,6 +274,25 @@ void Normalise(SparseMatrix& a, int* success)
   a.Normalise(success);
 }
 
+void HarmNormalise(SparseMatrix& w, SparseMatrix& v)
+{
+  double norm = DotProduct(w, w);
+  if(norm > NUMERICAL_ZERO) {
+    Scale(1./sqrt(norm),w);
+    Scale(1./sqrt(norm),v);
+  }
+  else {
+    pout << "\t\t\t Warning :: Didn't Normalise, because norm is too small (" << norm << ")" << endl;
+  }
+}
+
+void HarmOrthogonalise(const SparseMatrix& wi, const SparseMatrix& vi, SparseMatrix& wj, SparseMatrix& vj)
+{
+  double overlap = DotProduct(wi, wj);
+  ScaleAdd(-overlap, wi, wj);
+  ScaleAdd(-overlap, vi, vj);
+}
+
 void SparseMatrix::Normalise (int* success)
 {
   double normalisation = DotProduct(*this, *this);

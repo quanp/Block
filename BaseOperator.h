@@ -282,6 +282,8 @@ const Transposeview Transpose(SparseMatrix& op);
 
 double getCommuteParity(SpinQuantum a, SpinQuantum b, SpinQuantum c);
 void Normalise(SparseMatrix& a, int* success = 0);
+void HarmNormalise(SparseMatrix& w, SparseMatrix& v);
+void HarmOrthogonalise(const SparseMatrix& wi, const SparseMatrix& vi, SparseMatrix& wj, SparseMatrix& vj);
 void ScaleAdd(double d, const SparseMatrix& a, SparseMatrix& b);
 double DotProduct(const SparseMatrix& lhs, const SparseMatrix& rhs);
 double trace(const SparseMatrix& lhs);

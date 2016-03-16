@@ -26,19 +26,18 @@ const double EPS=1.e-20;
 
 void SpinAdapted::Linear::precondition(Wavefunction& op, double e, DiagonalMatrix& diagonal, double levelshift)
 {
-  if (!mpigetrank())
-  {
+  if (!mpigetrank()) {
     int index = 1;
     for (int lQ = 0; lQ < op.nrows (); ++lQ)
       for (int rQ = 0; rQ < op.ncols (); ++rQ)
-	if (op.allowed(lQ, rQ))
-	  for (int lQState = 0; lQState < op.operator_element(lQ, rQ).Nrows (); ++lQState)
-	    for (int rQState = 0; rQState < op.operator_element(lQ, rQ).Ncols (); ++rQState)
-	      {
-		if (fabs(e - diagonal(index)) > 1.e-12)		
-		  op.operator_element(lQ, rQ).element(lQState, rQState) /= (e - diagonal(index)+levelshift);
-		++index;
-	      }
+        if (op.allowed(lQ, rQ))
+          for (int lQState = 0; lQState < op.operator_element(lQ, rQ).Nrows (); ++lQState)
+            for (int rQState = 0; rQState < op.operator_element(lQ, rQ).Ncols (); ++rQState)
+            {
+              if (fabs(e - diagonal(index)) > 1.e-12)
+                op.operator_element(lQ, rQ).element(lQState, rQState) /= (e - diagonal(index)+levelshift);
+              ++index;
+            }
   }
 #ifndef SERIAL
   //mpi::communicator world;
@@ -49,14 +48,12 @@ void SpinAdapted::Linear::precondition(Wavefunction& op, double e, DiagonalMatri
 
 void SpinAdapted::Linear::olsenPrecondition(Wavefunction& op, Wavefunction& C0, double e, DiagonalMatrix& diagonal, double levelshift)
 {
-
   Wavefunction C0copy = C0;
   precondition(C0copy, e, diagonal, levelshift);
   double numerator = DotProduct(C0copy, op);
   double denominator = DotProduct(C0, C0copy);
   ScaleAdd(-numerator/denominator, C0, op);
   precondition(op, e, diagonal, levelshift);
-
 }
 
 void SpinAdapted::Linear::Lanczos(vector<Wavefunction>& b, DiagonalMatrix& e, double normtol, Davidson_functor& h_multiply, int nroots)
@@ -124,8 +121,8 @@ void SpinAdapted::Linear::Lanczos(vector<Wavefunction>& b, DiagonalMatrix& e, do
 
       ScaleAdd(-alphai, *bptr, r);
       for (int i=iter-1; i>=0; i--) {
-	double overlap = DotProduct(b[i], r);
-	ScaleAdd(-overlap, b[i], r);
+  double overlap = DotProduct(b[i], r);
+  ScaleAdd(-overlap, b[i], r);
       }
       offdiagonal[iter-1]  = sqrt(DotProduct(r, r));
 
@@ -149,24 +146,24 @@ void SpinAdapted::Linear::Lanczos(vector<Wavefunction>& b, DiagonalMatrix& e, do
 
       //p3out << offdiagonal[iter-1]<<"  "<<iter<<endl;                                                                                                                       
       if(!notconverged) {
-	for (int i=0; i<nroots; i++)
-	  e(i+1) = diagonal_temporary[i];
+  for (int i=0; i<nroots; i++)
+    e(i+1) = diagonal_temporary[i];
 
-	vector<Wavefunction> btmp = b;
-	for (int i=0; i<nroots; i++)
-	  Scale(alpha.element(i,i), b[i]);
-	for (int i=0; i<nroots; i++)
-	  for (int j=0; j<iter; j++) 
-	    if (i != j)
-	      ScaleAdd(alpha.element(j,i), btmp[j], b[i]);
+  vector<Wavefunction> btmp = b;
+  for (int i=0; i<nroots; i++)
+    Scale(alpha.element(i,i), b[i]);
+  for (int i=0; i<nroots; i++)
+    for (int j=0; j<iter; j++) 
+      if (i != j)
+        ScaleAdd(alpha.element(j,i), btmp[j], b[i]);
 
-	break;
+  break;
       }
 
       Normalise(r);
       b[iter] = r;
       if(mpigetrank() == 0)
-	bptr = &b[iter];
+  bptr = &b[iter];
     }
 #ifndef SERIAL
     mpi::broadcast(world, notconverged, 0);
@@ -189,21 +186,21 @@ void SpinAdapted::Linear::block_davidson(vector<Wavefunction>& b, DiagonalMatrix
   //normalise all the guess roots
   if(mpigetrank() == 0) {
     for(int i=0;i<nroots;++i)
+    {
+      for(int j=0;j<i;++j)
       {
-	for(int j=0;j<i;++j)
-	  {
-	    double overlap = DotProduct(b[j], b[i]);
-	    ScaleAdd(-overlap, b[j], b[i]);
-	  }
-	Normalise(b[i]);
+        double overlap = DotProduct(b[j], b[i]);
+        ScaleAdd(-overlap, b[j], b[i]);
       }
+      Normalise(b[i]);
+    }
   
   
     //if we are doing state specific, lowerstates has lower energy states
     if (lowerStates.size() != 0) {
       for (int i=0; i<lowerStates.size(); i++) {
-	double overlap = DotProduct(b[0], lowerStates[i]);
-	ScaleAdd(-overlap/DotProduct(lowerStates[i], lowerStates[i]), lowerStates[i], b[0]);
+        double overlap = DotProduct(b[0], lowerStates[i]);
+        ScaleAdd(-overlap/DotProduct(lowerStates[i], lowerStates[i]), lowerStates[i], b[0]);
       }
       Normalise(b[0]);
     }
@@ -213,8 +210,8 @@ void SpinAdapted::Linear::block_davidson(vector<Wavefunction>& b, DiagonalMatrix
   int converged_roots = 0;
   int maxiter = h_diag.Ncols() - lowerStates.size();
   while(true)
-    {
-      p3out << "\t\t\t Davidson Iteration :: " << iter << endl;
+  {
+    p3out << "\t\t\t Davidson Iteration :: " << iter << endl;
 
     ++iter;
     dmrginp.hmultiply -> start();
@@ -222,8 +219,8 @@ void SpinAdapted::Linear::block_davidson(vector<Wavefunction>& b, DiagonalMatrix
     int sigmasize, bsize;
 
     if (mpigetrank() == 0) {
-	  sigmasize = sigma.size();
-	  bsize = b.size();
+      sigmasize = sigma.size();
+      bsize = b.size();
     }
 #ifndef SERIAL
     mpi::broadcast(world, sigmasize, 0);
@@ -232,156 +229,415 @@ void SpinAdapted::Linear::block_davidson(vector<Wavefunction>& b, DiagonalMatrix
     //multiply all guess vectors with hamiltonian c = Hv
 
     for(int i=sigmasize;i<bsize;++i) {
-	  Wavefunction sigmai, bi;
-	  Wavefunction* sigmaptr=&sigmai, *bptr = &bi;
-	  
-	  if (mpigetrank() == 0) {
-	    sigma.push_back(b[i]);
-	    sigma[i].Clear();
-	    sigmaptr = &sigma[i];
-	    bptr = &b[i];
-	  }
+      Wavefunction sigmai, bi;
+      Wavefunction* sigmaptr=&sigmai, *bptr = &bi;
+    
+      if (mpigetrank() == 0) {
+        sigma.push_back(b[i]);
+        sigma[i].Clear();
+        sigmaptr = &sigma[i];
+        bptr = &b[i];
+      }
 
 #ifndef SERIAL
-	  mpi::broadcast(world, *bptr, 0);
+      mpi::broadcast(world, *bptr, 0);
 #endif
-	  if (mpigetrank() != 0) {
-	    sigmai = bi;
-	    sigmai.Clear();
-	  }
+      if (mpigetrank() != 0) {
+        sigmai = bi;
+        sigmai.Clear();
+      }
 
       h_multiply(*bptr, *sigmaptr);
       //if (mpigetrank() == 0) {
       //  p3out << *bptr << endl;
       //  p3out << *sigmaptr << endl;
       //}
-	}
+    }
     dmrginp.hmultiply -> stop();
 
     Wavefunction r;
     DiagonalMatrix subspace_eigenvalues;
 
     if (mpigetrank() == 0) {
-	  Matrix subspace_h(b.size(), b.size());
-	  for (int i = 0; i < b.size(); ++i)
-	    for (int j = 0; j <= i; ++j) {
-	      subspace_h.element(i, j) = DotProduct(b[i], sigma[j]);
-	      subspace_h.element(j, i) = subspace_h.element(i, j);
-	    }
-
-	Matrix alpha;
-	diagonalise(subspace_h, subspace_eigenvalues, alpha);
-	
-	for (int i = 1; i <= subspace_eigenvalues.Ncols (); ++i)
-	  p3out << "\t\t\t " << i << " ::  " << subspace_eigenvalues(i,i) << endl;
-
-	//now calculate the ritz vectors which are approximate eigenvectors
-	vector<Wavefunction> btmp = b;
-	vector<Wavefunction> sigmatmp = sigma;
-	for (int i = 0; i < b.size(); ++i)
-	  {
-	    Scale(alpha.element(i, i), b[i]);
-	    Scale(alpha.element(i, i), sigma[i]);
-	  }
-	for (int i = 0; i < b.size(); ++i)
-	  for (int j = 0; j < b.size(); ++j)
-	    {
-	      if (i != j)
-		{
-		  ScaleAdd(alpha.element(i, j), btmp[i], b[j]);
-		  ScaleAdd(alpha.element(i, j), sigmatmp[i], sigma[j]);
-		}
-	    }
-
-	
-	// build residual 
-        for (int i=0; i<converged_roots; i++) {
-          r = sigma[i];
-          ScaleAdd(-subspace_eigenvalues(i+1), b[i], r);
-          double rnorm = DotProduct(r,r);
-          if (rnorm > normtol) {
-            converged_roots = i;
-	    p3out << "\t\t\t going back to converged root "<<i<<"  "<<rnorm<<" > "<<normtol<<endl;
-            continue;
-          }
-        }
-        r = sigma[converged_roots];
-        ScaleAdd(-subspace_eigenvalues(converged_roots+1), b[converged_roots], r);
-
-	if (lowerStates.size() != 0) {
-	  for (int i=0; i<lowerStates.size(); i++) {
-	    double overlap = DotProduct(r, lowerStates[i]);
-	    ScaleAdd(-overlap/DotProduct(lowerStates[i], lowerStates[i]), lowerStates[i], r);
-	    //ScaleAdd(-overlap, lowerStates[i], r);
-	  }
-	}
+    Matrix subspace_h(b.size(), b.size());
+    for (int i = 0; i < b.size(); ++i)
+      for (int j = 0; j <= i; ++j) {
+        subspace_h.element(i, j) = DotProduct(b[i], sigma[j]);
+        subspace_h.element(j, i) = subspace_h.element(i, j);
       }
 
+    Matrix alpha;
+    diagonalise(subspace_h, subspace_eigenvalues, alpha);
+  
+    for (int i = 1; i <= subspace_eigenvalues.Ncols (); ++i)
+      p3out << "\t\t\t " << i << " ::  " << subspace_eigenvalues(i,i) << endl;
 
-      double rnorm;
-      if (mpigetrank() == 0)
-	rnorm = DotProduct(r,r);  
+    //now calculate the ritz vectors which are approximate eigenvectors
+    vector<Wavefunction> btmp = b;
+    vector<Wavefunction> sigmatmp = sigma;
+    for (int i = 0; i < b.size(); ++i)
+    {
+      Scale(alpha.element(i, i), b[i]);
+      Scale(alpha.element(i, i), sigma[i]);
+    }
+    for (int i = 0; i < b.size(); ++i)
+      for (int j = 0; j < b.size(); ++j)
+      {
+        if (i != j)
+        {
+          ScaleAdd(alpha.element(i, j), btmp[i], b[j]);
+          ScaleAdd(alpha.element(i, j), sigmatmp[i], sigma[j]);
+        }
+      }
+
+  
+  // build residual 
+      for (int i=0; i<converged_roots; i++) {
+        r = sigma[i];
+        ScaleAdd(-subspace_eigenvalues(i+1), b[i], r);
+        double rnorm = DotProduct(r,r);
+        if (rnorm > normtol) {
+          converged_roots = i;
+          p3out << "\t\t\t going back to converged root "<<i<<"  "<<rnorm<<" > "<<normtol<<endl;
+          continue;
+        }
+      }
+      r = sigma[converged_roots];
+      ScaleAdd(-subspace_eigenvalues(converged_roots+1), b[converged_roots], r);
+
+      if (lowerStates.size() != 0) {
+        for (int i=0; i<lowerStates.size(); i++) {
+          double overlap = DotProduct(r, lowerStates[i]);
+          ScaleAdd(-overlap/DotProduct(lowerStates[i], lowerStates[i]), lowerStates[i], r);
+          //ScaleAdd(-overlap, lowerStates[i], r);
+        }
+      }
+    }
+
+
+    double rnorm;
+    if (mpigetrank() == 0)
+    rnorm = DotProduct(r,r);  
 
 #ifndef SERIAL
-      mpi::broadcast(world, converged_roots, 0);
-      mpi::broadcast(world, rnorm, 0);
+    mpi::broadcast(world, converged_roots, 0);
+    mpi::broadcast(world, rnorm, 0);
 #endif
 
-      if (useprecond && mpigetrank() == 0)
-	olsenPrecondition(r, b[converged_roots], subspace_eigenvalues(converged_roots+1), h_diag, levelshift);
+    if (useprecond && mpigetrank() == 0)
+      olsenPrecondition(r, b[converged_roots], subspace_eigenvalues(converged_roots+1), h_diag, levelshift);
 
 
-      p3out << "\t \t \t residual :: " << rnorm << endl;
-      if (rnorm < normtol)
-	{
-	  p3out << "\t\t\t Converged root " << converged_roots << endl;
+    p3out << "\t \t \t residual :: " << rnorm << endl;
+    if (rnorm < normtol)
+    {
+      p3out << "\t\t\t Converged root " << converged_roots << endl;
 
-	  ++converged_roots;
-	  if (converged_roots == nroots)
-	    {
-	      if (mpigetrank() == 0) {
+      ++converged_roots;
+      if (converged_roots == nroots)
+      {
+        if (mpigetrank() == 0) {
 
-		for (int i = 0; i < min((int)(b.size()), h_diag.Ncols()); ++i)
-		  h_diag.element(i) = subspace_eigenvalues.element(i);
-	      }
-	      break;
-	    }
-	}
-      else if (mpigetrank() == 0)
-	{
-	  if(b.size() >= dmrginp.deflation_max_size())
-	    {
-	      p3out << "\t\t\t Deflating block Davidson...\n";
-	      b.resize(dmrginp.deflation_min_size());
-	      sigma.resize(dmrginp.deflation_min_size());
-	    }
-	  for (int j = 0; j < b.size(); ++j)
-	    {
-	      //Normalize
-	      double normalization = DotProduct(r, r);
-	      Scale(1./sqrt(normalization), r);
+          for (int i = 0; i < min((int)(b.size()), h_diag.Ncols()); ++i)
+          h_diag.element(i) = subspace_eigenvalues.element(i);
+        }
+        break;
+      }
+    }
+    else if (mpigetrank() == 0)
+    {
+      if(b.size() >= dmrginp.deflation_max_size())
+      {
+        p3out << "\t\t\t Deflating block Davidson...\n";
+        b.resize(dmrginp.deflation_min_size());
+        sigma.resize(dmrginp.deflation_min_size());
+      }
+      for (int j = 0; j < b.size(); ++j)
+      {
+        //Normalize
+        double normalization = DotProduct(r, r);
+        Scale(1./sqrt(normalization), r);
 
-	      double overlap = DotProduct(r, b[j]);
-	      ScaleAdd(-overlap, b[j], r);
-	    }
+        double overlap = DotProduct(r, b[j]);
+        ScaleAdd(-overlap, b[j], r);
+      }
 
-	  //if we are doing state specific, lowerstates has lower energy states
-	  if (lowerStates.size() != 0) {
-	    for (int i=0; i<lowerStates.size(); i++) {
-	      double overlap = DotProduct(r, lowerStates[i]);
-	      ScaleAdd(-overlap/DotProduct(lowerStates[i], lowerStates[i]), lowerStates[i], r);
-	      //ScaleAdd(-overlap, lowerStates[i], r);
-	    }
-	  }
-	  //double tau2 = DotProduct(r,r);
+      //if we are doing state specific, lowerstates has lower energy states
+      if (lowerStates.size() != 0) {
+        for (int i=0; i<lowerStates.size(); i++) {
+          double overlap = DotProduct(r, lowerStates[i]);
+          ScaleAdd(-overlap/DotProduct(lowerStates[i], lowerStates[i]), lowerStates[i], r);
+          //ScaleAdd(-overlap, lowerStates[i], r);
+        }
+      }
+      //double tau2 = DotProduct(r,r);
 
-	  Normalise(r);
-	  b.push_back(r);
-
-	}
-
+      Normalise(r);
+      b.push_back(r);
 
     }
+  }
+}
+
+/// Solve eigenvalue problem (omega*I - A)*b = E*b
+void SpinAdapted::Linear::harmonic_davidson(
+        vector<Wavefunction>& b,
+        DiagonalMatrix& h_diag,
+        double normtol,
+  const bool &warmUp,
+        Davidson_functor& h_multiply,
+        bool& useprecond,
+        int currentRoot,
+        std::vector<Wavefunction> &lowerStates,
+  const double& omega)
+{
+  p1out.precision (12);
+  p2out.precision (12);
+  p3out.precision (12);
+#ifndef SERIAL
+  mpi::communicator world;
+#endif
+  double levelshift = omega;
+  double noisethre = 0.001;
+
+  int iter = 0;
+  int nroots = b.size();
+
+  //normalise all the guess roots
+  if(mpigetrank() == 0) {
+    for(int i=0;i<nroots;++i) {
+      Normalise(b[i]);
+      for(int j=0;j<i;++j) {
+        double overlap = DotProduct(b[j], b[i]);
+        ScaleAdd(-overlap, b[j], b[i]);
+        Normalise(b[i]);
+      }
+    }
+    // Exit if state-specific?
+    if (lowerStates.size() != 0) abort();
+  }
+
+  vector<Wavefunction> sigma;
+  int converged_roots = 0;
+  int maxiter = h_diag.Ncols();
+#ifndef SERIAL
+  mpi::broadcast(world, maxiter, 0);
+#endif
+  while(true) {
+    if(iter % 100 == 0) {
+      p1out << "\t\t\t Davidson Iteration :: " << iter << "/" << maxiter << " Converged " << converged_roots << " roots." << endl;
+    }
+    else if(iter % 10 == 0) {
+      p2out << "\t\t\t Davidson Iteration :: " << iter << "/" << maxiter << " Converged " << converged_roots << " roots." << endl;
+    }
+    else {
+      p3out << "\t\t\t Davidson Iteration :: " << iter << "/" << maxiter << " Converged " << converged_roots << " roots." << endl;
+    }
+
+    ++iter;
+    dmrginp.hmultiply -> start();
+
+    int sigmasize, bsize;
+
+    if (mpigetrank() == 0) {
+      sigmasize = sigma.size();
+      bsize = b.size();
+    }
+#ifndef SERIAL
+    mpi::broadcast(world, sigmasize, 0);
+    mpi::broadcast(world, bsize, 0);
+#endif
+    //multiply all guess vectors with hamiltonian c = Hv
+
+    for(int i = sigmasize; i < bsize; ++i) {
+      Wavefunction sigmai, bi;
+      Wavefunction* sigmaptr=&sigmai, *bptr = &bi;
+    
+      if (mpigetrank() == 0) {
+        sigma.push_back(b[i]);
+        sigma[i].Clear();
+        sigmaptr = &sigma[i];
+        bptr = &b[i];
+      }
+
+#ifndef SERIAL
+      mpi::broadcast(world, *bptr, 0);
+#endif
+      if (mpigetrank() != 0) {
+        sigmai = bi;
+        sigmai.Clear();
+      }
+
+      h_multiply(*bptr, *sigmaptr);
+
+      if(mpigetrank() == 0) {
+        Scale(-1.0, sigma[i]);
+        ScaleAdd(levelshift, b[i], sigma[i]);
+
+        HarmNormalise(sigma[i], b[i]);
+        for(int j = 0; j < i; ++j) {
+          double overlap = DotProduct(sigma[j], sigma[i]);
+          ScaleAdd(-overlap, sigma[j], sigma[i]);
+          ScaleAdd(-overlap, b[j], b[i]);
+          HarmNormalise(sigma[i], b[i]);
+        }
+      }
+#ifndef SERIAL
+//    mpi::broadcast(world, *bptr, 0);
+//    mpi::broadcast(world, *sigmaptr, 0);
+#endif
+    }
+    dmrginp.hmultiply -> stop();
+
+    DiagonalMatrix subspace_eigenvalues;
+
+    double target_eval;
+    vector<double> rnorm(bsize,0.0);
+
+    if (mpigetrank() == 0) {
+
+      Matrix subspace_h(b.size(), b.size());
+      for (int i = 0; i < b.size(); ++i)
+        for (int j = 0; j <= i; ++j) {
+          subspace_h.element(i, j) = DotProduct(b[i], sigma[j]);
+          subspace_h.element(j, i) = subspace_h.element(i, j);
+        }
+
+      Matrix alpha;
+      diagonalise(subspace_h, subspace_eigenvalues, alpha);
+  
+      for (int i = 1; i <= subspace_eigenvalues.Ncols (); ++i)
+        p3out << "\t\t\t " << i << " ::  " << subspace_eigenvalues(i) << endl;
+
+      //now calculate the ritz vectors which are approximate eigenvectors
+      vector<Wavefunction> btmp = b;
+      vector<Wavefunction> sigmatmp = sigma;
+      for (int i = 0; i < b.size(); ++i)
+      {
+        Scale(alpha.element(i, i), b[i]);
+        Scale(alpha.element(i, i), sigma[i]);
+      }
+      for (int i = 0; i < b.size(); ++i)
+        for (int j = 0; j < b.size(); ++j)
+        {
+          if (i != j)
+          {
+            ScaleAdd(alpha.element(i, j), btmp[i], b[j]);
+            ScaleAdd(alpha.element(i, j), sigmatmp[i], sigma[j]);
+          }
+        }
+
+      for (int i = 0; i < converged_roots; i++) {
+
+        Wavefunction r;
+
+        r = b[i];
+        ScaleAdd(-subspace_eigenvalues(i+1), sigma[i], r);
+
+        rnorm[i] = DotProduct(r, r);
+        if (rnorm[i] > normtol) {
+          converged_roots = i;
+          p3out << "\t\t\t going back to converged root " << i << "  " << rnorm[i] << " > " << normtol << endl;
+          continue;
+        }
+      }
+
+      // this is not normal correction scheme.
+      // since Harmonic Davidson gets easily stack, perform additional correction as a test.
+      int nroots_correction = min(nroots+2,bsize);
+
+      for(int i = converged_roots; i < nroots_correction; ++i) {
+
+        target_eval = subspace_eigenvalues(i+1);
+        // Correction to enhance the state which is energetically higher than omega (i.e. eval < 0.0)
+        // Practical fix... No theoretical meanings.
+        // if target eigenvalue is not in the range [omega, omega+100eV),
+        // set an artificial number to perform correction slightly shifted.
+        if(target_eval > -0.272) target_eval -= 0.01;
+
+        Wavefunction r;
+
+        r = b[i];
+        ScaleAdd(-target_eval, sigma[i], r);
+
+        rnorm[i] = DotProduct(r, r);
+
+        if(useprecond) {
+          int success = 0;
+          Scale(1./target_eval, r); // Ew*r
+          olsenPrecondition(r, sigma[i], -1./target_eval, h_diag, levelshift);
+//        precondition(r, -1./target_eval, h_diag, levelshift);
+
+//        p3out << "DEBUG :: correction norm (bare) = " << DotProduct(r, r) << endl;
+          Normalise(r, &success);
+
+          if(success) r = sigma[i];
+        }
+        for(int j = 0; j < b.size(); ++j) {
+          double overlap = DotProduct(b[j], r);
+          ScaleAdd(-overlap, b[j], r);
+          Normalise(r);
+        }
+//      p3out << "DEBUG :: correction norm (orth) = " << DotProduct(r, r) << endl;
+
+        b.push_back(r);
+      }
+    }
+
+#ifndef SERIAL
+    mpi::broadcast(world, levelshift, 0);
+    mpi::broadcast(world, converged_roots, 0);
+    mpi::broadcast(world, rnorm, 0);
+#endif
+
+    p3out << "\t \t \t residual :: " << rnorm[converged_roots] << endl;
+    if (rnorm[converged_roots] < normtol || iter > maxiter)
+//  if (rnorm[converged_roots] < normtol)
+    {
+      if(iter <= maxiter) {
+        p3out << "\t\t\t Converged root " << converged_roots << endl;
+      }
+      else {
+        p3out << "\t\t\t Not converged." << endl;
+      }
+
+      ++converged_roots;
+      if (converged_roots == nroots || iter > maxiter)
+//    if (converged_roots == nroots)
+      {
+        if (mpigetrank() == 0) {
+          for (int i = 0; i < min(bsize, h_diag.Ncols()); ++i)
+            h_diag.element(i) = levelshift - 1./subspace_eigenvalues.element(i);
+        }
+        break;
+      }
+    }
+    else if (mpigetrank() == 0)
+    {
+      // For numerical stability
+      bool has_zero_eval = false;
+      for(int i = converged_roots+1; i < bsize; ++i) {
+        if(fabs(subspace_eigenvalues(i+1)) <= noisethre) {
+          has_zero_eval = true;
+          p3out << "\t\t\t Randomise b[" << i << "] to introduce a new correction direction." << endl;
+          Wavefunction bscr = b[i];
+          bscr.Randomise();
+          double bnorm = DotProduct(bscr, bscr);
+          ScaleAdd(noisethre/sqrt(bnorm), bscr, b[i]);
+          Normalise(b[i]);
+        }
+      }
+      // Deflation
+      if(b.size() >= dmrginp.deflation_max_size())
+      {
+        p3out << "\t\t\t Deflating block Davidson...\n";
+        b.resize(dmrginp.deflation_min_size());
+        sigma.resize(dmrginp.deflation_min_size());
+      }
+      // If some of b are randomised, sigma will be re-computed.
+      if(has_zero_eval) sigma.clear();
+    }
+  }
 }
 
 //solves the equation (H-E)^T(H-E)|psi_1> = -(H-E)^TQV|\Psi_0>  where lowerState[1] contains |\Psi_0> to enforce orthogonality (Q), and lowerState[0] contains V|\Psi_0> so we can calculate its projection in the krylov space 
@@ -399,10 +655,10 @@ double SpinAdapted::Linear::ConjugateGradient(Wavefunction& xi, double normtol, 
     for (int i=1; i<lowerStates.size(); i++) {
       overlap2 = pow(DotProduct(lowerStates[i], lowerStates[i]), 0.5);
       if (fabs(overlap2) > NUMERICAL_ZERO) { 
-	ScaleAdd(-DotProduct(targetState, lowerStates[i])/overlap2, 
-		 lowerStates[i], targetState);
-	ScaleAdd(-DotProduct(xi, lowerStates[i])/overlap2, 
-		 lowerStates[i], xi);
+  ScaleAdd(-DotProduct(targetState, lowerStates[i])/overlap2, 
+     lowerStates[i], targetState);
+  ScaleAdd(-DotProduct(xi, lowerStates[i])/overlap2, 
+     lowerStates[i], xi);
       }
     }
   }
@@ -425,8 +681,8 @@ double SpinAdapted::Linear::ConjugateGradient(Wavefunction& xi, double normtol, 
     for (int i=1; i<lowerStates.size(); i++) {
       overlap2 = pow(DotProduct(lowerStates[i], lowerStates[i]), 0.5);
       if (fabs(overlap2) > NUMERICAL_ZERO) { 
-	ScaleAdd(-DotProduct(ricopy, lowerStates[i])/overlap2, 
-		 lowerStates[i], ricopy2);
+  ScaleAdd(-DotProduct(ricopy, lowerStates[i])/overlap2, 
+     lowerStates[i], ricopy2);
       }
     }
 
@@ -453,8 +709,8 @@ double SpinAdapted::Linear::ConjugateGradient(Wavefunction& xi, double normtol, 
     for (int i=1; i<lowerStates.size(); i++) {
       overlap2 = pow(DotProduct(lowerStates[i], lowerStates[i]),0.5);
       if (fabs(overlap2) > NUMERICAL_ZERO) { 
-	ScaleAdd(-DotProduct(ri, lowerStates[i])/overlap2, 
-		 lowerStates[i], ri);
+  ScaleAdd(-DotProduct(ri, lowerStates[i])/overlap2, 
+     lowerStates[i], ri);
       }
     }
     
@@ -472,8 +728,8 @@ double SpinAdapted::Linear::ConjugateGradient(Wavefunction& xi, double normtol, 
 
     if (oldError < normtol) {
       if (mpigetrank() == 0) {
-	functional = -DotProduct(xi, ri) - DotProduct(xi, targetState);
-	printf("\t\t\t %15i  %15.8e  %15.8e\n", 0, functional, oldError);
+  functional = -DotProduct(xi, ri) - DotProduct(xi, targetState);
+  printf("\t\t\t %15i  %15.8e  %15.8e\n", 0, functional, oldError);
       }
 #ifndef SERIAL
     mpi::broadcast(world, functional, 0);
@@ -495,11 +751,11 @@ double SpinAdapted::Linear::ConjugateGradient(Wavefunction& xi, double normtol, 
     if (mpigetrank() == 0) {
 
       for (int i=1; i<lowerStates.size(); i++) {
-	overlap2 = pow(DotProduct(lowerStates[i], lowerStates[i]),0.5);
-	if (fabs(overlap2) > NUMERICAL_ZERO) { 
-	  ScaleAdd(-DotProduct(Hp, lowerStates[i])/overlap2, 
-		   lowerStates[i], Hp);
-	}
+  overlap2 = pow(DotProduct(lowerStates[i], lowerStates[i]),0.5);
+  if (fabs(overlap2) > NUMERICAL_ZERO) { 
+    ScaleAdd(-DotProduct(Hp, lowerStates[i])/overlap2, 
+       lowerStates[i], Hp);
+  }
       }
 
       double alpha = oldError/DotProduct(pi, Hp);
@@ -522,18 +778,18 @@ double SpinAdapted::Linear::ConjugateGradient(Wavefunction& xi, double normtol, 
     }
     else {      
       if (mpigetrank() == 0) {
-	double beta = Error/oldError;
-	oldError = Error;
-	ScaleAdd(1.0/beta, ri, pi);
-	Scale(beta, pi);
-	
-	for (int i=1; i<lowerStates.size(); i++) {
-	  overlap2 = pow(DotProduct(lowerStates[i], lowerStates[i]),0.5);
-	  if (fabs(overlap2) > NUMERICAL_ZERO) { 
-	    ScaleAdd(-DotProduct(pi, lowerStates[i])/overlap2, 
-		     lowerStates[i], pi);
-	  }
-	}
+  double beta = Error/oldError;
+  oldError = Error;
+  ScaleAdd(1.0/beta, ri, pi);
+  Scale(beta, pi);
+  
+  for (int i=1; i<lowerStates.size(); i++) {
+    overlap2 = pow(DotProduct(lowerStates[i], lowerStates[i]),0.5);
+    if (fabs(overlap2) > NUMERICAL_ZERO) { 
+      ScaleAdd(-DotProduct(pi, lowerStates[i])/overlap2, 
+         lowerStates[i], pi);
+    }
+  }
       }
       iter ++;
     }
@@ -546,7 +802,7 @@ void makeOrthogonalToLowerStates(Wavefunction& targetState, std::vector<Wavefunc
     double overlap2 = pow(DotProduct(lowerStates[i], lowerStates[i]), 0.5);
     if (fabs(overlap2) > NUMERICAL_ZERO) { 
       ScaleAdd(-DotProduct(targetState, lowerStates[i])/overlap2, 
-	       lowerStates[i], targetState);
+         lowerStates[i], targetState);
     }
   }
 }
@@ -667,18 +923,18 @@ double SpinAdapted::Linear::MinResMethod(Wavefunction& xi, double normtol, David
       Hr.Clear();
       h_multiply(ri, Hr);
       if (mpigetrank() == 0) {
-	makeOrthogonalToLowerStates(Hr, lowerStates);
+  makeOrthogonalToLowerStates(Hr, lowerStates);
 
-	betaNumerator = DotProduct(ri, Hr);
-	double beta = betaNumerator/betaDenominator;
-	betaDenominator = betaNumerator;
+  betaNumerator = DotProduct(ri, Hr);
+  double beta = betaNumerator/betaDenominator;
+  betaDenominator = betaNumerator;
 
-	ScaleAdd(1./beta, ri, pi);
-	Scale(beta, pi);
+  ScaleAdd(1./beta, ri, pi);
+  Scale(beta, pi);
 
-	ScaleAdd(1./beta, Hr, Hp);
-	Scale(beta, Hp);
-	
+  ScaleAdd(1./beta, Hr, Hp);
+  Scale(beta, Hp);
+  
       }
       iter ++;
     }

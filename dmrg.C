@@ -578,41 +578,78 @@ void dmrg(double sweep_tol)
   int domoreIter = 0;
   bool direction;
 
-  //this is regular dmrg calculation
+  // This is regular dmrg calculation.
+  // NN: Modified to get stable convergence.
+  //     Now, iter in each schedule means iteration upper limit for each schedule.
+  //     If achieved target tolerance (10*Davidson tolerance), sweep steps in the next schedule block.
+  // e.g.)
+  //     schedule
+  //       0  250 1.0e-4 1.0e-4
+  //     100  500 1.0e-5 1.0e-5
+  //     200 1000 1.0e-5 1.0e-5
+  //     300 1000 1.0e-6 1.0e-6
+  //     400 1000 1.0e-7 0.0
+  //     500 1000 1.0e-8 0.0
+  //     end
+  //     twodot_to_onedot 500
+  //     maxiter 600
   if(!dmrginp.setStateSpecific()) {
     sweepParams.current_root() = -1;
-    last_fe = Sweep::do_one(sweepParams, true, true, false, 0);
-    direction = false;
-    while ((fabs(last_fe - old_fe) > sweep_tol) || (fabs(last_be - old_be) > sweep_tol) || 
-	   (dmrginp.algorithm_method() == TWODOT_TO_ONEDOT && dmrginp.twodot_to_onedot_iter()+1 >= sweepParams.get_sweep_iter()) )
+    // First sweep (Backward, as the original code did)
+    direction = true;
+    last_fe = Sweep::do_one(sweepParams,true ,direction,false,0);
+    last_be = last_fe;
+    for(int i = 0; i < dmrginp.sweep_iter_schedule().size()-1; ++i) {
+      sweepParams.set_sweep_iter() = dmrginp.sweep_iter_schedule()[i];
+      // Target energy tolerance is set to be 10 x Davidson tolerance.
+      double target_tol = dmrginp.sweep_tol_schedule()[i]*10.0;
+      // Sweep until achieved target tolerance or max. iter within this schedule.
+      while(sweepParams.get_sweep_iter() < dmrginp.sweep_iter_schedule()[i+1]) {
+        old_fe = last_fe;
+        old_be = last_be;
+        // Backward sweep.
+        direction = !direction;
+        last_be = Sweep::do_one(sweepParams,false,direction,false,0);
+//      pout << "\t\t\t Finished Sweep Iteration " << sweepParams.get_sweep_iter() << endl;
+        // For obtaining the extrapolated energy.
+        old_states = sweepParams.get_keep_states();
+        new_states = sweepParams.get_keep_states_ls();
+        // Forward sweep.
+        direction = !direction;
+        last_fe = Sweep::do_one(sweepParams,false,direction,false,0);
+        // For obtaining the extrapolated energy?
+        new_states=sweepParams.get_keep_states();
+//      pout << "\t\t\t Finished Sweep Iteration " << sweepParams.get_sweep_iter() << endl;
+        // DIIS?
+        if(domoreIter == 2) {
+          dodiis = true; break;
+        } 
+        if((fabs(last_fe-old_fe) < target_tol) && (fabs(last_be-old_be) < target_tol)) break;
+      }
+    }
+    // Last section until achieved sweep_tol or max. sweep iter.
+    while(sweepParams.get_sweep_iter() < dmrginp.max_iter())
     {
       old_fe = last_fe;
       old_be = last_be;
-      if(dmrginp.max_iter() <= sweepParams.get_sweep_iter())
-	break;
-      last_be = Sweep::do_one(sweepParams, false, false, false, 0);
-      direction = true;
-      pout << "\t\t\t Finished Sweep Iteration "<<sweepParams.get_sweep_iter()<<endl;
-      
-      if(dmrginp.max_iter() <= sweepParams.get_sweep_iter())
-	break;
-      
-      //For obtaining the extrapolated energy
+      // Backward sweep.
+      direction = !direction;
+      last_be = Sweep::do_one(sweepParams,false,direction,false,0);
+//    pout << "\t\t\t Finished Sweep Iteration " << sweepParams.get_sweep_iter() << endl;
+      // For obtaining the extrapolated energy.
       old_states=sweepParams.get_keep_states();
       new_states=sweepParams.get_keep_states_ls();
-      
-      last_fe = Sweep::do_one(sweepParams, false, true, false, 0);
-      direction = false;
-      
+      // Forward sweep.
+      direction = !direction;
+      last_fe = Sweep::do_one(sweepParams,false,direction,false,0);
+      // For obtaining the extrapolated energy?
       new_states=sweepParams.get_keep_states();
-      
-      
-      pout << "\t\t\t Finished Sweep Iteration "<<sweepParams.get_sweep_iter()<<endl;
-      if (domoreIter == 2) {
-	dodiis = true;
-	break;
+//    pout << "\t\t\t Finished Sweep Iteration " << sweepParams.get_sweep_iter() << endl;
+      if(domoreIter == 2) {
+      	dodiis = true; break;
       }
-      
+      if(!(dmrginp.algorithm_method() == TWODOT_TO_ONEDOT && sweepParams.get_sweep_iter() <= dmrginp.twodot_to_onedot_iter())
+      && (fabs(last_fe-old_fe) < sweep_tol) && (fabs(last_be-old_be) < sweep_tol)) break;
     }
   }
   else { //this is state specific calculation  

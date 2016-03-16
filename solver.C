@@ -88,7 +88,10 @@ void SpinAdapted::Solver::solve_wavefunction(vector<Wavefunction>& solution, vec
       if (nroots == 1 && currentRoot >= e.Ncols()) //state specific calculation
 	lowerStates.resize(0);
 
-      Linear::block_davidson(solution, e, tol, warmUp, davidson_f, useprecond, currentRoot, lowerStates);
+      if(dmrginp.harmonic_shift() != 0.0)
+        Linear::harmonic_davidson(solution, e, tol, warmUp, davidson_f, useprecond, currentRoot, lowerStates, dmrginp.harmonic_shift());
+      else
+        Linear::block_davidson(solution, e, tol, warmUp, davidson_f, useprecond, currentRoot, lowerStates);
 
     }
     else if (dmrginp.solve_method() == CONJUGATE_GRADIENT) {

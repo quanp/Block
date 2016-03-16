@@ -4,10 +4,10 @@
 #Sandeep Sharma and Garnet K.-L. Chan
 
 #specify boost include file
-BOOSTINCLUDE = /home100/naokin/boost/1.59.0-impi/include
+BOOSTINCLUDE = /home100/naokin/boost/1.59.0-ompi/include
 
 #specify boost and lapack-blas library locations
-BOOSTLIB = -L/home100/naokin/boost/1.59.0-impi/lib -lboost_serialization -lboost_system -lboost_filesystem
+BOOSTLIB = -L/home100/naokin/boost/1.59.0-ompi/lib -lboost_serialization -lboost_system -lboost_filesystem
 LAPACKBLAS = -lblas -llapack
 
 USE_BOOST56 = yes
@@ -57,7 +57,7 @@ EXECUTABLE = block.spin_adapted
 
 # change to icpc for Intel
 CXX = icpc
-MPICXX = mpiicpc
+MPICXX = mpic++
 BLOCKHOME = .
 HOME = .
 NEWMATINCLUDE = $(BLOCKHOME)/newmat10/

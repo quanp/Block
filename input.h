@@ -93,6 +93,8 @@ class Input {
   int m_integral_disk_storage_thresh;
   int m_num_Integrals;
 
+  double m_harmonic_shift;
+
   bool m_do_diis;
   double m_diis_error;
   int m_start_diis_iter;
@@ -203,7 +205,7 @@ class Input {
     ar &  m_store_spinpdm &m_spatpdm_disk_dump & m_pdm_unsorted & m_npdm_intermediate & m_npdm_multinode;
     ar & m_maxj & m_ninej & m_maxiter & m_do_deriv & m_oneindex_screen_tol & m_twoindex_screen_tol & m_quantaToKeep & m_noise_type;
     ar & m_sweep_tol & m_restart & m_backward & m_fullrestart & m_restart_warm & m_reset_iterations & m_calc_type & m_ham_type & m_warmup;
-    ar & m_do_diis & m_diis_error & m_start_diis_iter & m_diis_keep_states & m_diis_error_tol & m_num_spatial_orbs;
+    ar & m_harmonic_shift & m_do_diis & m_diis_error & m_start_diis_iter & m_diis_keep_states & m_diis_error_tol & m_num_spatial_orbs;
     ar & m_spatial_to_spin & m_spin_to_spatial & m_maxM & m_schedule_type_backward & m_schedule_type_default &m_integral_disk_storage_thresh;
     ar & n_twodot_noise & m_twodot_noise & m_twodot_gamma & m_guessState;
     ar & m_calc_ri_4pdm & m_store_ripdm_readable & m_nevpt2 & m_conventional_nevpt2 & m_kept_nevpt2_states & NevPrint;
@@ -349,6 +351,8 @@ class Input {
   const double& diis_error() const {return m_diis_error;}
   const int& start_diis_iter() const {return m_start_diis_iter;}
   const int& diis_keep_states() const {return m_diis_keep_states;}
+
+  const double& harmonic_shift() const { return m_harmonic_shift; }
 
   bool use_partial_two_integrals() const {return (m_norbs/2 >= m_integral_disk_storage_thresh);}
   bool& set_fullrestart() {return m_fullrestart;}

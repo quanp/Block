@@ -267,7 +267,20 @@ void GuessWave::basic_guess_wavefunction(DiagonalMatrix& e, Wavefunction& trial,
   RowVector trialvector(states);
   trialvector = 0.;
 
-  trialvector(e_sort.begin()->second) = 1.;
+  if(dmrginp.harmonic_shift() != 0.0) {
+    multimap<double, int>::iterator it = e_sort.upper_bound(dmrginp.harmonic_shift());
+    if(it != e_sort.end()) {
+//    p3out << "\t\t\t Chose element " << it->first << " as guess wavefunction." << endl;
+      for(; it != e_sort.end(); ++it)
+        trialvector(it->second) = 1./(it->first-dmrginp.harmonic_shift());
+    }
+    else
+      trialvector(e_sort.rbegin()->second) = 1.;
+  }
+  else {
+    trialvector(e_sort.begin()->second) = 1.;
+  }
+
   trial.CollectFrom(trialvector);
 }
 
@@ -303,7 +316,7 @@ void GuessWave::guess_wavefunctions(Wavefunction& solution, DiagonalMatrix& e, c
       noiseMatrix.Randomise();
       double norm = DotProduct(noiseMatrix, noiseMatrix);
       if (abs(norm) >= 1e-14) {
-	ScaleAdd(1e-3/sqrt(norm), noiseMatrix, solution);
+        ScaleAdd(1e-3/sqrt(norm), noiseMatrix, solution);
       }
       Normalise(solution);
     }

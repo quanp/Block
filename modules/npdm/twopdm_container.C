@@ -19,7 +19,8 @@ namespace Npdm{
 Twopdm_container::Twopdm_container( int sites )
 {
 
-  store_full_spin_array_ = true;
+//store_full_spin_array_ = true;
+  store_full_spin_array_ = false;
   store_full_spatial_array_ = true;
   store_nonredundant_spin_elements_ = false;
 
@@ -138,10 +139,13 @@ void Twopdm_container::save_spatial_npdm_binary(const int &i, const int &j)
   {
     char file[5000];
     sprintf (file, "%s%s%d.%d%s", dmrginp.save_prefix().c_str(),"/spatial_twopdm.", i, j,".bin");
-    std::ofstream ofs(file, std::ios::binary);
-    boost::archive::binary_oarchive save(ofs);
-    save << spatial_twopdm;
-    ofs.close();
+//  std::ofstream ofs(file, std::ios::binary);
+//  boost::archive::binary_oarchive save(ofs);
+//  save << spatial_twopdm;
+//  ofs.close();
+    FILE* ofp = fopen(file,"wb");
+    fwrite(spatial_twopdm.data(),sizeof(double),spatial_twopdm.size(),ofp);
+    fclose(ofp);
   }
 }
 

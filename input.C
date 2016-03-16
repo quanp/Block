@@ -155,6 +155,8 @@ void SpinAdapted::Input::initialize_defaults()
   m_backward = false;
   m_reset_iterations = false;
 
+  m_harmonic_shift = 0.0;
+
   m_do_diis = false;
   m_diis_error = 1e-2;
   m_start_diis_iter = 8;
@@ -219,67 +221,66 @@ SpinAdapted::Input::Input(const string& config_name) {
 
       if (boost::iequals(keyword,  "orbs") || boost::iequals(keyword,  "orbitals") || boost::iequals(keyword, " orbitals"))
       {
-	if(usedkey[ORBS] == 0) 
-	  usedkey_error(keyword, msg);
-	usedkey[ORBS] = 0;
-	if (tok.size() < 2) {
-	  pout << "keyword orbs should be followed by atleast a single filename and then an end line"<<endl;
-	  pout << "error found in the following line "<<endl;
-	  pout << msg<<endl;
-	  abort();
-	}
-	m_num_Integrals = tok.size()-1;
-	orbitalfile.resize(m_num_Integrals);
-	for (int l=0; l<m_num_Integrals; l++) 	  
-	  orbitalfile[l] = tok[l+1];
+        if(usedkey[ORBS] == 0) 
+          usedkey_error(keyword, msg);
+        usedkey[ORBS] = 0;
+        if (tok.size() < 2) {
+          pout << "keyword orbs should be followed by atleast a single filename and then an end line"<<endl;
+          pout << "error found in the following line "<<endl;
+          pout << msg<<endl;
+          abort();
+        }
+        m_num_Integrals = tok.size()-1;
+        orbitalfile.resize(m_num_Integrals);
+        for (int l=0; l<m_num_Integrals; l++)     
+          orbitalfile[l] = tok[l+1];
       }
       else if (boost::iequals(keyword, "nopermsymm"))
         m_permSymm = 1;
       else if (boost::iequals(keyword, "nohermitiansymm"))
         m_permSymm = 0;
       else if (boost::iequals(keyword, "maxM")) {
-	if(usedkey[MAXM] == 0) 
-	  usedkey_error(keyword, msg);
-	usedkey[MAXM] = 0;
-	if (tok.size() != 2) {
-	  pout << "keyword maxM should be followed by a single number and then an end line"<<endl;
-	  pout << "error found in the following line "<<endl;
-	  pout << msg<<endl;
-	  abort();
-	}	
-	m_maxM = atoi(tok[1].c_str());
+        if(usedkey[MAXM] == 0) 
+          usedkey_error(keyword, msg);
+        usedkey[MAXM] = 0;
+        if (tok.size() != 2) {
+          pout << "keyword maxM should be followed by a single number and then an end line"<<endl;
+          pout << "error found in the following line "<<endl;
+          pout << msg<<endl;
+          abort();
+        }
+        m_maxM = atoi(tok[1].c_str());
 
-	if (m_maxM <= 0) {
-	  pout << "maxM cannot be less than equal to 0"<<endl;
-	  pout << "error found in the following line "<<endl;
-	  pout << msg<<endl;
-	  abort();
-	}	
-	  
+        if (m_maxM <= 0) {
+          pout << "maxM cannot be less than equal to 0"<<endl;
+          pout << "error found in the following line "<<endl;
+          pout << msg<<endl;
+          abort();
+        }
       }
       else if (boost::iequals(keyword, "nonspinadapted")) {
-	if(usedkey[NONSPINADAPTED] == 0) 
-	  usedkey_error(keyword, msg);
-	usedkey[NONSPINADAPTED] = 0;
-	if (tok.size() !=  1) {
-	  pout << "keyword nonspinadated is a stand alone keyword"<<endl;
-	  pout << msg<<endl;
-	  abort();
-	}
-	m_add_noninteracting_orbs = false;
+        if(usedkey[NONSPINADAPTED] == 0) 
+          usedkey_error(keyword, msg);
+        usedkey[NONSPINADAPTED] = 0;
+        if (tok.size() !=  1) {
+          pout << "keyword nonspinadated is a stand alone keyword"<<endl;
+          pout << msg<<endl;
+          abort();
+        }
+        m_add_noninteracting_orbs = false;
         m_spinAdapted = false;
       }
       else if (boost::iequals(keyword, "bogoliubov")) {
-    if(usedkey[BOGOLIUBOV] == 0)
-      usedkey_error(keyword, msg);
-    usedkey[BOGOLIUBOV] = 0;
-	if (tok.size() !=  1) {
-	  pout << "keyword bogoliubov is a stand alone keyword"<<endl;
-	  pout << msg<<endl;
-	  abort();
-	}
-    m_Bogoliubov = true;
-    m_ham_type = BCS;
+        if(usedkey[BOGOLIUBOV] == 0)
+          usedkey_error(keyword, msg);
+        usedkey[BOGOLIUBOV] = 0;
+        if (tok.size() !=  1) {
+          pout << "keyword bogoliubov is a stand alone keyword"<<endl;
+          pout << msg<<endl;
+          abort();
+        }
+        m_Bogoliubov = true;
+        m_ham_type = BCS;
       }
       else if (boost::iequals(keyword, "warmup")) {
         if (usedkey[WARMUP] == 0)
@@ -307,72 +308,71 @@ SpinAdapted::Input::Input(const string& config_name) {
         }
       }
       else if (boost::iequals(keyword, "startM")) {
-	if(usedkey[STARTM] == 0) 
-	  usedkey_error(keyword, msg);
-	usedkey[STARTM] = 0;
-	if (tok.size() != 2) {
-	  pout << "keyword startM should be followed by a single number and then an end line"<<endl;
-	  pout << "error found in the following line "<<endl;
-	  pout << msg<<endl;
-	  abort();
-	}	
-	m_startM = atoi(tok[1].c_str());
+        if(usedkey[STARTM] == 0) 
+          usedkey_error(keyword, msg);
+        usedkey[STARTM] = 0;
+        if (tok.size() != 2) {
+          pout << "keyword startM should be followed by a single number and then an end line"<<endl;
+          pout << "error found in the following line "<<endl;
+          pout << msg<<endl;
+          abort();
+        }
+        m_startM = atoi(tok[1].c_str());
 
-	if (m_startM < 50) {
-	  pout << "startM cannot be less than 50"<<endl;
-	  pout << "error found in the following line "<<endl;
-	  pout << msg<<endl;
-	  abort();
-	}	
-	  
+        if (m_startM < 50) {
+          pout << "startM cannot be less than 50"<<endl;
+          pout << "error found in the following line "<<endl;
+          pout << msg<<endl;
+          abort();
+        }
       }
       else if (boost::iequals(keyword, "statespecific")) {
-	pout<<"--------------------------------------------------------------------"<<endl;
-	pout << "WARNING: THIS OPTION IMPLIES THAT A PREVIOUS DMRG CALCULATION HAS ALREADY BEEN PERFORMED"<<endl;
-	pout << "THIS CALCULATION WILL TAKE THE PREVIOUS WAVEFUNCTIONS AND REFINE THEM"<<endl;
-	pout<<"--------------------------------------------------------------------"<<endl;
-	m_stateSpecific = true;
+        pout<<"--------------------------------------------------------------------"<<endl;
+        pout << "WARNING: THIS OPTION IMPLIES THAT A PREVIOUS DMRG CALCULATION HAS ALREADY BEEN PERFORMED"<<endl;
+        pout << "THIS CALCULATION WILL TAKE THE PREVIOUS WAVEFUNCTIONS AND REFINE THEM"<<endl;
+        pout<<"--------------------------------------------------------------------"<<endl;
+        m_stateSpecific = true;
       }
       else if (boost::iequals(keyword, "donttranspose")) {
-	pout<<"--------------------------------------------------------------------"<<endl;
-	pout << "DONT USE THIS OPTION BECAUSE IT SLOWS DOWN THE CODE."<<endl;
-	pout<<"--------------------------------------------------------------------"<<endl;
-	m_implicitTranspose = false;
+        pout<<"--------------------------------------------------------------------"<<endl;
+        pout << "DONT USE THIS OPTION BECAUSE IT SLOWS DOWN THE CODE."<<endl;
+        pout<<"--------------------------------------------------------------------"<<endl;
+        m_implicitTranspose = false;
       }
       else if (boost::iequals(keyword, "occ")) {
-	if (tok.size() != 2) {
-	  pout << "keyword occ should be followed by a single number and then an end line"<<endl;
-	  pout << "error found in the following line "<<endl;
-	  pout << msg<<endl;
-	  abort();
-	}	
-	m_occupied_orbitals = atoi(tok[1].c_str());
+        if (tok.size() != 2) {
+          pout << "keyword occ should be followed by a single number and then an end line"<<endl;
+          pout << "error found in the following line "<<endl;
+          pout << msg<<endl;
+          abort();
+        } 
+        m_occupied_orbitals = atoi(tok[1].c_str());
       }
 
       else if (boost::iequals(keyword, "lastM")) {
-	if(usedkey[LASTM] == 0) 
-	  usedkey_error(keyword, msg);
-	usedkey[LASTM] = 0;
-	if (tok.size() != 2) {
-	  pout << "keyword lastM should be followed by a single number and then an end line"<<endl;
-	  pout << "error found in the following line "<<endl;
-	  pout << msg<<endl;
-	  abort();
-	}	
-	m_lastM = atoi(tok[1].c_str());
+        if(usedkey[LASTM] == 0) 
+          usedkey_error(keyword, msg);
+        usedkey[LASTM] = 0;
+        if (tok.size() != 2) {
+          pout << "keyword lastM should be followed by a single number and then an end line"<<endl;
+          pout << "error found in the following line "<<endl;
+          pout << msg<<endl;
+          abort();
+        }
+        m_lastM = atoi(tok[1].c_str());
       }
       else if (boost::iequals(keyword,  "reorder")) {
-	if(usedkey[REORDER] == 0) 
-	  usedkey_error(keyword, msg);
-	usedkey[REORDER] = 0;
-	if (tok.size() != 2) {
-	  pout << "keyword reorder should be followed by the filename and then an end line"<<endl;
-	  pout << "error found in the following line "<<endl;
-	  pout << msg<<endl;
-	  abort();
-	}	
-	m_reorderType = MANUAL;
-	m_reorderfile = tok[1];
+        if(usedkey[REORDER] == 0) 
+          usedkey_error(keyword, msg);
+        usedkey[REORDER] = 0;
+        if (tok.size() != 2) {
+          pout << "keyword reorder should be followed by the filename and then an end line"<<endl;
+          pout << "error found in the following line "<<endl;
+          pout << msg<<endl;
+          abort();
+        }
+        m_reorderType = MANUAL;
+        m_reorderfile = tok[1];
       }
       else if (boost::iequals(keyword,  "gaopt"))
       {
@@ -382,8 +382,8 @@ SpinAdapted::Input::Input(const string& config_name) {
           perr << msg<<endl;
           abort();
         }       
-	m_reorderType = GAOPT;
-	m_gaconffile = tok[1];
+        m_reorderType = GAOPT;
+        m_gaconffile = tok[1];
       }
       else if (boost::iequals(keyword, "fiedler")){
         if (tok.size() != 1) {
@@ -392,283 +392,288 @@ SpinAdapted::Input::Input(const string& config_name) {
           perr << msg<<endl;
           abort();
         }       
-	m_reorderType = FIEDLER;
+        m_reorderType = FIEDLER;
       }
       else if (boost::iequals(keyword, "noreorder") || boost::iequals(keyword, "nofiedler")) {
-	m_reorderType = NOREORDER; 
+        m_reorderType = NOREORDER; 
       }
 
       else if (boost::iequals(keyword,  "schedule"))
       {
-	if(usedkey[SCHEDULE] == 0) 
-	  usedkey_error(keyword, msg);
-	usedkey[SCHEDULE] = 0;
+        if(usedkey[SCHEDULE] == 0) 
+          usedkey_error(keyword, msg);
+        usedkey[SCHEDULE] = 0;
 
-	if (tok.size() != 2 && tok.size() != 1) {
-	  pout << "keyword schedule should be followed by the keyword \"default\" and then an end line or just an endline"<<endl;
-	  pout << "error found in the following line "<<endl;
-	  pout << msg<<endl;
-	  abort();
-	}
-	
-	msg.resize(0);
-	ReadMeaningfulLine(input, msg, msgsize);
-	vector<string> schd_tok;
-	boost::split(schd_tok, msg, is_any_of(" \t"), token_compress_on);
-	if (tok.size() != 1) {
-	  if (boost::iequals(tok[1], "default")) { 
-	    m_schedule_type_default = true;
-	    continue;
-	  }
-	}
-	
-	m_sweep_iter_schedule.resize(0);
-	m_sweep_state_schedule.resize(0);
-	m_sweep_qstate_schedule.resize(0);
-	m_sweep_tol_schedule.resize(0);
-	m_sweep_noise_schedule.resize(0);
-	m_sweep_additional_noise_schedule.resize(0);
+        if (tok.size() != 2 && tok.size() != 1) {
+          pout << "keyword schedule should be followed by the keyword \"default\" and then an end line or just an endline"<<endl;
+          pout << "error found in the following line "<<endl;
+          pout << msg<<endl;
+          abort();
+        }
+  
+        msg.resize(0);
+        ReadMeaningfulLine(input, msg, msgsize);
+        vector<string> schd_tok;
+        boost::split(schd_tok, msg, is_any_of(" \t"), token_compress_on);
+        if (tok.size() != 1) {
+          if (boost::iequals(tok[1], "default")) { 
+            m_schedule_type_default = true;
+            continue;
+          }
+        }
+  
+        m_sweep_iter_schedule.resize(0);
+        m_sweep_state_schedule.resize(0);
+        m_sweep_qstate_schedule.resize(0);
+        m_sweep_tol_schedule.resize(0);
+        m_sweep_noise_schedule.resize(0);
+        m_sweep_additional_noise_schedule.resize(0);
 
-	int i = 0;
-	while(!boost::iequals(schd_tok[0], "END"))
-	{
-	  
-	  if (schd_tok.size() != 4) {
-	    pout << "Each line of the schedule contain four entries sweep_iteration   #retained states   Davidson tolerance     noise"<<endl;
-	    pout << "error found at the following line "<<endl;
-	    pout<< msg<<endl;
-	    abort();
-	  }
-	  
-	  m_sweep_iter_schedule.push_back( atoi(schd_tok[0].c_str()));
-	  m_sweep_state_schedule.push_back( atoi(schd_tok[1].c_str()));
-	  m_sweep_tol_schedule.push_back( atof(schd_tok[2].c_str()));
-	  m_sweep_noise_schedule.push_back( atof(schd_tok[3].c_str()));
-	  
-	  if (m_sweep_state_schedule[i] <= 0) {
-	    pout << "Number of retained states cannot be less than 0"<<endl;
-	    pout << "error found in the following line "<<endl;
-	    pout << msg<<endl;
-	  }
-	  if (i>0 && m_sweep_iter_schedule[i] <= m_sweep_iter_schedule[i-1]) {
-	    pout << "Sweep iteration at a given line should be higher than the previous sweep iteration"<<endl;
-	    pout << "this sweep iteration "<<m_sweep_iter_schedule[i] <<endl;
-	    pout << "previous sweep iteration "<<m_sweep_iter_schedule[i-1]<<endl;
-	    pout << "error found in the following line "<<endl;
-	    pout << msg<<endl;
-	    abort();
-	  }
-	  i++;
-	  ReadMeaningfulLine(input, msg, msgsize);
-	  boost::split(schd_tok, msg, is_any_of(" \t"), token_compress_on);
-	}
-	
+        int i = 0;
+        while(!boost::iequals(schd_tok[0], "END"))
+        {
+          if (schd_tok.size() != 4) {
+            pout << "Each line of the schedule contain four entries sweep_iteration   #retained states   Davidson tolerance     noise"<<endl;
+            pout << "error found at the following line "<<endl;
+            pout<< msg<<endl;
+            abort();
+          }
+    
+          m_sweep_iter_schedule.push_back( atoi(schd_tok[0].c_str()));
+          m_sweep_state_schedule.push_back( atoi(schd_tok[1].c_str()));
+          m_sweep_tol_schedule.push_back( atof(schd_tok[2].c_str()));
+          m_sweep_noise_schedule.push_back( atof(schd_tok[3].c_str()));
+    
+          if (m_sweep_state_schedule[i] <= 0) {
+            pout << "Number of retained states cannot be less than 0"<<endl;
+            pout << "error found in the following line "<<endl;
+            pout << msg<<endl;
+          }
+          if (i>0 && m_sweep_iter_schedule[i] <= m_sweep_iter_schedule[i-1]) {
+            pout << "Sweep iteration at a given line should be higher than the previous sweep iteration"<<endl;
+            pout << "this sweep iteration "<<m_sweep_iter_schedule[i] <<endl;
+            pout << "previous sweep iteration "<<m_sweep_iter_schedule[i-1]<<endl;
+            pout << "error found in the following line "<<endl;
+            pout << msg<<endl;
+            abort();
+          }
+          i++;
+          ReadMeaningfulLine(input, msg, msgsize);
+          boost::split(schd_tok, msg, is_any_of(" \t"), token_compress_on);
+        }
       }
-
-
       else if (boost::iequals(keyword,  "sym") || boost::iequals(keyword,  "symmetry")|| boost::iequals(keyword,  "point_group")|| boost::iequals(keyword,  "pg"))
       {
-	if(usedkey[SYM] == 0) 
-	  usedkey_error(keyword, msg);
-	usedkey[SYM] = 0;
-	m_spatial_to_spin.clear();
-	m_spin_to_spatial.clear();
+        if(usedkey[SYM] == 0) 
+          usedkey_error(keyword, msg);
+        usedkey[SYM] = 0;
+        m_spatial_to_spin.clear();
+        m_spin_to_spatial.clear();
 
-	m_num_spatial_orbs = 0;
+        m_num_spatial_orbs = 0;
         //string sym;
-	if (tok.size() !=  2) {
-	  pout << "keyword sym should be followed by a single string and then an end line"<<endl;
-	  pout << "error found in the following line "<<endl;
-	  pout << msg<<endl;
-	  abort();
-	}	
+        if (tok.size() !=  2) {
+          pout << "keyword sym should be followed by a single string and then an end line"<<endl;
+          pout << "error found in the following line "<<endl;
+          pout << msg<<endl;
+          abort();
+        }
         sym = tok[1];
-	boost::algorithm::to_lower(sym); //store as lower case string
+        boost::algorithm::to_lower(sym); //store as lower case string
         Symmetry::InitialiseTable(sym);
       }
       else if (boost::iequals(keyword, "davidson")) 
-	m_solve_type = DAVIDSON;
+        m_solve_type = DAVIDSON;
       else if (boost::iequals(keyword, "lanczos")) 
-	m_solve_type = LANCZOS;
+        m_solve_type = LANCZOS;
+      else if (boost::iequals(keyword, "shift")) {
+        if(tok.size() != 2) {
+          pout << "keyword shift should be followed by a real number specifying the shift in hartree." << endl;
+          pout << "error found in the following line "<<endl;
+          pout << msg << endl;
+          abort();
+        }
+//      m_harmonic_shift = atof(tok[1].c_str())/27.2114;
+        m_harmonic_shift = atof(tok[1].c_str());
+      }
       else if (boost::iequals(keyword, "thrds_per_node") || boost::iequals(keyword, "threads_per_node")) {
 
-	int nprocs = 1;
+        int nprocs = 1;
 #ifndef SERIAL       
-	mpi::communicator world;
-	nprocs = world.size();
+        mpi::communicator world;
+        nprocs = world.size();
 #endif
-	if (tok.size() !=  nprocs+1) {
-	  pout << "keyword number of threads for each of the "<<nprocs<<" processes should be specified!"<<endl;
-	  pout << "error found in the following line "<<endl;
-	  pout << msg<<endl;
-	  abort();
-	}	
-	for (int i=1; i<tok.size(); i++)
-	  m_thrds_per_node[i-1] = atoi(tok[i].c_str());
+        if (tok.size() !=  nprocs+1) {
+          pout << "keyword number of threads for each of the "<<nprocs<<" processes should be specified!"<<endl;
+          pout << "error found in the following line "<<endl;
+          pout << msg<<endl;
+          abort();
+        }
+        for (int i=1; i<tok.size(); i++)
+          m_thrds_per_node[i-1] = atoi(tok[i].c_str());
       }
       else if (boost::iequals(keyword,  "nelecs") || boost::iequals(keyword,  "nelec")) {
-	if(usedkey[NELECS] == 0) 
-	  usedkey_error(keyword, msg);
-	usedkey[NELECS] = 0;
-	if (tok.size() !=  2) {
-	  pout << "keyword nelec should be followed by a single number and then an end line"<<endl;
-	  pout << "error found in the following line "<<endl;
-	  pout << msg<<endl;
-	  abort();
-	}	
-	n_elec = atoi(tok[1].c_str());
-	if(n_elec < 0) {
-	  pout << "Number of electrons cannot be less than 0."<<endl;
-	  pout << "See the manual for further details."<<endl;
-	  abort();
-	}
+        if(usedkey[NELECS] == 0) 
+          usedkey_error(keyword, msg);
+        usedkey[NELECS] = 0;
+        if (tok.size() !=  2) {
+          pout << "keyword nelec should be followed by a single number and then an end line"<<endl;
+          pout << "error found in the following line "<<endl;
+          pout << msg<<endl;
+          abort();
+        }
+        n_elec = atoi(tok[1].c_str());
+        if(n_elec < 0) {
+          pout << "Number of electrons cannot be less than 0."<<endl;
+          pout << "See the manual for further details."<<endl;
+          abort();
+        }
       }
       else if (boost::iequals(keyword,  "nspin") || boost::iequals(keyword,  "spin")) {
-	if(usedkey[SPIN] == 0) 
-	  usedkey_error(keyword, msg);
-	usedkey[SPIN] = 0;
-	if (tok.size() !=  2) {
-	  pout << "keyword spin should be followed by a single number and then an end line"<<endl;
-	  pout << "error found in the following line "<<endl;
-	  pout << msg<<endl;
-	  abort();
-	}	
-	n_spin = atoi(tok[1].c_str());
-	if(n_spin < 0) {
-	  pout << "Spin of the wavefunction cannot be less than 0."<<endl;
-	  pout << "See the manual for further details."<<endl;
-	  abort();
-	}
+        if(usedkey[SPIN] == 0) 
+          usedkey_error(keyword, msg);
+        usedkey[SPIN] = 0;
+        if (tok.size() !=  2) {
+          pout << "keyword spin should be followed by a single number and then an end line"<<endl;
+          pout << "error found in the following line "<<endl;
+          pout << msg<<endl;
+          abort();
+        }
+        n_spin = atoi(tok[1].c_str());
+        if(n_spin < 0) {
+          pout << "Spin of the wavefunction cannot be less than 0."<<endl;
+          pout << "See the manual for further details."<<endl;
+          abort();
+        }
       }
       else if (boost::iequals(keyword,  "nirrep") || boost::iequals(keyword,  "irrep")) {
-	if(usedkey[IRREP] == 0) 
-	  usedkey_error(keyword, msg);
-	usedkey[IRREP] = 0;
-  // When there are 2 irrep number, it means that calcultions of transition density matrix between wavefunctions with different irrep.
-  if (tok.size()==2 )
-	  m_total_symmetry_number = IrrepSpace(atoi(tok[1].c_str())-1);
-  else if (tok.size()==3 ){
-	  m_bra_symmetry_number = IrrepSpace(atoi(tok[1].c_str())-1);
-	  m_total_symmetry_number = IrrepSpace(atoi(tok[2].c_str())-1);
-    m_transition_diff_spatial_irrep=true;
-  }
-  else{
-	  pout << "keyword irrep should be followed by one or two numbers and then an end line"<<endl;
-	  pout << "error found in the following line "<<endl;
-	  pout << msg<<endl;
-	  abort();
-	}	
+        if(usedkey[IRREP] == 0) 
+          usedkey_error(keyword, msg);
+        usedkey[IRREP] = 0;
+        // When there are 2 irrep number, it means that calcultions of transition density matrix between wavefunctions with different irrep.
+        if (tok.size()==2 )
+          m_total_symmetry_number = IrrepSpace(atoi(tok[1].c_str())-1);
+        else if (tok.size()==3 ){
+          m_bra_symmetry_number = IrrepSpace(atoi(tok[1].c_str())-1);
+          m_total_symmetry_number = IrrepSpace(atoi(tok[2].c_str())-1);
+          m_transition_diff_spatial_irrep=true;
+        }
+        else{
+          pout << "keyword irrep should be followed by one or two numbers and then an end line"<<endl;
+          pout << "error found in the following line "<<endl;
+          pout << msg<<endl;
+          abort();
+        }
       }
       else if (boost::iequals(keyword,  "hubbard"))
-	m_ham_type = HUBBARD;
+        m_ham_type = HUBBARD;
       else if (boost::iequals(keyword,  "heisenberg"))
-	m_ham_type = HEISENBERG;
+        m_ham_type = HEISENBERG;
       else if (boost::iequals(keyword,  "dmrg"))
-	m_calc_type = DMRG;
+        m_calc_type = DMRG;
       else if (boost::iequals(keyword,  "calcoverlap"))
-	m_calc_type = CALCOVERLAP;
+        m_calc_type = CALCOVERLAP;
       else if (boost::iequals(keyword,  "calchamiltonian"))
-	m_calc_type = CALCHAMILTONIAN;
+        m_calc_type = CALCHAMILTONIAN;
       else if (boost::iequals(keyword,  "response")) {
-	if (tok.size() != 1) {
-	  pout << "The keyword response should not be followed by anything!"<<endl;
-	  abort();
-	}
-	m_calc_type = RESPONSE;
-	m_solve_type = CONJUGATE_GRADIENT;
-	if(m_targetState == -1)
-	  m_targetState = 2;
-	
+        if (tok.size() != 1) {
+          pout << "The keyword response should not be followed by anything!"<<endl;
+          abort();
+        }
+        m_calc_type = RESPONSE;
+        m_solve_type = CONJUGATE_GRADIENT;
+        if(m_targetState == -1)
+          m_targetState = 2;
       }
       else if (boost::iequals(keyword,  "responsebw")) {
-	if (tok.size() != 1) {
-	  pout << "The keyword response should not be followed by anything!"<<endl;
-	  abort();
-	}
-	m_calc_type = RESPONSEBW;
-	m_solve_type = CONJUGATE_GRADIENT;
-	if(m_targetState == -1)
-	  m_targetState = 2;
-	
+  if (tok.size() != 1) {
+    pout << "The keyword response should not be followed by anything!"<<endl;
+    abort();
+  }
+  m_calc_type = RESPONSEBW;
+  m_solve_type = CONJUGATE_GRADIENT;
+  if(m_targetState == -1)
+    m_targetState = 2;
+  
       }
       else if (boost::iequals(keyword,  "compress")) {
-	m_calc_type = COMPRESS;
-	if (tok.size() !=  2) {
-	  pout << "keyword compression should be followed by a single number and then an end line"<<endl;
-	  pout << "error found in the following line "<<endl;
-	  pout << msg<<endl;
-	  abort();
-	}	
-	m_baseState.resize(1, atoi(tok[1].c_str()));
+  m_calc_type = COMPRESS;
+  if (tok.size() !=  2) {
+    pout << "keyword compression should be followed by a single number and then an end line"<<endl;
+    pout << "error found in the following line "<<endl;
+    pout << msg<<endl;
+    abort();
+  } 
+  m_baseState.resize(1, atoi(tok[1].c_str()));
 
       }
       else if (boost::iequals(keyword,  "maxj")) {
-	if (tok.size() !=  2) {
-	  pout << "keyword maxj should be followed by a single integer and then an end line."<<endl;
-	  pout << "error found in the following line "<<endl;
-	  pout << msg<<endl;
-	  abort();
-	}	
+  if (tok.size() !=  2) {
+    pout << "keyword maxj should be followed by a single integer and then an end line."<<endl;
+    pout << "error found in the following line "<<endl;
+    pout << msg<<endl;
+    abort();
+  } 
         m_maxj = atoi(tok[1].c_str());
       }
       else if (boost::iequals(keyword,  "fci"))
-	m_calc_type = FCI;
+  m_calc_type = FCI;
       else if (boost::iequals(keyword,  "onepdm") || boost::iequals(keyword,  "onerdm") || boost::iequals(keyword,  "ordm"))
-	m_calc_type = ONEPDM;
+  m_calc_type = ONEPDM;
       else if (boost::iequals(keyword,  "twopdm") || boost::iequals(keyword,  "twordm") || boost::iequals(keyword,  "trdm"))
         m_calc_type = TWOPDM;
       else if (boost::iequals(keyword,  "threepdm"))
-	m_calc_type = THREEPDM;
+  m_calc_type = THREEPDM;
       else if (boost::iequals(keyword,  "fourpdm"))
-	m_calc_type = FOURPDM;
+  m_calc_type = FOURPDM;
       else if (boost::iequals(keyword,  "nevpt2_npdm"))
-	m_calc_type = NEVPT2PDM;
+  m_calc_type = NEVPT2PDM;
       else if (boost::iequals(keyword,  "restart_onepdm") || boost::iequals(keyword,  "restart_onerdm") || boost::iequals(keyword,  "restart_ordm"))
       {
-	m_calc_type = RESTART_ONEPDM;
+  m_calc_type = RESTART_ONEPDM;
   m_restart = true;
       }
       else if (boost::iequals(keyword,  "restart_twopdm") || boost::iequals(keyword,  "restart_twordm") || boost::iequals(keyword,  "restart_trdm"))
       {
-	m_calc_type = RESTART_TWOPDM;
+  m_calc_type = RESTART_TWOPDM;
   m_restart = true;
       }
       else if (boost::iequals(keyword,  "restart_threepdm") || boost::iequals(keyword,  "restart_threerdm") )
       {
-	m_calc_type = RESTART_THREEPDM;
+  m_calc_type = RESTART_THREEPDM;
   m_restart = true;
       }
       else if (boost::iequals(keyword,  "restart_fourpdm") || boost::iequals(keyword,  "restart_fourrdm") )
       {
-	m_calc_type = RESTART_FOURPDM;
+  m_calc_type = RESTART_FOURPDM;
   m_restart = true;
       }
       else if (boost::iequals(keyword,  "restart_nevpt2_npdm") )
       {
-	m_calc_type = RESTART_NEVPT2PDM;
+  m_calc_type = RESTART_NEVPT2PDM;
   m_restart = true;
       }
       else if (boost::iequals(keyword,  "transition_onepdm") || boost::iequals(keyword,  "transition_onerdm") || boost::iequals(keyword,  "tran_onepdm"))
-	m_calc_type = TRANSITION_ONEPDM;
+  m_calc_type = TRANSITION_ONEPDM;
       else if (boost::iequals(keyword,  "transition_twopdm") || boost::iequals(keyword,  "transition_twordm") || boost::iequals(keyword,  "tran_twopdm"))
-	m_calc_type = TRANSITION_TWOPDM;
+  m_calc_type = TRANSITION_TWOPDM;
       else if (boost::iequals(keyword,  "restart_tran_onepdm") || boost::iequals(keyword,  "restart_tran_onerdm") || boost::iequals(keyword,  "restart_tran_ordm"))
       {
-	m_calc_type = RESTART_T_ONEPDM;
+  m_calc_type = RESTART_T_ONEPDM;
   m_restart = true;
       }
       else if (boost::iequals(keyword,  "restart_tran_twopdm") || boost::iequals(keyword,  "restart_tran_twordm") || boost::iequals(keyword,  "restart_tran_trdm"))
       {
-	m_calc_type = RESTART_T_TWOPDM;
+  m_calc_type = RESTART_T_TWOPDM;
   m_restart = true;
       }
       else if (boost::iequals(keyword,  "nevpt2") || boost::iequals(keyword,  "pt2")){
-	m_calc_type = NEVPT2;
+  m_calc_type = NEVPT2;
         m_nevpt2 = true;
         m_transition_diff_spatial_irrep=false;
       }
       else if (boost::iequals(keyword,  "ripdm")){
-	m_calc_type = NEVPT2;
+  m_calc_type = NEVPT2;
         m_nevpt2 = false;
         m_transition_diff_spatial_irrep=false;
       }
@@ -697,10 +702,10 @@ SpinAdapted::Input::Input(const string& config_name) {
         m_conventional_nevpt2 = true;
       }
       else if (boost::iequals(keyword,  "M_nevpt2")){
-	if (tok.size() != 2) {
-	  pout << "keyword M_nevpt2 should be followed by a single float and then an end line."<<endl;
-	  pout << "error found in the following line "<<endl;
-	  pout << msg<<endl;
+  if (tok.size() != 2) {
+    pout << "keyword M_nevpt2 should be followed by a single float and then an end line."<<endl;
+    pout << "error found in the following line "<<endl;
+    pout << msg<<endl;
           abort();
         }
         m_kept_nevpt2_states = atof(tok[1].c_str());
@@ -709,12 +714,12 @@ SpinAdapted::Input::Input(const string& config_name) {
 
       else if(boost::iequals(keyword,  "prefix") || boost::iequals(keyword,  "scratch"))
       {
-	if(usedkey[PREFIX] == 0) 
-	  usedkey_error(keyword, msg);
-	usedkey[PREFIX] = 0;
-	m_load_prefix = tok[1] ;
-	pout << m_load_prefix << endl;
-	m_save_prefix = m_load_prefix;
+  if(usedkey[PREFIX] == 0) 
+    usedkey_error(keyword, msg);
+  usedkey[PREFIX] = 0;
+  m_load_prefix = tok[1] ;
+  pout << m_load_prefix << endl;
+  m_save_prefix = m_load_prefix;
       }
 
      // user-defined initial HF wave function occupancies, in spin orbital
@@ -745,90 +750,90 @@ SpinAdapted::Input::Input(const string& config_name) {
       else if(boost::iequals(keyword, "open"))
       {
         vector<string> :: iterator it = ++tok.begin(); 
-	m_openorbs.resize(tok.size()-1,-1);
-	
-	int ii = 0;
-	for( ; it != tok.end(); ++it ){
-	  int openorb = atoi( (*it).c_str() );
-	  m_openorbs[ii] =  openorb-1 ;
-	  //pout << openorb<<"  ";
-	  ii++;
-	}
-	//pout << endl;
+  m_openorbs.resize(tok.size()-1,-1);
+  
+  int ii = 0;
+  for( ; it != tok.end(); ++it ){
+    int openorb = atoi( (*it).c_str() );
+    m_openorbs[ii] =  openorb-1 ;
+    //pout << openorb<<"  ";
+    ii++;
+  }
+  //pout << endl;
 
       }
       else if(boost::iequals(keyword, "closed"))
       {
         vector<string> :: iterator it = ++tok.begin(); 
-	m_closedorbs.resize(tok.size()-1,-1);
-	//pout << "closed orbs :";
-	int ii=0;
-	for( ; it != tok.end(); ++it ){
-	  int closedorb = atoi( (*it).c_str() );
-	  m_closedorbs[ii] = closedorb -1;
-	  //pout << closedorb<<"  ";
-	  ii++;
-	}
-	//pout << endl;
+  m_closedorbs.resize(tok.size()-1,-1);
+  //pout << "closed orbs :";
+  int ii=0;
+  for( ; it != tok.end(); ++it ){
+    int closedorb = atoi( (*it).c_str() );
+    m_closedorbs[ii] = closedorb -1;
+    //pout << closedorb<<"  ";
+    ii++;
+  }
+  //pout << endl;
       }
       else if(boost::iequals(keyword,  "nroots"))
       {
-	if(usedkey[NROOTS] == 0) 
-	  usedkey_error(keyword, msg);
-	usedkey[NROOTS] = 0;
+  if(usedkey[NROOTS] == 0) 
+    usedkey_error(keyword, msg);
+  usedkey[NROOTS] = 0;
         std::string nroots_str;
-	if (tok.size() != 2) {
-	  pout << "keyword nroots should be followed by a single integer and then an end line."<<endl;
-	  pout << "error found in the following line "<<endl;
-	  pout << msg<<endl;
-	  abort();
-	}	
+  if (tok.size() != 2) {
+    pout << "keyword nroots should be followed by a single integer and then an end line."<<endl;
+    pout << "error found in the following line "<<endl;
+    pout << msg<<endl;
+    abort();
+  } 
 
         m_nroots = atoi(tok[1].c_str());
         if(m_deflation_min_size < m_nroots) 
           m_deflation_min_size = m_nroots;
-	  
-	m_deflation_max_size = max(20, m_nroots+20);
+    
+  m_deflation_max_size = max(20, m_nroots+20);
 
-	ReadMeaningfulLine(input, msg, msgsize);
-	vector<string> weighttoken;
-	boost::split(weighttoken, msg, is_any_of(" \t"), token_compress_on);
-	
-	if (!boost::iequals(weighttoken[0],  "weights")) {
-	  //manually make all the weights equal
-	  m_weights.resize(m_nroots);
-	  for (int i=0; i<m_nroots; i++)
-	    m_weights[i] = 1.0/m_nroots;
-	  continue;
-	}
-	PROVIDED_WEIGHTS = true;
+  ReadMeaningfulLine(input, msg, msgsize);
+  vector<string> weighttoken;
+  boost::split(weighttoken, msg, is_any_of(" \t"), token_compress_on);
+  
+  if (!boost::iequals(weighttoken[0],  "weights")) {
+    //manually make all the weights equal
+    m_weights.resize(m_nroots);
+    for (int i=0; i<m_nroots; i++)
+      m_weights[i] = 1.0/m_nroots;
+    continue;
+  }
+  PROVIDED_WEIGHTS = true;
 
         m_weights.resize(m_nroots);
 
-	if (weighttoken.size() != m_nroots +1 ) {
-	  pout << "keyword weights should be followed by floating point numbers providing weights for "<<m_nroots<<" states."<<endl;
-	  pout << "You could chose to omit the keyword weights in which case the weights will be distributed uniformly between the different roots"<<endl;
-	  pout << "error found in the following line "<<endl;
-	  pout << msg<<endl;
-	  abort();
-	}
+  if (weighttoken.size() != m_nroots +1 ) {
+    pout << "keyword weights should be followed by floating point numbers providing weights for "<<m_nroots<<" states."<<endl;
+    pout << "You could chose to omit the keyword weights in which case the weights will be distributed uniformly between the different roots"<<endl;
+    pout << "error found in the following line "<<endl;
+    pout << msg<<endl;
+    abort();
+  }
         double norm = 0.;
-	
+  
         for(int i=1;i<weighttoken.size();i++)
         {
           m_weights[i-1] = atof(weighttoken[i].c_str());  
           norm += m_weights[i-1];
-	  if (m_weights[i-1] <1e-10) {
-	    pout<< "Weight of a state cannot be less than 1e.0e-10"<<endl;
-	    pout << "error found in the following line "<<endl;
-	    pout << msg<<endl;
-	    abort();
-	  }
+    if (m_weights[i-1] <1e-10) {
+      pout<< "Weight of a state cannot be less than 1e.0e-10"<<endl;
+      pout << "error found in the following line "<<endl;
+      pout << msg<<endl;
+      abort();
+    }
         }  
-	if (norm <= 1.e-10) {
-	  pout<< "Weights should add up to approximately 1.0. Currently they add up to "<<norm<<endl;
-	  abort();
-	}
+  if (norm <= 1.e-10) {
+    pout<< "Weights should add up to approximately 1.0. Currently they add up to "<<norm<<endl;
+    abort();
+  }
 
         for(int i=0;i<m_nroots;++i)
           m_weights[i] /= norm;
@@ -899,106 +904,106 @@ SpinAdapted::Input::Input(const string& config_name) {
 
       else if(boost::iequals(keyword,  "deflation_max_size") || boost::iequals(keyword,  "max_deflation_size"))
       {
-	if (tok.size() !=  2) {
-	  pout << "keyword "<<keyword<<" should be followed by a single number and then an endline"<<endl;
-	  pout << "error found in the following line "<<endl;
-	  pout << msg<<endl;
-	  abort();
-	}
+  if (tok.size() !=  2) {
+    pout << "keyword "<<keyword<<" should be followed by a single number and then an endline"<<endl;
+    pout << "error found in the following line "<<endl;
+    pout << msg<<endl;
+    abort();
+  }
         m_deflation_max_size = atoi(tok[1].c_str());
       }
       else if(boost::iequals(keyword,  "ProjectorStates") )
       {
-	if (tok.size() < 2) {
-	  pout << "keyword projectorstates should be followed by atleast a single number and then an endline"<<endl;
-	  pout << "error found in the following line "<<endl;
-	  pout << msg<<endl;
-	  abort();
-	}
-	m_projectorState.resize(tok.size()-1);
-	for (int l=0; l<tok.size()-1; l++)
-	  m_projectorState[l] = atoi(tok[l+1].c_str());
+  if (tok.size() < 2) {
+    pout << "keyword projectorstates should be followed by atleast a single number and then an endline"<<endl;
+    pout << "error found in the following line "<<endl;
+    pout << msg<<endl;
+    abort();
+  }
+  m_projectorState.resize(tok.size()-1);
+  for (int l=0; l<tok.size()-1; l++)
+    m_projectorState[l] = atoi(tok[l+1].c_str());
       }
       else if(boost::iequals(keyword,  "TargetState") )
       {
-	if (tok.size() !=  2) {
-	  pout << "keyword "<<keyword<<" should be followed by a single number and then an endline"<<endl;
-	  pout << "error found in the following line "<<endl;
-	  pout << msg<<endl;
-	  abort();
-	}
+  if (tok.size() !=  2) {
+    pout << "keyword "<<keyword<<" should be followed by a single number and then an endline"<<endl;
+    pout << "error found in the following line "<<endl;
+    pout << msg<<endl;
+    abort();
+  }
         m_targetState = atoi(tok[1].c_str());
       }
       else if(boost::iequals(keyword,  "GuessState") )
       {
-	if (tok.size() !=  2) {
-	  pout << "keyword "<<keyword<<" should be followed by a single number and then an endline"<<endl;
-	  pout << "error found in the following line "<<endl;
-	  pout << msg<<endl;
-	  abort();
-	}
+  if (tok.size() !=  2) {
+    pout << "keyword "<<keyword<<" should be followed by a single number and then an endline"<<endl;
+    pout << "error found in the following line "<<endl;
+    pout << msg<<endl;
+    abort();
+  }
         m_guessState = atoi(tok[1].c_str());
       }
       else if(boost::iequals(keyword,  "BaseStates") )
       {
-	if (tok.size() < 2) {
-	  pout << "keyword basestate should be followed by a single number and then an endline"<<endl;
-	  pout << "error found in the following line "<<endl;
-	  pout << msg<<endl;
-	  abort();
-	}
-	m_baseState.resize(tok.size()-1);
-	for (int l=0; l<tok.size()-1; l++)
-	  m_baseState[l] = atoi(tok[l+1].c_str());
+  if (tok.size() < 2) {
+    pout << "keyword basestate should be followed by a single number and then an endline"<<endl;
+    pout << "error found in the following line "<<endl;
+    pout << msg<<endl;
+    abort();
+  }
+  m_baseState.resize(tok.size()-1);
+  for (int l=0; l<tok.size()-1; l++)
+    m_baseState[l] = atoi(tok[l+1].c_str());
       }
 
 
       else if(boost::iequals(keyword,  "maxiter"))
       {
-	if(usedkey[MAXITER] == 0) 
-	  usedkey_error(keyword, msg);
-	usedkey[MAXITER] = 0;
-	if (tok.size() !=  2) {
-	  pout << "keyword maxiter should be followed by a single integer and then an endline"<<endl;
-	  pout << "error found in the following line "<<endl;
-	  pout << msg<<endl;
-	  abort();
-	}
+  if(usedkey[MAXITER] == 0) 
+    usedkey_error(keyword, msg);
+  usedkey[MAXITER] = 0;
+  if (tok.size() !=  2) {
+    pout << "keyword maxiter should be followed by a single integer and then an endline"<<endl;
+    pout << "error found in the following line "<<endl;
+    pout << msg<<endl;
+    abort();
+  }
         m_maxiter = atoi(tok[1].c_str());
       }
 
       else if(boost::iequals(keyword,  "screen_tol") || boost::iequals(keyword,  "screen_tolerance") || boost::iequals(keyword,  "screening_tol") || boost::iequals(keyword,  "screening_tolerance"))
       {
-	if(usedkey[SCREEN_TOL] == 0) 
-	  usedkey_error(keyword, msg);
-	usedkey[SCREEN_TOL] = 0;
-	if (tok.size() != 2) {
-	  pout << "keyword screen_tol should be followed by a single number and then an endline"<<endl;
-	  pout << "error found in the following line "<<endl;
-	  pout << msg<<endl;
-	  abort();
-	}
+  if(usedkey[SCREEN_TOL] == 0) 
+    usedkey_error(keyword, msg);
+  usedkey[SCREEN_TOL] = 0;
+  if (tok.size() != 2) {
+    pout << "keyword screen_tol should be followed by a single number and then an endline"<<endl;
+    pout << "error found in the following line "<<endl;
+    pout << msg<<endl;
+    abort();
+  }
         m_oneindex_screen_tol = atof(tok[1].c_str());
         m_twoindex_screen_tol = atof(tok[1].c_str());
       }
       else if(boost::iequals(keyword,  "oneindex_screen_tol") )
       {
-	if (tok.size() != 2) {
-	  pout << "keyword oneindex_screen_tol should be followed by a single number and then an endline"<<endl;
-	  pout << "error found in the following line "<<endl;
-	  pout << msg<<endl;
-	  abort();
-	}
+  if (tok.size() != 2) {
+    pout << "keyword oneindex_screen_tol should be followed by a single number and then an endline"<<endl;
+    pout << "error found in the following line "<<endl;
+    pout << msg<<endl;
+    abort();
+  }
         m_oneindex_screen_tol = atof(tok[1].c_str());
       }
       else if(boost::iequals(keyword,  "twoindex_screen_tol") )
       {
-	if (tok.size() != 2) {
-	  pout << "keyword twoindex_screen_tol should be followed by a single number and then an endline"<<endl;
-	  pout << "error found in the following line "<<endl;
-	  pout << msg<<endl;
-	  abort();
-	}
+  if (tok.size() != 2) {
+    pout << "keyword twoindex_screen_tol should be followed by a single number and then an endline"<<endl;
+    pout << "error found in the following line "<<endl;
+    pout << msg<<endl;
+    abort();
+  }
         m_twoindex_screen_tol = atof(tok[1].c_str());
       }
 
@@ -1019,12 +1024,12 @@ SpinAdapted::Input::Input(const string& config_name) {
 
       else if(boost::iequals(keyword,  "twodot_to_onedot"))
       {
-	if (tok.size() !=  2) {
-	  pout << "keyword twodot_to_onedot should be followed by a single number and then an endline"<<endl;
-	  pout << "error found in the following line "<<endl;
-	  pout << msg<<endl;
-	  abort();
-	}
+  if (tok.size() !=  2) {
+    pout << "keyword twodot_to_onedot should be followed by a single number and then an endline"<<endl;
+    pout << "error found in the following line "<<endl;
+    pout << msg<<endl;
+    abort();
+  }
         m_algorithm_type = TWODOT_TO_ONEDOT;
         m_env_add = 1;
         m_twodot_to_onedot_iter = atoi(tok[1].c_str());
@@ -1032,9 +1037,9 @@ SpinAdapted::Input::Input(const string& config_name) {
 
       else if(boost::iequals(keyword, "twodot_noise")) 
       {
-	if(usedkey[TWODOT_NOISE] == 0) 
-	  usedkey_error(keyword, msg);
-	usedkey[TWODOT_NOISE] = 0;
+  if(usedkey[TWODOT_NOISE] == 0) 
+    usedkey_error(keyword, msg);
+  usedkey[TWODOT_NOISE] = 0;
          if (tok.size() !=  3) {
            pout << "keyword twodot_noise should be followed by two single numbers and then an endline"<<endl;
            pout << "error found in the following line "<<endl;
@@ -1048,37 +1053,37 @@ SpinAdapted::Input::Input(const string& config_name) {
 
       else if (boost::iequals(keyword,  "sweep_tol") || boost::iequals(keyword,  "sweep_tolerance"))
       {
-	if(usedkey[SWEEP_TOL] == 0) 
-	  usedkey_error(keyword, msg);
-	usedkey[SWEEP_TOL] = 0;
-	if (tok.size() !=  2) {
-	  pout << "keyword sweep_tol should be followed by a single number and then an endline"<<endl;
-	  pout << "error found in the following line "<<endl;
-	  pout << msg<<endl;
-	  abort();
-	}
-	if (boost::iequals(tok[1], "loose"))
-	  m_sweep_tol = 1.0e-5;
-	else if (boost::iequals(tok[1], "tight"))
-	  m_sweep_tol = 1.0e-7;
-	else if (boost::iequals(tok[1], "verytight"))
-	  m_sweep_tol = 1.0e-9;
-	else
-	  m_sweep_tol = atof(tok[1].c_str());
-	if (m_sweep_tol < 1.0e-12) {
-	  pout << "Sweep tolerance of less than 1.0e-12 may cause convergence problems. Changing it to from "<<m_sweep_tol<<" to 1.0e-12 instead."<<endl;
-	  m_sweep_tol = 1.0e-12;
-	}
+  if(usedkey[SWEEP_TOL] == 0) 
+    usedkey_error(keyword, msg);
+  usedkey[SWEEP_TOL] = 0;
+  if (tok.size() !=  2) {
+    pout << "keyword sweep_tol should be followed by a single number and then an endline"<<endl;
+    pout << "error found in the following line "<<endl;
+    pout << msg<<endl;
+    abort();
+  }
+  if (boost::iequals(tok[1], "loose"))
+    m_sweep_tol = 1.0e-5;
+  else if (boost::iequals(tok[1], "tight"))
+    m_sweep_tol = 1.0e-7;
+  else if (boost::iequals(tok[1], "verytight"))
+    m_sweep_tol = 1.0e-9;
+  else
+    m_sweep_tol = atof(tok[1].c_str());
+  if (m_sweep_tol < 1.0e-12) {
+    pout << "Sweep tolerance of less than 1.0e-12 may cause convergence problems. Changing it to from "<<m_sweep_tol<<" to 1.0e-12 instead."<<endl;
+    m_sweep_tol = 1.0e-12;
+  }
       }
 
 
       else if (boost::iequals(keyword,  "outputlevel")) {
-	if (tok.size() != 2) {
-	  pout << "keyword outputlevel should be followed by a single integer and then an endline"<<endl;
-	  pout << "error found in the following line "<<endl;
-	  pout << msg<<endl;
-	  abort();
-	}
+  if (tok.size() != 2) {
+    pout << "keyword outputlevel should be followed by a single integer and then an endline"<<endl;
+    pout << "error found in the following line "<<endl;
+    pout << msg<<endl;
+    abort();
+  }
         m_outputlevel = atoi(tok[1].c_str());
       }
 
@@ -1089,25 +1094,25 @@ SpinAdapted::Input::Input(const string& config_name) {
 
 
       else if (boost::iequals(keyword,  "fullrestart")) {
-         m_fullrestart = true;	  
+         m_fullrestart = true;    
       }      
 
       else if (boost::iequals(keyword,  "backward")) {
-         m_backward = true;	  
+         m_backward = true;   
          m_schedule_type_backward = true; 
          m_algorithm_type = TWODOT;
       }
 
 
       else if (boost::iequals(keyword,  "reset_iterations") || boost::iequals(keyword,  "reset_iter") || boost::iequals(keyword,  "reset_iters")) {
-	m_reset_iterations = true;
+  m_reset_iterations = true;
       }
 
       else
       {
         pout << "Unrecognized option :: " << keyword << endl;
-	pout << "error found in the following line "<<endl;
-	pout << msg<<endl;
+  pout << "error found in the following line "<<endl;
+  pout << msg<<endl;
         abort();
       }
       msg.resize(0);
@@ -1271,18 +1276,18 @@ void SpinAdapted::Input::readreorderfile(ifstream& dumpFile, std::vector<int>& o
   while(msg.size() != 0) {
     for (int i=0; i<tok.size(); i++)
       if(tok[i].size() != 0) {
-	if (find(oldtonew.begin(), oldtonew.end(), atoi(tok[i].c_str())-1) != oldtonew.end()) {
-	  pout << "Orbital "<<atoi(tok[i].c_str())<<" appears twice in reorder file"<<endl;
-	  pout << "error found at the following line "<<endl;
-	  pout << msg<<endl;
-	  abort();
-	}
-	//reorder is starting from 1 to n, but internally we store it from 0 to n-1
-	oldtonew.push_back(atoi(tok[i].c_str())-1); 
-	if (oldtonew.back() >m_norbs || oldtonew.back() < 0) {
-	  pout << "Illegal orbital index "<<atoi(tok[i].c_str())<<" in reorder file"<<endl;
-	  abort();
-	}
+  if (find(oldtonew.begin(), oldtonew.end(), atoi(tok[i].c_str())-1) != oldtonew.end()) {
+    pout << "Orbital "<<atoi(tok[i].c_str())<<" appears twice in reorder file"<<endl;
+    pout << "error found at the following line "<<endl;
+    pout << msg<<endl;
+    abort();
+  }
+  //reorder is starting from 1 to n, but internally we store it from 0 to n-1
+  oldtonew.push_back(atoi(tok[i].c_str())-1); 
+  if (oldtonew.back() >m_norbs || oldtonew.back() < 0) {
+    pout << "Illegal orbital index "<<atoi(tok[i].c_str())<<" in reorder file"<<endl;
+    abort();
+  }
       }
     msg.resize(0);
     ReadMeaningfulLine(dumpFile, msg, msgsize);
@@ -1339,76 +1344,76 @@ void SpinAdapted::Input::readorbitalsfile(string& orbitalfile, OneElectronArray&
   if (integralIndex == 0) {
     if(get_restart() || get_fullrestart() || m_calc_type == COMPRESS || m_calc_type == RESPONSE || m_calc_type == RESPONSEBW) {
       if (mpigetrank() == 0) {
-	ReorderFileInput.open(ReorderFileName);
-	boost::filesystem::path ReorderFilePath(ReorderFileName);
-	
-	if(!boost::filesystem::exists(ReorderFilePath)) {
-	  pout << "==============="<<endl;
-	  pout << "This is a restart job and the reorder file "<<ReorderFileName<<" should be present"<<endl;
-	  abort();
-	}
-	else {
-	  pout << "================"<<endl;
-	  pout << "The Fiedler routine for finding the orbital ordering has already been run." << endl;
-	  pout << "Using the reorder file " << ReorderFileName << endl;
-	  pout << "================"<<endl;
-	  m_reorder.resize(m_norbs/2);
-	  for (int i=0; i<m_norbs/2; i++)
-	    ReorderFileInput >> m_reorder[i];
-	  ReorderFileInput.close();
-	}
+  ReorderFileInput.open(ReorderFileName);
+  boost::filesystem::path ReorderFilePath(ReorderFileName);
+  
+  if(!boost::filesystem::exists(ReorderFilePath)) {
+    pout << "==============="<<endl;
+    pout << "This is a restart job and the reorder file "<<ReorderFileName<<" should be present"<<endl;
+    abort();
+  }
+  else {
+    pout << "================"<<endl;
+    pout << "The Fiedler routine for finding the orbital ordering has already been run." << endl;
+    pout << "Using the reorder file " << ReorderFileName << endl;
+    pout << "================"<<endl;
+    m_reorder.resize(m_norbs/2);
+    for (int i=0; i<m_norbs/2; i++)
+      ReorderFileInput >> m_reorder[i];
+    ReorderFileInput.close();
+  }
       }
     }
     else {
       if (mpigetrank() == 0) {
-	ReorderFileOutput.open(ReorderFileName);
+  ReorderFileOutput.open(ReorderFileName);
       }
       
       
       // read the reorder file or calculate the reordering using one of the many options  
       if (m_reorderType == FIEDLER) {
-	
-	if (mpigetrank() == 0){
-	  m_reorder=get_fiedler(orbitalfile);
-	  pout << "Fiedler-vector orbital ordering: ";     
-	}
+  
+  if (mpigetrank() == 0){
+    m_reorder=get_fiedler(orbitalfile);
+    pout << "Fiedler-vector orbital ordering: ";     
+  }
       }
       else if (m_reorderType == GAOPT) {
-	
-	ifstream gaconfFile;
-	
-	if (mpigetrank() == 0) {
-	  if(m_gaconffile != "default") 
-	    gaconfFile.open(m_gaconffile.c_str(), ios::in);
-	  m_reorder = get_fiedler(orbitalfile);      
-	}
-	//to provide as initial guess to gaopt
-	m_reorder = getgaorder(gaconfFile, orbitalfile, m_reorder);      
-	pout << "Genetic algorithm orbital ordering: ";
+  
+  ifstream gaconfFile;
+  
+  if (mpigetrank() == 0) {
+    if(m_gaconffile != "default") 
+      gaconfFile.open(m_gaconffile.c_str(), ios::in);
+    m_reorder = get_fiedler(orbitalfile);      
+  }
+  //to provide as initial guess to gaopt
+  m_reorder = getgaorder(gaconfFile, orbitalfile, m_reorder);      
+  pout << "Genetic algorithm orbital ordering: ";
       }
       
       else if (m_reorderType == MANUAL) {
-	if (mpigetrank() == 0) {
-	  ifstream reorderFile(m_reorderfile.c_str());
-	  CheckFileExistence(m_reorderfile, "Reorder file ");
-	  readreorderfile(reorderFile, m_reorder);
-	  pout << "Manually provided orbital ordering: ";
-	}
+  if (mpigetrank() == 0) {
+    ifstream reorderFile(m_reorderfile.c_str());
+    CheckFileExistence(m_reorderfile, "Reorder file ");
+    readreorderfile(reorderFile, m_reorder);
+    pout << "Manually provided orbital ordering: ";
+  }
       }
       else { //this is the no-reorder case 
-	if (mpigetrank() == 0) {
-	  m_reorder.resize(m_norbs/2);
-	  for (int i=0; i<m_reorder.size(); i++)
-	    m_reorder.at(i) = i;
-	  pout << "No orbital reorder: ";
-	}
+  if (mpigetrank() == 0) {
+    m_reorder.resize(m_norbs/2);
+    for (int i=0; i<m_reorder.size(); i++)
+      m_reorder.at(i) = i;
+    pout << "No orbital reorder: ";
+  }
       }
       
       if (mpigetrank() == 0) {
-	for (int i=0; i<m_reorder.size(); i++){
-	  ReorderFileOutput << m_reorder[i]<<"  ";
-	}
-	ReorderFileOutput.close();    
+  for (int i=0; i<m_reorder.size(); i++){
+    ReorderFileOutput << m_reorder[i]<<"  ";
+  }
+  ReorderFileOutput.close();    
       }
     }
   }
@@ -1445,9 +1450,9 @@ void SpinAdapted::Input::readorbitalsfile(string& orbitalfile, OneElectronArray&
 
       int ir;
       if (atoi(tok[i].c_str()) >= 0 ) 
-	ir = atoi(tok[i].c_str()) - offset;
+  ir = atoi(tok[i].c_str()) - offset;
       else if (atoi(tok[i].c_str()) < -1)
-	ir = atoi(tok[i].c_str()) + offset;
+  ir = atoi(tok[i].c_str()) + offset;
 
       if (sym == "trans") ir += 1; //for translational symmetry the lowest irrep is 0
       if (sym == "lzsym") ir = atoi(tok[i].c_str());
@@ -1457,10 +1462,10 @@ void SpinAdapted::Input::readorbitalsfile(string& orbitalfile, OneElectronArray&
       m_spin_orbs_symmetry[2*reorderOrbInd+1] = ir;
       
       if (readLine == numRead) {
-	m_num_spatial_orbs++;
-	m_spatial_to_spin.push_back(orbindex);
-	numRead = Symmetry::sizeofIrrep(ir);
-	readLine = 0;
+  m_num_spatial_orbs++;
+  m_spatial_to_spin.push_back(orbindex);
+  numRead = Symmetry::sizeofIrrep(ir);
+  readLine = 0;
       }
       m_spin_to_spatial[orbindex] = m_num_spatial_orbs-1;
       m_spin_to_spatial[orbindex+1] = m_num_spatial_orbs-1;
@@ -1537,13 +1542,13 @@ void SpinAdapted::Input::readorbitalsfile(string& orbitalfile, OneElectronArray&
     if (i==-1 && j==-1 && k==-1 && l==-1) {
       coreEnergy = value;
       if (AOrbOffset == 0 && BOrbOffset == 0) //AA
-	{AOrbOffset = 1; BOrbOffset = 1;} //got to BB}
+  {AOrbOffset = 1; BOrbOffset = 1;} //got to BB}
       else if (AOrbOffset == 1 && BOrbOffset == 1) //BB
-	{AOrbOffset = 1; BOrbOffset = 0;} //got to AB}
+  {AOrbOffset = 1; BOrbOffset = 0;} //got to AB}
       else if (AOrbOffset == 1 && BOrbOffset == 0) //AB
-	{AOrbOffset = 0; BOrbOffset = 0;} //got to AA}
+  {AOrbOffset = 0; BOrbOffset = 0;} //got to AA}
     }
-	
+  
     else if (k==-1 && l==-1) { 
       v1(2*reorder.at(i)+AOrbOffset,2*reorder.at(j)+AOrbOffset) = value;  v1(2*reorder.at(j)+AOrbOffset,2*reorder.at(i)+AOrbOffset) = value;
     } 
@@ -1560,7 +1565,7 @@ void SpinAdapted::Input::readorbitalsfile(string& orbitalfile, OneElectronArray&
     for (int i=0; i<m_spatial_to_spin.size()-1; i++) {
       std::vector<int> orb;
       for (int j=m_spatial_to_spin[i]; j<m_spatial_to_spin[i+1]; j+=2) {
-	orb.push_back(j/2);
+  orb.push_back(j/2);
       }
       PartialTwoElectronArray vpart(orb);
       vpart.populate(v2);
@@ -1626,7 +1631,7 @@ void SpinAdapted::Input::readorbitalsfile(string& orbitalfile, OneElectronArray&
       pout << "----------------"<<endl;
       m_reorder.resize(m_norbs/2);
       for (int i=0; i<m_norbs/2; i++)
-	ReorderFileInput >> m_reorder[i];
+  ReorderFileInput >> m_reorder[i];
       ReorderFileInput.close();
     }
     }
@@ -1658,7 +1663,7 @@ void SpinAdapted::Input::readorbitalsfile(string& orbitalfile, OneElectronArray&
       if (mpigetrank() == 0) {
         m_reorder.resize(m_norbs/2);
         for (int i=0; i<m_reorder.size(); i++)
-	      m_reorder.at(i) = i;
+        m_reorder.at(i) = i;
         pout << "No orbital reorder: ";
       }
     }
@@ -1700,9 +1705,9 @@ void SpinAdapted::Input::readorbitalsfile(string& orbitalfile, OneElectronArray&
       int reorderOrbInd =  reorder.at(orbindex/2);
       int ir;
       if (atoi(tok[i].c_str()) >= 0 ) 
-	    ir = atoi(tok[i].c_str()) - offset;
+      ir = atoi(tok[i].c_str()) - offset;
       else if (atoi(tok[i].c_str()) < -1)
-	    ir = atoi(tok[i].c_str()) + offset;
+      ir = atoi(tok[i].c_str()) + offset;
 
       if (sym == "trans") ir += 1; //for translational symmetry the lowest irrep is 0
       if (sym == "lzsym") ir = atoi(tok[i].c_str());
@@ -1711,10 +1716,10 @@ void SpinAdapted::Input::readorbitalsfile(string& orbitalfile, OneElectronArray&
       m_spin_orbs_symmetry[2*reorderOrbInd+1] = ir;
       
       if (readLine == numRead) {
-    	m_num_spatial_orbs++;
-    	m_spatial_to_spin.push_back(orbindex);
-    	numRead = Symmetry::sizeofIrrep(ir);
-    	readLine = 0;
+      m_num_spatial_orbs++;
+      m_spatial_to_spin.push_back(orbindex);
+      numRead = Symmetry::sizeofIrrep(ir);
+      readLine = 0;
       }
       m_spin_to_spatial[orbindex] = m_num_spatial_orbs-1;
       m_spin_to_spatial[orbindex+1] = m_num_spatial_orbs-1;
@@ -1733,7 +1738,7 @@ void SpinAdapted::Input::readorbitalsfile(string& orbitalfile, OneElectronArray&
     for (int i=0; i<m_spin_orbs_symmetry.size(); i+=2) {
       int ir = m_spin_orbs_symmetry[i];
       if (ir < -1 || ir == 0 || ir == 1) 
-	    m_spatial_to_spin.push_back(i);
+      m_spatial_to_spin.push_back(i);
     }
   }
 
@@ -1857,7 +1862,7 @@ void SpinAdapted::Input::readorbitalsfile(string& orbitalfile, OneElectronArray&
     for (int i=0; i<m_spatial_to_spin.size()-1; i++) {
       std::vector<int> orb;
       for (int j=m_spatial_to_spin[i]; j<m_spatial_to_spin[i+1]; j+=2) {
-	orb.push_back(j/2);
+  orb.push_back(j/2);
       }
       PartialTwoElectronArray vpart(orb);
       vpart.populate(v2);
@@ -2207,7 +2212,7 @@ void SpinAdapted::Input::makeInitialHFGuess() {
       else if (m_hf_occupancy[i] == 1) { hf_occupancy_tmp[2*i] = 1; hf_occupancy_tmp[2*i+1] = 0;}
       else if (m_hf_occupancy[i] == 0) { hf_occupancy_tmp[2*i] = 0; hf_occupancy_tmp[2*i+1] = 0;}
       else {pout << "the HF occupancy of orbital "<<i<<" should either be 2, 1, or 0. Instead "<<m_hf_occupancy[i]<<" is given."<<endl; abort();}
-    }	
+    }
 
     if (UserElectrons != m_alpha+m_beta ) {
       pout << "ERROR: The total number of electrons in HF occupancy does not match the number given initially " << endl;
